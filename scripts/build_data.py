@@ -3,8 +3,18 @@ data file for the filterable sponsor list page, with keyword-inferred industry t
 
 Usage: python3 build_data.py <register.csv> <out_dir> [<previous data.json>]
 """
-import csv, json, re, sys, os
+import csv, json, re, sys, os, datetime
 from collections import OrderedDict
+
+# First-seen dates are stored as whole days since this epoch; 0 means "already on the
+# register when tracking started" (no known date).
+DAY0 = datetime.date(2020, 1, 1)
+
+def day_number(iso):
+    try:
+        return (datetime.date.fromisoformat(iso) - DAY0).days
+    except (TypeError, ValueError):
+        return 0
 
 # Industry tags inferred from the organisation name (the register has no industry field).
 # Order matters only for display; an organisation can carry several tags.
@@ -112,11 +122,22 @@ def main():
     ind_keys = list(INDUSTRIES.keys())
     route_keys = list(ROUTES.keys())
 
+    m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(src))
+    register_date = m.group(1) if m else ""
+    today_n = day_number(register_date) or (datetime.date.today() - DAY0).days
+
     prev_names = None
+    prev_fs = {}
+    prev_meta_tracking = ""
     if prev_path and os.path.exists(prev_path):
         with open(prev_path, encoding="utf-8") as f:
             p = json.load(f)
-        prev_names = {(r[0].lower(), (p["towns"][r[1]] if r[1] >= 0 else "").lower()): r[0] for r in p["rows"]}
+        prev_names = {}
+        for r in p["rows"]:
+            k = (r[0].lower(), (p["towns"][r[1]] if r[1] >= 0 else "").lower())
+            prev_names[k] = r[0]
+            prev_fs[k] = r[7] if len(r) > 7 else 0
+        prev_meta_tracking = p.get("meta", {}).get("tracking_since", "")
 
     rows = []
     tag_counts = {k: 0 for k in ind_keys}
@@ -134,15 +155,17 @@ def main():
         is_new = 1 if (prev_names is not None and key not in prev_names) else 0
         if is_new:
             added.append(o["n"])
-        rows.append([o["n"], tidx.get(o["t"], -1), cidx.get(o["c"], -1), tags, routes, rating, is_new])
+        first_seen = today_n if is_new else prev_fs.get(key, 0)
+        rows.append([o["n"], tidx.get(o["t"], -1), cidx.get(o["c"], -1), tags, routes, rating, is_new, first_seen])
 
     removed = []
     if prev_names is not None:
         removed = sorted(name for k, name in prev_names.items() if k not in orgs)
 
-    m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(src))
     meta = {
-        "register_date": m.group(1) if m else "",
+        "register_date": register_date,
+        "day0": DAY0.isoformat(),
+        "tracking_since": (prev_meta_tracking or register_date),
         "source_file": os.path.basename(src),
         "raw_rows": raw_rows,
         "orgs": len(rows),

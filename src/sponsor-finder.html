@@ -88,7 +88,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .badge { font-family: var(--f-data); font-size: 10.5px; padding: 1px 6px; border-radius: 3px; letter-spacing: .03em; }
 .badge.b { background: var(--warn-soft); color: var(--warn); }
 .badge.p { background: var(--warn-soft); color: var(--warn); }
-.badge.new { background: var(--stamp-soft); color: var(--stamp); }
+.badge.new { background: var(--stamp); color: var(--sheet); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: 9.5px; padding: 2px 6px; border-radius: 2px 8px 2px 8px; align-self: flex-start; transform: translateY(-4px); }
 .links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; align-items: center; }
 .links a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
 .links a:hover { border-bottom-color: currentColor; }
@@ -154,6 +154,11 @@ a.btn { text-decoration: none; display: inline-block; }
         <div class="chips" id="quick-places"></div>
       </div>
       <div class="fgroup">
+        <div class="flabel"><span data-i18n="fSince">加入名单时间</span></div>
+        <div class="chips" id="since-chips"></div>
+        <p class="note" id="since-note"></p>
+      </div>
+      <div class="fgroup">
         <div class="flabel"><span data-i18n="fInd">行业（名称推断，可多选）</span><button type="button" id="ind-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="ind-chips"></div>
       </div>
@@ -165,7 +170,6 @@ a.btn { text-decoration: none; display: inline-block; }
         <label class="check"><input type="checkbox" id="only-a" checked> <span data-i18n="onlyA">只看 A 级评级（可正常发 CoS）</span></label>
         <label class="check"><input type="checkbox" id="only-star"> <span data-i18n="onlyStar">只看我收藏的</span></label>
         <label class="check"><input type="checkbox" id="only-link"> <span data-i18n="onlyLink">只看已有官网链接的</span></label>
-        <label class="check" id="only-new-wrap" hidden><input type="checkbox" id="only-new"> <span data-i18n="onlyNew">只看本次新增</span></label>
       </div>
       <p class="note" data-i18n="filterNote">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
     </aside>
@@ -209,18 +213,20 @@ a.btn { text-decoration: none; display: inline-block; }
   const I18N = {
     zh: {
       docTitle: "英国工签担保雇主名单", title: "英国工签担保雇主名单",
-      metaDate: "登记表版本", metaRows: "原始行数", metaOrgs: "机构数", metaDiff: (a, r) => `（新增 ${a}，移除 ${r}）`,
+      metaDate: "登记表版本", metaRows: "原始行数", metaOrgs: "机构数", metaDiff: (a, r) => `（本次新增 ${a}，移除 ${r}）`,
       filtersAria: "筛选", sortAria: "排序",
       fName: "公司名称", fNamePh: "例如 NHS、Software、Deloitte", fPlace: "城市 / 郡", fPlacePh: "例如 Stoke-on-Trent、Manchester",
       clear: "清除", all: "全部", fInd: "行业（名称推断，可多选）", fRoute: "签证路线", untagged: "未分类",
-      onlyA: "只看 A 级评级（可正常发 CoS）", onlyStar: "只看我收藏的", onlyLink: "只看已有官网链接的", onlyNew: "只看本次新增",
+      onlyA: "只看 A 级评级（可正常发 CoS）", onlyStar: "只看我收藏的", onlyLink: "只看已有官网链接的", fSince: "加入名单时间", sinceAll: "不限", since1: "24 小时内", since7: "7 日内", since30: "30 日内",
+      sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
+      newAdded: "今日新增",
       filterNote: "行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。",
       sortName: "按名称 A–Z", sortTown: "按城市", sortNew: "新增优先",
       export: "导出当前结果 CSV", exportStars: "下载我的收藏", exportStarsN: (n) => `下载我的收藏（${n}）`, feedback: "提建议",
       loading: "正在载入 12 万多家机构的数据…", loadFail: "名单数据没有载入成功，请刷新页面。",
       countSuffix: " 家机构符合条件", empty: "没有符合条件的机构。试着减少行业或城市筛选。",
       more: (n, shown, total) => `再显示 ${n} 家（已显示 ${shown} / ${total}）`,
-      ratingB: "B 级", ratingP: "临时许可", isNew: "本次新增", noPlace: "地点未填写",
+      ratingB: "B 级", ratingP: "临时许可", noPlace: "地点未填写",
       site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", searchTitle: "在 Google 搜索",
       linkedin: "LinkedIn 职位", star: "收藏",
       aiFind: "AI 查网址", aiAgain: "AI 重新查", aiBusy: "Claude 正在查…", aiUnsure: "Claude 没有把握，请用搜索链接查找。",
@@ -247,14 +253,16 @@ a.btn { text-decoration: none; display: inline-block; }
       filtersAria: "Filters", sortAria: "Sort",
       fName: "Company name", fNamePh: "e.g. NHS, Software, Deloitte", fPlace: "Town / county", fPlacePh: "e.g. Stoke-on-Trent, Manchester",
       clear: "Clear", all: "All", fInd: "Industry (guessed from name, multi-select)", fRoute: "Visa route", untagged: "Unclassified",
-      onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", onlyNew: "New in this update only",
+      onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
+      sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
+      newAdded: "New added",
       filterNote: "Industry tags are guessed from keywords in the company name; names that give no clue go to “Unclassified”. Being on the register means a company can sponsor, not that it is hiring.",
       sortName: "Name A–Z", sortTown: "Town", sortNew: "New first",
       export: "Export results (CSV)", exportStars: "Download my list", exportStarsN: (n) => `Download my list (${n})`, feedback: "Send feedback",
       loading: "Loading 120,000+ organisations…", loadFail: "The list didn't load. Please refresh the page.",
       countSuffix: " organisations match", empty: "No organisations match. Try fewer industry or place filters.",
       more: (n, shown, total) => `Show ${n} more (${shown} of ${total} shown)`,
-      ratingB: "B-rated", ratingP: "Provisional", isNew: "New", noPlace: "No town listed",
+      ratingB: "B-rated", ratingP: "Provisional", noPlace: "No town listed",
       site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", searchTitle: "Search on Google",
       linkedin: "LinkedIn jobs", star: "Save",
       aiFind: "Find with AI", aiAgain: "Ask AI again", aiBusy: "Claude is looking…", aiUnsure: "Claude isn't sure. Try the search links.",
@@ -307,7 +315,7 @@ a.btn { text-decoration: none; display: inline-block; }
   }
 
   // ---------------- state ----------------
-  const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyNew: false, sort: "name", shown: PAGE };
+  const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, since: 0, sort: "name", shown: PAGE };
   let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null, canVerify = false;
   function mergeLinks() { links = new Map([...staticLinks, ...dbLinks]); }
 
@@ -318,14 +326,14 @@ a.btn { text-decoration: none; display: inline-block; }
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
         st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.inds || []); st.routes = new Set(f.routes || ["sw"]);
-        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name";
+        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0;
       }
     } catch (e) {}
   }
   function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? t("exportStarsN", stars.size) : t("exportStars"); }
   function saveLocal() {
     try { localStorage.setItem("sponsor-stars", JSON.stringify([...stars])); } catch (e) {}
-    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort })); } catch (e) {}
+    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort, since: st.since })); } catch (e) {}
   }
 
   // stable id per organisation (name + town)
@@ -340,6 +348,13 @@ a.btn { text-decoration: none; display: inline-block; }
   }
   const town = (r) => (r[1] >= 0 ? D.towns[r[1]] : "");
   const county = (r) => (r[2] >= 0 ? D.counties[r[2]] : "");
+  // Days since 2020-01-01 (matches build_data.py); 0 = on the register before tracking began.
+  const DAY0 = Date.UTC(2020, 0, 1);
+  const dayOf = (iso) => Math.round((Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) - DAY0) / 86400000);
+  const todayN = dayOf(new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" }));
+  const ageOf = (r) => (r[7] > 0 ? todayN - r[7] : Infinity);
+  const isNewAdded = (r) => ageOf(r) <= 1;
+  const sortName = (r) => { if (r._s === undefined) r._s = r[0].replace(/^[^A-Za-z0-9]+/, "").toLowerCase() || r[0].toLowerCase(); return r._s; };
   const keyOf = (r) => { if (r._k === undefined) r._k = hash(r[0].toLowerCase() + "|" + town(r).toLowerCase()); return r._k; };
 
   function toast(msg) {
@@ -360,6 +375,12 @@ a.btn { text-decoration: none; display: inline-block; }
     ic.append(chip(t("untagged"), D.meta.untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
+    const sc = $("since-chips"); sc.innerHTML = "";
+    const sinceCount = (d) => (d ? D.rows.reduce((n, r) => n + (ageOf(r) <= (d === 1 ? 1 : d - 1) ? 1 : 0), 0) : null);
+    [[0, "sinceAll"], [1, "since1"], [7, "since7"], [30, "since30"]].forEach(([d, key]) => {
+      sc.append(chip(t(key), sinceCount(d), st.since === d, () => { st.since = d; buildFilters(); refresh(); }));
+    });
+    $("since-note").textContent = t("sinceNote", D.meta.tracking_since || D.meta.register_date || "—");
     const qp = $("quick-places"); qp.innerHTML = "";
     QUICK.forEach((p) => {
       qp.append(chip(p.replace("-On-", "-on-"), null, st.place.toLowerCase() === p.toLowerCase(), () => {
@@ -397,14 +418,14 @@ a.btn { text-decoration: none; display: inline-block; }
       if (st.inds.size && !((r[3] & indMask) || (wantUntagged && r[3] === 0))) continue;
       if (pl && !(plTowns.has(r[1]) || plCounties.has(r[2]))) continue;
       if (q && !r[0].toLowerCase().includes(q)) continue;
-      if (st.onlyNew && !r[6]) continue;
+      if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
       if (st.onlyStar && !stars.has(keyOf(r))) continue;
       if (st.onlyLink && !links.has(keyOf(r))) continue;
       out.push(r);
     }
-    const byName = (a, b) => a[0].localeCompare(b[0], "en", { sensitivity: "base" });
+    const byName = (a, b) => sortName(a).localeCompare(sortName(b), "en", { sensitivity: "base" });
     if (st.sort === "town") out.sort((a, b) => town(a).localeCompare(town(b)) || byName(a, b));
-    else if (st.sort === "new") out.sort((a, b) => b[6] - a[6] || byName(a, b));
+    else if (st.sort === "new") out.sort((a, b) => (b[7] || 0) - (a[7] || 0) || byName(a, b));
     else out.sort(byName);
     return out;
   }
@@ -460,7 +481,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const nm = document.createElement("div"); nm.className = "name"; nm.append(r[0]);
     if (r[5] === "b") nm.append(badge("b", t("ratingB")));
     if (r[5] === "p") nm.append(badge("p", t("ratingP")));
-    if (r[6]) nm.append(badge("new", t("isNew")));
+    if (isNewAdded(r)) nm.append(badge("new", t("newAdded")));
     main.append(nm);
     const wh = document.createElement("div"); wh.className = "where";
     wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
@@ -647,7 +668,6 @@ a.btn { text-decoration: none; display: inline-block; }
   $("only-a").onchange = (e) => { st.onlyA = e.target.checked; refresh(); };
   $("only-star").onchange = (e) => { st.onlyStar = e.target.checked; refresh(); };
   $("only-link").onchange = (e) => { st.onlyLink = e.target.checked; refresh(); };
-  $("only-new").onchange = (e) => { st.onlyNew = e.target.checked; refresh(); };
   $("sort").onchange = (e) => { st.sort = e.target.value; refresh(); };
 
   // ---------------- boot ----------------
@@ -663,7 +683,6 @@ a.btn { text-decoration: none; display: inline-block; }
   fetch("data.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {
     D = d;
     setMeta();
-    if (d.meta.added > 0) $("only-new-wrap").hidden = false;
     const counts = new Map(); d.rows.forEach((r) => counts.set(r[1], (counts.get(r[1]) || 0) + 1));
     const dl = $("towns");
     [...counts.entries()].filter(([i, n]) => i >= 0 && n >= 15).sort((x, y) => y[1] - x[1]).forEach(([i]) => { const o = document.createElement("option"); o.value = d.towns[i]; dl.append(o); });
