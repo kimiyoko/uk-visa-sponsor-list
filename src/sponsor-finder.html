@@ -115,69 +115,81 @@ a.btn { text-decoration: none; display: inline-block; }
 .legend { font-size: 12px; color: var(--ink-2); background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
 .legend p { margin: 0; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 4px; font-size: 13px; z-index: 20; }
+.topbar { display: flex; justify-content: flex-end; }
+.lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; background: var(--sheet); }
+.lang button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--ink-2); padding: 4px 14px; border-radius: 999px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+.legend .source { color: var(--ink-3); }
+.legend a { color: var(--accent); }
 </style>
-
 <div class="wrap">
+  <div class="topbar">
+    <div class="lang" role="group" aria-label="Language / 语言">
+      <button type="button" id="lang-zh" lang="zh-CN" aria-pressed="true">中文</button>
+      <button type="button" id="lang-en" lang="en" aria-pressed="false">English</button>
+    </div>
+  </div>
   <header>
     <div>
       <div class="eyebrow">Register of licensed sponsors · Workers</div>
-      <h1>英国工签担保雇主名单</h1>
+      <h1 data-i18n="title">英国工签担保雇主名单</h1>
     </div>
     <div class="meta" id="meta">
-      <span>登记表版本 <b id="m-date">—</b></span>
-      <span>原始行数 <b id="m-rows">—</b></span>
-      <span>机构数 <b id="m-orgs">—</b></span>
+      <span><span data-i18n="metaDate">登记表版本</span> <b id="m-date">—</b></span>
+      <span><span data-i18n="metaRows">原始行数</span> <b id="m-rows">—</b></span>
+      <span><span data-i18n="metaOrgs">机构数</span> <b id="m-orgs">—</b></span>
     </div>
   </header>
 
   <div class="grid">
-    <aside aria-label="筛选">
+    <aside id="filters" aria-label="筛选">
       <div class="fgroup">
-        <label class="flabel" for="q">公司名称</label>
-        <input type="search" id="q" placeholder="例如 NHS、Software、Deloitte" autocomplete="off">
+        <label class="flabel" for="q" data-i18n="fName">公司名称</label>
+        <input type="search" id="q" data-i18n-ph="fNamePh" placeholder="例如 NHS、Software、Deloitte" autocomplete="off">
       </div>
       <div class="fgroup">
-        <label class="flabel" for="place">城市 / 郡 <button type="button" id="place-clear">清除</button></label>
-        <input type="text" id="place" list="towns" placeholder="例如 Stoke-on-Trent、Manchester" autocomplete="off">
+        <label class="flabel" for="place"><span data-i18n="fPlace">城市 / 郡</span> <button type="button" id="place-clear" data-i18n="clear">清除</button></label>
+        <input type="text" id="place" list="towns" data-i18n-ph="fPlacePh" placeholder="例如 Stoke-on-Trent、Manchester" autocomplete="off">
         <datalist id="towns"></datalist>
         <div class="chips" id="quick-places"></div>
       </div>
       <div class="fgroup">
-        <div class="flabel"><span>行业（名称推断，可多选）</span><button type="button" id="ind-clear">全部</button></div>
+        <div class="flabel"><span data-i18n="fInd">行业（名称推断，可多选）</span><button type="button" id="ind-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="ind-chips"></div>
       </div>
       <div class="fgroup">
-        <div class="flabel"><span>签证路线</span><button type="button" id="route-clear">全部</button></div>
+        <div class="flabel"><span data-i18n="fRoute">签证路线</span><button type="button" id="route-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="route-chips"></div>
       </div>
       <div class="fgroup">
-        <label class="check"><input type="checkbox" id="only-a" checked> 只看 A 级评级（可正常发 CoS）</label>
-        <label class="check"><input type="checkbox" id="only-star"> 只看我收藏的</label>
-        <label class="check"><input type="checkbox" id="only-link"> 只看已有官网链接的</label>
-        <label class="check" id="only-new-wrap" hidden><input type="checkbox" id="only-new"> 只看本次新增</label>
+        <label class="check"><input type="checkbox" id="only-a" checked> <span data-i18n="onlyA">只看 A 级评级（可正常发 CoS）</span></label>
+        <label class="check"><input type="checkbox" id="only-star"> <span data-i18n="onlyStar">只看我收藏的</span></label>
+        <label class="check"><input type="checkbox" id="only-link"> <span data-i18n="onlyLink">只看已有官网链接的</span></label>
+        <label class="check" id="only-new-wrap" hidden><input type="checkbox" id="only-new"> <span data-i18n="onlyNew">只看本次新增</span></label>
       </div>
-      <p class="note">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
+      <p class="note" data-i18n="filterNote">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
     </aside>
 
     <section style="display:flex;flex-direction:column;gap:12px;min-width:0">
       <div class="toolbar">
-        <div class="count" id="count">载入中…</div>
+        <div class="count" id="count">…</div>
         <div class="tools">
           <select id="sort" aria-label="排序">
-            <option value="name">按名称 A–Z</option>
-            <option value="town">按城市</option>
-            <option value="new">新增优先</option>
+            <option value="name" data-i18n="sortName">按名称 A–Z</option>
+            <option value="town" data-i18n="sortTown">按城市</option>
+            <option value="new" data-i18n="sortNew">新增优先</option>
           </select>
-          <button class="btn" type="button" id="export">导出当前结果 CSV</button>
+          <button class="btn" type="button" id="export" data-i18n="export">导出当前结果 CSV</button>
           <button class="btn" type="button" id="export-stars">下载我的收藏</button>
-          <a class="btn" id="feedback" href="#" target="_blank" rel="noopener noreferrer" hidden>提建议</a>
+          <a class="btn" id="feedback" href="#" target="_blank" rel="noopener noreferrer" data-i18n="feedback" hidden>提建议</a>
         </div>
       </div>
-      <div class="list" id="list"><div class="loading">正在载入 12 万多家机构的数据…<div class="bar"></div></div></div>
+      <div class="list" id="list"><div class="loading"><span data-i18n="loading">正在载入 12 万多家机构的数据…</span><div class="bar"></div></div></div>
       <div class="legend">
-        <p><b>官网 / 招聘页</b>：带 <span class="vs ok">已核实</span> 的是查证过的直达链接；带 <span class="vs ai">AI 推测</span> 的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。</p>
-        <p><b>收藏与下载</b>：点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。</p>
-        <p><b>AI 查网址</b>：让 Claude 推测这家公司的官网和招聘页，结果保存在名单里，下次打开还在。会用到你自己的 Claude 用量。</p>
+        <p><b data-i18n="lgLinksT">官网 / 招聘页</b><span data-i18n="colon">：</span><span data-i18n="lgLinks1">带</span> <span class="vs ok" data-i18n="verified">已核实</span> <span data-i18n="lgLinks2">的是查证过的直达链接；带</span> <span class="vs ai" data-i18n="aiGuess">AI 推测</span> <span data-i18n="lgLinks3">的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。</span></p>
+        <p><b data-i18n="lgStarsT">收藏与下载</b><span data-i18n="colon">：</span><span data-i18n="lgStars">点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。</span></p>
+        <p id="lg-ai" hidden><b data-i18n="lgAiT">AI 查网址</b><span data-i18n="colon">：</span><span data-i18n="lgAi">让 Claude 推测这家公司的官网和招聘页。会用到你自己的 Claude 用量。</span></p>
+        <p class="source"><span data-i18n="source">数据来源：</span><a href="https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers" target="_blank" rel="noopener noreferrer">GOV.UK · Register of licensed sponsors: workers</a> <span data-i18n="ogl">（Open Government Licence v3.0）</span></p>
       </div>
     </section>
   </div>
@@ -189,14 +201,117 @@ a.btn { text-decoration: none; display: inline-block; }
   const $ = (id) => document.getElementById(id);
   const nf = new Intl.NumberFormat("en-GB");
   const PAGE = 40;
-  // 反馈入口：换成你的问卷或 GitHub Issues 地址；留空则不显示
+  // Feedback link: set to your survey or GitHub Issues URL; empty hides the button.
   const FEEDBACK_URL = "";
   const QUICK = ["London", "Manchester", "Birmingham", "Stoke-On-Trent", "Leeds", "Edinburgh", "Bristol"];
+
+  // ---------------- i18n ----------------
+  const I18N = {
+    zh: {
+      docTitle: "英国工签担保雇主名单", title: "英国工签担保雇主名单",
+      metaDate: "登记表版本", metaRows: "原始行数", metaOrgs: "机构数", metaDiff: (a, r) => `（新增 ${a}，移除 ${r}）`,
+      filtersAria: "筛选", sortAria: "排序",
+      fName: "公司名称", fNamePh: "例如 NHS、Software、Deloitte", fPlace: "城市 / 郡", fPlacePh: "例如 Stoke-on-Trent、Manchester",
+      clear: "清除", all: "全部", fInd: "行业（名称推断，可多选）", fRoute: "签证路线", untagged: "未分类",
+      onlyA: "只看 A 级评级（可正常发 CoS）", onlyStar: "只看我收藏的", onlyLink: "只看已有官网链接的", onlyNew: "只看本次新增",
+      filterNote: "行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。",
+      sortName: "按名称 A–Z", sortTown: "按城市", sortNew: "新增优先",
+      export: "导出当前结果 CSV", exportStars: "下载我的收藏", exportStarsN: (n) => `下载我的收藏（${n}）`, feedback: "提建议",
+      loading: "正在载入 12 万多家机构的数据…", loadFail: "名单数据没有载入成功，请刷新页面。",
+      countSuffix: " 家机构符合条件", empty: "没有符合条件的机构。试着减少行业或城市筛选。",
+      more: (n, shown, total) => `再显示 ${n} 家（已显示 ${shown} / ${total}）`,
+      ratingB: "B 级", ratingP: "临时许可", isNew: "本次新增", noPlace: "地点未填写",
+      site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", searchTitle: "在 Google 搜索",
+      linkedin: "LinkedIn 职位", star: "收藏",
+      aiFind: "AI 查网址", aiAgain: "AI 重新查", aiBusy: "Claude 正在查…", aiUnsure: "Claude 没有把握，请用搜索链接查找。",
+      aiLocal: "已找到链接（仅本次显示，你没有保存到名单的权限）", aiDenied: "未允许使用 Claude，已隐藏此功能。",
+      aiRate: "查得太频繁了，稍后再试。", aiFail: "这次没查到，可以再试一次。", aiNoteLang: "Simplified Chinese",
+      verifyBtn: "核实 / 填链接", editBtn: "修改链接", saveVerified: "保存为已核实", cancel: "取消",
+      needOne: "至少填一个链接。", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
+      saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实",
+      noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
+      exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
+      csvHead: ["公司名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "已收藏"], yes: "是",
+      lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是查证过的直达链接；带",
+      lgLinks3: "的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
+      lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
+      lgAiT: "AI 查网址", lgAi: "让 Claude 推测这家公司的官网和招聘页。会用到你自己的 Claude 用量。",
+      source: "数据来源：", ogl: "（Open Government Licence v3.0）",
+      ind: { health: "医疗护理", it: "IT / 软件 / 数据", edu: "教育培训", food: "餐饮酒店", retail: "零售批发", construction: "建筑地产", eng: "工程制造", finance: "金融会计", legal: "法律", consult: "咨询 / 商业服务", recruit: "招聘 / 人力外包", logistics: "物流运输", science: "科研 / 制药 / 生物", creative: "创意 / 媒体 / 体育", public: "公共部门 / 慈善", beauty: "美容美发", facility: "清洁 / 安保 / 物业维护", agri: "农业 / 食品加工" },
+      route: { sw: "Skilled Worker（技术工签，含医护签）", gbm: "Global Business Mobility（跨国调派等）", scale: "Scale-up（高成长企业）", creative: "Creative / Sportsperson（文艺体育）", temp: "Charity / 交流 / 国际协议（临时）", religion: "宗教工作者", seasonal: "季节工", other: "其他" },
+      routeShort: { sw: "Skilled Worker", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / 交流 / 国际协议", religion: "宗教工作者", seasonal: "季节工", other: "其他" },
+    },
+    en: {
+      docTitle: "UK Visa Sponsor Finder", title: "UK Visa Sponsor Finder",
+      metaDate: "Register edition", metaRows: "Rows", metaOrgs: "Organisations", metaDiff: (a, r) => ` (+${a} new, −${r} removed)`,
+      filtersAria: "Filters", sortAria: "Sort",
+      fName: "Company name", fNamePh: "e.g. NHS, Software, Deloitte", fPlace: "Town / county", fPlacePh: "e.g. Stoke-on-Trent, Manchester",
+      clear: "Clear", all: "All", fInd: "Industry (guessed from name, multi-select)", fRoute: "Visa route", untagged: "Unclassified",
+      onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", onlyNew: "New in this update only",
+      filterNote: "Industry tags are guessed from keywords in the company name; names that give no clue go to “Unclassified”. Being on the register means a company can sponsor, not that it is hiring.",
+      sortName: "Name A–Z", sortTown: "Town", sortNew: "New first",
+      export: "Export results (CSV)", exportStars: "Download my list", exportStarsN: (n) => `Download my list (${n})`, feedback: "Send feedback",
+      loading: "Loading 120,000+ organisations…", loadFail: "The list didn't load. Please refresh the page.",
+      countSuffix: " organisations match", empty: "No organisations match. Try fewer industry or place filters.",
+      more: (n, shown, total) => `Show ${n} more (${shown} of ${total} shown)`,
+      ratingB: "B-rated", ratingP: "Provisional", isNew: "New", noPlace: "No town listed",
+      site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", searchTitle: "Search on Google",
+      linkedin: "LinkedIn jobs", star: "Save",
+      aiFind: "Find with AI", aiAgain: "Ask AI again", aiBusy: "Claude is looking…", aiUnsure: "Claude isn't sure. Try the search links.",
+      aiLocal: "Links found (shown to you only; you can't save to the shared list)", aiDenied: "Claude isn't allowed here, so this feature is hidden.",
+      aiRate: "Too many lookups. Try again in a moment.", aiFail: "Nothing found this time. You can try again.", aiNoteLang: "English",
+      verifyBtn: "Verify / add links", editBtn: "Edit links", saveVerified: "Save as verified", cancel: "Cancel",
+      needOne: "Enter at least one link.", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
+      saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand",
+      noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
+      exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
+      csvHead: ["Organisation", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "Saved"], yes: "Yes",
+      lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked",
+      lgLinks3: "come from Claude's own knowledge, so check the domain before you use them. Unmarked links open a search for that company.",
+      lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
+      lgAiT: "Find with AI", lgAi: "Asks Claude for the company's website and careers page. This uses your own Claude allowance.",
+      source: "Source: ", ogl: " (Open Government Licence v3.0)",
+      ind: { health: "Health & care", it: "IT / Software / Data", edu: "Education & training", food: "Food & hospitality", retail: "Retail & wholesale", construction: "Construction & property", eng: "Engineering & manufacturing", finance: "Finance & accounting", legal: "Legal", consult: "Consulting & business services", recruit: "Recruitment & staffing", logistics: "Logistics & transport", science: "Science / Pharma / Biotech", creative: "Creative / Media / Sport", public: "Public sector & charity", beauty: "Beauty & hair", facility: "Cleaning / Security / Facilities", agri: "Farming & food processing" },
+      route: { sw: "Skilled Worker (incl. Health and Care)", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / Exchange / International Agreement", religion: "Religious workers", seasonal: "Seasonal Worker", other: "Other" },
+      routeShort: { sw: "Skilled Worker", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / Exchange / Intl Agreement", religion: "Religious workers", seasonal: "Seasonal Worker", other: "Other" },
+    },
+  };
+  let lang = "zh";
+  const t = (key, ...args) => { const v = I18N[lang][key] ?? I18N.zh[key]; return typeof v === "function" ? v(...args) : v; };
+  const indName = (k) => I18N[lang].ind[k] || k;
+  const routeName = (k) => I18N[lang].route[k] || k;
+  const routeShort = (k) => I18N[lang].routeShort[k] || k;
+
+  function pickInitialLang() {
+    const h = (location.hash || "").replace("#", "").toLowerCase();
+    if (h === "en" || h === "zh") return h;
+    try { const s = localStorage.getItem("sponsor-lang"); if (s === "en" || s === "zh") return s; } catch (e) {}
+    return /^zh/i.test(navigator.language || "") ? "zh" : "en";
+  }
+  function applyLang() {
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.title = t("docTitle");
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+    $("filters").setAttribute("aria-label", t("filtersAria"));
+    $("sort").setAttribute("aria-label", t("sortAria"));
+    $("lang-zh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");
+    $("lang-en").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+    starCount();
+    if (D) { setMeta(); buildFilters(); render(); }
+  }
+  function setLang(l) {
+    lang = l;
+    try { localStorage.setItem("sponsor-lang", l); } catch (e) {}
+    applyLang();
+  }
+
+  // ---------------- state ----------------
   const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyNew: false, sort: "name", shown: PAGE };
   let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null, canVerify = false;
   function mergeLinks() { links = new Map([...staticLinks, ...dbLinks]); }
 
-  // ---- per-viewer conveniences (browser storage) ----
+  // per-viewer conveniences (browser storage)
   function loadLocal() {
     try { const s = JSON.parse(localStorage.getItem("sponsor-stars") || "[]"); if (Array.isArray(s)) stars = new Set(s); } catch (e) {}
     try {
@@ -207,13 +322,13 @@ a.btn { text-decoration: none; display: inline-block; }
       }
     } catch (e) {}
   }
-  function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? `下载我的收藏（${stars.size}）` : "下载我的收藏"; }
+  function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? t("exportStarsN", stars.size) : t("exportStars"); }
   function saveLocal() {
     try { localStorage.setItem("sponsor-stars", JSON.stringify([...stars])); } catch (e) {}
     try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort })); } catch (e) {}
   }
 
-  // ---- stable id per organisation (name + town) ----
+  // stable id per organisation (name + town)
   function hash(str) {
     let h1 = 0x811c9dc5, h2 = 0x9747b28c;
     for (let i = 0; i < str.length; i++) {
@@ -228,22 +343,28 @@ a.btn { text-decoration: none; display: inline-block; }
   const keyOf = (r) => { if (r._k === undefined) r._k = hash(r[0].toLowerCase() + "|" + town(r).toLowerCase()); return r._k; };
 
   function toast(msg) {
-    const t = $("toast"); t.textContent = msg; t.hidden = false;
-    clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, 2600);
+    const el = $("toast"); el.textContent = msg; el.hidden = false;
+    clearTimeout(toast._t); toast._t = setTimeout(() => { el.hidden = true; }, 2600);
   }
 
-  // ---- filters ----
+  // ---------------- filters ----------------
+  function setMeta() {
+    $("m-date").textContent = D.meta.register_date || "—";
+    $("m-rows").textContent = nf.format(D.meta.raw_rows);
+    $("m-orgs").textContent = nf.format(D.meta.orgs) + (D.meta.added > 0 ? t("metaDiff", nf.format(D.meta.added), nf.format(D.meta.removed)) : "");
+  }
   function buildFilters() {
     const counts = D.meta.tag_counts;
     const ic = $("ind-chips"); ic.innerHTML = "";
-    D.industries.forEach(([k, label], i) => ic.append(chip(label, counts[k], st.inds.has(i), () => toggle(st.inds, i))));
-    ic.append(chip("未分类", D.meta.untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
+    D.industries.forEach(([k], i) => ic.append(chip(indName(k), counts[k], st.inds.has(i), () => toggle(st.inds, i))));
+    ic.append(chip(t("untagged"), D.meta.untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
-    D.routes.forEach(([k, label]) => rc.append(chip(label, null, st.routes.has(k), () => toggle(st.routes, k))));
+    D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
     const qp = $("quick-places"); qp.innerHTML = "";
     QUICK.forEach((p) => {
-      const b = chip(p.replace("-On-", "-on-"), null, st.place.toLowerCase() === p.toLowerCase(), () => { st.place = st.place.toLowerCase() === p.toLowerCase() ? "" : p; $("place").value = st.place; buildFilters(); refresh(); });
-      qp.append(b);
+      qp.append(chip(p.replace("-On-", "-on-"), null, st.place.toLowerCase() === p.toLowerCase(), () => {
+        st.place = st.place.toLowerCase() === p.toLowerCase() ? "" : p; $("place").value = st.place; buildFilters(); refresh();
+      }));
     });
   }
   function chip(label, n, on, fn) {
@@ -262,7 +383,7 @@ a.btn { text-decoration: none; display: inline-block; }
     let plTowns = null, plCounties = null;
     if (pl) {
       plTowns = new Set(); plCounties = new Set();
-      D.towns.forEach((t, i) => { if (norm(t).includes(pl)) plTowns.add(i); });
+      D.towns.forEach((x, i) => { if (norm(x).includes(pl)) plTowns.add(i); });
       D.counties.forEach((c, i) => { if (norm(c).includes(pl)) plCounties.add(i); });
     }
     let indMask = 0, wantUntagged = false;
@@ -295,15 +416,14 @@ a.btn { text-decoration: none; display: inline-block; }
     debounce ? (refreshTimer = setTimeout(go, 180)) : go();
   }
 
-  // ---- links ----
+  // ---------------- links ----------------
   const g = (s) => "https://www.google.com/search?q=" + encodeURIComponent(s);
   function linkFor(r, kind) {
     const L = links.get(keyOf(r));
     const url = L && (kind === "site" ? L.website : L.careers);
     if (url && /^https?:\/\//i.test(url)) return { url, status: L.status === "verified" ? "ok" : "ai" };
-    const t = town(r);
     return kind === "site"
-      ? { url: g(`"${r[0]}" ${t} official website`), status: null }
+      ? { url: g(`"${r[0]}" ${town(r)} official website`), status: null }
       : { url: g(`"${r[0]}" careers jobs vacancies`), status: null };
   }
   function a(href, text, cls) {
@@ -312,71 +432,74 @@ a.btn { text-decoration: none; display: inline-block; }
     return el;
   }
 
-  // ---- render ----
+  // ---------------- render ----------------
   function render() {
-    $("count").innerHTML = "";
-    $("count").append(nf.format(results.length));
-    const sm = document.createElement("small"); sm.textContent = " 家机构符合条件"; $("count").append(sm);
+    const c = $("count"); c.innerHTML = "";
+    c.append(nf.format(results.length));
+    const sm = document.createElement("small"); sm.textContent = t("countSuffix"); c.append(sm);
     const list = $("list"); list.innerHTML = "";
-    if (!results.length) { const e = document.createElement("div"); e.className = "empty"; e.textContent = "没有符合条件的机构。试着减少行业或城市筛选。"; list.append(e); return; }
+    if (!results.length) { const e = document.createElement("div"); e.className = "empty"; e.textContent = t("empty"); list.append(e); return; }
     const frag = document.createDocumentFragment();
     results.slice(0, st.shown).forEach((r) => frag.append(rowEl(r)));
     list.append(frag);
     if (results.length > st.shown) {
       const m = document.createElement("div"); m.className = "more";
       const b = document.createElement("button"); b.type = "button"; b.className = "btn";
-      b.textContent = `再显示 ${Math.min(PAGE, results.length - st.shown)} 家（已显示 ${nf.format(st.shown)} / ${nf.format(results.length)}）`;
+      b.textContent = t("more", Math.min(PAGE, results.length - st.shown), nf.format(st.shown), nf.format(results.length));
       b.onclick = () => { st.shown += PAGE; render(); };
       m.append(b); list.append(m);
     }
   }
+
+  function badge(cls, text) { const b = document.createElement("span"); b.className = "badge " + cls; b.textContent = text; return b; }
 
   function rowEl(r) {
     const k = keyOf(r);
     const row = document.createElement("div"); row.className = "row";
     const main = document.createElement("div"); main.className = "main";
     const nm = document.createElement("div"); nm.className = "name"; nm.append(r[0]);
-    if (r[5] === "b") { const b = document.createElement("span"); b.className = "badge b"; b.textContent = "B 级"; nm.append(b); }
-    if (r[5] === "p") { const b = document.createElement("span"); b.className = "badge p"; b.textContent = "临时许可"; nm.append(b); }
-    if (r[6]) { const b = document.createElement("span"); b.className = "badge new"; b.textContent = "本次新增"; nm.append(b); }
+    if (r[5] === "b") nm.append(badge("b", t("ratingB")));
+    if (r[5] === "p") nm.append(badge("p", t("ratingP")));
+    if (r[6]) nm.append(badge("new", t("isNew")));
     main.append(nm);
     const wh = document.createElement("div"); wh.className = "where";
-    wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || "地点未填写";
+    wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
     main.append(wh);
     const tags = document.createElement("div"); tags.className = "tags";
-    D.industries.forEach(([, label], i) => { if (r[3] & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = label; tags.append(s); } });
-    D.routes.forEach(([, label], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = label.split("（")[0]; tags.append(s); } });
+    D.industries.forEach(([key], i) => { if (r[3] & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
+    D.routes.forEach(([key], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = routeShort(key); tags.append(s); } });
     main.append(tags);
 
     const lk = document.createElement("div"); lk.className = "links";
-    [["site", "官网"], ["careers", "招聘页"]].forEach(([kind, label]) => {
+    [["site", t("site")], ["careers", t("careers")]].forEach(([kind, label]) => {
       const L = linkFor(r, kind);
       const el = a(L.url, L.status ? label : label + " ↗", L.status ? "direct" : "");
-      if (L.status) { const v = document.createElement("span"); v.className = "vs " + L.status; v.textContent = L.status === "ok" ? "已核实" : "AI 推测"; el.append(v); }
-      el.title = L.status ? L.url : "在 Google 搜索";
+      if (L.status) { const v = document.createElement("span"); v.className = "vs " + L.status; v.textContent = L.status === "ok" ? t("verified") : t("aiGuess"); el.append(v); }
+      el.title = L.status ? L.url : t("searchTitle");
       lk.append(el);
     });
-    lk.append(a("https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(r[0]), "LinkedIn 职位 ↗"));
+    lk.append(a("https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(r[0]), t("linkedin") + " ↗"));
     lk.append(a("https://find-and-update.company-information.service.gov.uk/search?q=" + encodeURIComponent(r[0]), "Companies House ↗"));
     main.append(lk);
     row.append(main);
 
     const side = document.createElement("div"); side.className = "side";
     const s = document.createElement("button"); s.type = "button"; s.className = "star";
-    s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.setAttribute("aria-label", "收藏"); s.textContent = stars.has(k) ? "★" : "☆";
-    s.onclick = () => { stars.has(k) ? stars.delete(k) : stars.add(k); s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.textContent = stars.has(k) ? "★" : "☆"; saveLocal(); starCount(); };
+    const paintStar = () => { s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.textContent = stars.has(k) ? "★" : "☆"; };
+    s.setAttribute("aria-label", t("star")); paintStar();
+    s.onclick = () => { stars.has(k) ? stars.delete(k) : stars.add(k); paintStar(); saveLocal(); starCount(); };
     side.append(s);
     const L = links.get(k);
     const msg = document.createElement("div"); msg.className = "ai-msg";
     if (sample && db && (!L || L.status !== "verified")) {
       const b = document.createElement("button"); b.type = "button"; b.className = "ai-btn";
-      b.textContent = L ? "AI 重新查" : "AI 查网址";
+      b.textContent = L ? t("aiAgain") : t("aiFind");
       b.onclick = () => aiLookup(r, b, msg);
       side.append(b);
     }
     if (canVerify && db) {
       const v = document.createElement("button"); v.type = "button"; v.className = "ai-btn verify-btn";
-      v.textContent = L && L.status === "verified" ? "修改链接" : "核实 / 填链接";
+      v.textContent = L && L.status === "verified" ? t("editBtn") : t("verifyBtn");
       v.onclick = () => openVerify(r, row);
       side.append(v);
     }
@@ -385,7 +508,7 @@ a.btn { text-decoration: none; display: inline-block; }
     return row;
   }
 
-  // ---- owner: confirm links and mark as verified ----
+  // ---------------- owner: confirm links and mark as verified ----------------
   function openVerify(r, row) {
     const old = row.querySelector(".verify-form"); if (old) { old.remove(); return; }
     const k = keyOf(r), L = links.get(k) || {};
@@ -396,11 +519,11 @@ a.btn { text-decoration: none; display: inline-block; }
       const inp = document.createElement("input"); inp.type = "url"; inp.id = id + k; inp.value = val || ""; inp.placeholder = ph;
       w.append(span, inp); return [w, inp];
     };
-    const [w1, site] = mk("vf-site-", "官网", L.website, "https://…");
-    const [w2, car] = mk("vf-car-", "招聘页", L.careers, "https://…/careers");
+    const [w1, site] = mk("vf-site-", t("site"), L.website, "https://…");
+    const [w2, car] = mk("vf-car-", t("careers"), L.careers, "https://…/careers");
     const actions = document.createElement("div"); actions.className = "vf-actions";
-    const save = document.createElement("button"); save.type = "submit"; save.className = "btn primary"; save.textContent = "保存为已核实";
-    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn"; cancel.textContent = "取消";
+    const save = document.createElement("button"); save.type = "submit"; save.className = "btn primary"; save.textContent = t("saveVerified");
+    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn"; cancel.textContent = t("cancel");
     cancel.onclick = () => f.remove();
     const out = document.createElement("span"); out.className = "note";
     actions.append(save, cancel, out);
@@ -409,48 +532,46 @@ a.btn { text-decoration: none; display: inline-block; }
       e.preventDefault();
       const ok = (u) => !u || /^https?:\/\/\S+\.\S+/i.test(u);
       const website = site.value.trim(), careers = car.value.trim();
-      if (!website && !careers) { out.textContent = "至少填一个链接。"; return; }
-      if (!ok(website) || !ok(careers)) { out.textContent = "链接要以 https:// 开头。"; return; }
-      save.disabled = true; out.textContent = "保存中…";
-      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: "verified", note: "人工核实", updatedAt: new Date().toISOString() };
+      if (!website && !careers) { out.textContent = t("needOne"); return; }
+      if (!ok(website) || !ok(careers)) { out.textContent = t("needHttps"); return; }
+      save.disabled = true; out.textContent = t("saving");
+      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: "verified", note: t("manualNote"), updatedAt: new Date().toISOString() };
       try {
         await db.collection("links").doc(k).set(body);
-        dbLinks.set(k, body); mergeLinks(); render(); toast("已标为已核实");
+        dbLinks.set(k, body); mergeLinks(); render(); toast(t("savedToast"));
       } catch (err) {
-        save.disabled = false; out.textContent = "没有保存成功，请稍后再试。";
+        save.disabled = false; out.textContent = t("saveFail");
       }
     };
     row.append(f);
     site.focus();
   }
 
-  // ---- AI lookup (sample) + shared storage (db) ----
+  // ---------------- AI lookup (sample) + shared storage (db) ----------------
   async function aiLookup(r, btn, msg) {
-    btn.disabled = true; msg.textContent = "Claude 正在查…";
+    btn.disabled = true; msg.textContent = t("aiBusy");
     const prompt = [
       "You help a job seeker find employer web pages. The organisation below is on the UK Home Office register of licensed visa sponsors.",
       `Organisation: ${r[0]}`, `Town/City: ${town(r) || "unknown"}`, `County: ${county(r) || "unknown"}`,
       "From your own knowledge, give the organisation's official website and its careers/jobs page.",
       "Only give a URL if you are confident it belongs to THIS organisation (same name and UK location). Never invent a domain. If unsure, use null.",
-      'Reply with only JSON: {"website": string|null, "careers": string|null, "confidence": "high"|"medium"|"low", "note": short string in Simplified Chinese}',
+      `Reply with only JSON: {"website": string|null, "careers": string|null, "confidence": "high"|"medium"|"low", "note": short string in ${t("aiNoteLang")}}`,
     ].join("\n");
     try {
       const res = await sample.json(prompt, { modelTier: "default" });
       const clean = (u) => (typeof u === "string" && /^https?:\/\/[^\s]+\.[^\s]+/i.test(u) ? u.trim() : null);
       const website = clean(res && res.website), careers = clean(res && res.careers);
-      if (!website && !careers) { msg.textContent = (res && res.note) || "Claude 没有把握，请用搜索链接查找。"; btn.disabled = false; return; }
+      if (!website && !careers) { msg.textContent = (res && res.note) || t("aiUnsure"); btn.disabled = false; return; }
       const body = { name: r[0], town: town(r), website, careers, status: "ai", confidence: String((res && res.confidence) || "low"), note: String((res && res.note) || "").slice(0, 200), updatedAt: new Date().toISOString() };
       dbLinks.set(keyOf(r), body); mergeLinks();
       let saved = false;
       try { await db.collection("links").doc(keyOf(r)).set(body); saved = true; } catch (se) {}
       render();
-      if (!saved) toast("已找到链接（仅本次显示，你没有保存到名单的权限）");
+      if (!saved) toast(t("aiLocal"));
     } catch (e) {
       const code = e && e.code;
-      msg.textContent = code === "not_granted" || code === "sampling_disabled" ? "未允许使用 Claude，已隐藏此功能。"
-        : code === "rate_limited" ? "查得太频繁了，稍后再试。"
-        : "这次没查到，可以再试一次。";
-      if (code === "not_granted" || code === "sampling_disabled") { sample = null; setTimeout(render, 1500); }
+      msg.textContent = code === "not_granted" || code === "sampling_disabled" ? t("aiDenied") : code === "rate_limited" ? t("aiRate") : t("aiFail");
+      if (code === "not_granted" || code === "sampling_disabled") { sample = null; $("lg-ai").hidden = true; setTimeout(render, 1500); }
       else btn.disabled = false;
     }
   }
@@ -476,44 +597,48 @@ a.btn { text-decoration: none; display: inline-block; }
         if (D) { if (st.onlyLink) results = filter(); render(); }
       }, () => {});
     }
+    $("lg-ai").hidden = !(sample && db);
     if (D) render();
   }
 
-  // ---- export ----
+  // ---------------- export ----------------
   function csvCell(v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   $("export").onclick = () => exportRows(results, "sponsor-list");
   $("export-stars").onclick = () => {
     const rows = D ? D.rows.filter((r) => stars.has(keyOf(r))) : [];
-    if (!rows.length) { toast("还没有收藏公司，点每行右侧的 ☆ 收藏"); return; }
+    if (!rows.length) { toast(t("noStars")); return; }
     exportRows(rows, "my-shortlist");
   };
-  async function exportRows(results, prefix) {
-    if (!results.length) { toast("当前没有结果可导出"); return; }
-    const head = ["公司名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "已收藏"];
-    const lines = [head.join(",")];
-    results.forEach((r) => {
+  async function exportRows(rows, prefix) {
+    if (!rows.length) { toast(t("noRows")); return; }
+    const lines = [t("csvHead").map(csvCell).join(",")];
+    rows.forEach((r) => {
       const L = links.get(keyOf(r)) || {};
-      const ind = D.industries.filter((_, i) => r[3] & (1 << i)).map(([, l]) => l).join(" / ");
-      const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([, l]) => l.split("（")[0]).join(" / ");
-      lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", L.status === "verified" ? "已核实" : L.status === "ai" ? "AI 推测" : "", stars.has(keyOf(r)) ? "是" : ""].map(csvCell).join(","));
+      const ind = D.industries.filter((_, i) => r[3] & (1 << i)).map(([k]) => indName(k)).join(" / ");
+      const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
+      const status = L.status === "verified" ? t("verified") : L.status === "ai" ? t("aiGuess") : "";
+      lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
+    const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
     if (!downloads) {
       if (!window.claude) {
         const blob = new Blob([data], { type: "text/csv;charset=utf-8" });
         const el = document.createElement("a");
-        el.href = URL.createObjectURL(blob); el.download = `${prefix}-${D.meta.register_date || "export"}.csv`;
+        el.href = URL.createObjectURL(blob); el.download = filename;
         document.body.append(el); el.click(); el.remove();
         setTimeout(() => URL.revokeObjectURL(el.href), 5000);
-        toast(`已导出 ${nf.format(results.length)} 行`);
-      } else toast("这个查看方式不支持下载，请登录 claude.ai 后再试");
+        toast(t("exported", nf.format(rows.length)));
+      } else toast(t("noDownload"));
       return;
     }
-    try { await downloads.save({ filename: `${prefix}-${D.meta.register_date || "export"}.csv`, data }); toast(`已导出 ${nf.format(results.length)} 行`); }
-    catch (e) { if (e && e.code !== "declined") toast("导出没有完成，请再试一次"); }
+    try { await downloads.save({ filename, data }); toast(t("exported", nf.format(rows.length))); }
+    catch (e) { if (e && e.code !== "declined") toast(t("exportFail")); }
   }
 
-  // ---- wire inputs ----
+  // ---------------- wire inputs ----------------
+  $("lang-zh").onclick = () => setLang("zh");
+  $("lang-en").onclick = () => setLang("en");
   $("q").addEventListener("input", (e) => { st.q = e.target.value; refresh(true); });
   $("place").addEventListener("input", (e) => { st.place = e.target.value; buildFilters(); refresh(true); });
   $("place-clear").onclick = () => { st.place = ""; $("place").value = ""; buildFilters(); refresh(); };
@@ -525,8 +650,10 @@ a.btn { text-decoration: none; display: inline-block; }
   $("only-new").onchange = (e) => { st.onlyNew = e.target.checked; refresh(); };
   $("sort").onchange = (e) => { st.sort = e.target.value; refresh(); };
 
-  // ---- boot ----
+  // ---------------- boot ----------------
   loadLocal();
+  lang = pickInitialLang();
+  applyLang();
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("sort").value = st.sort;
   initCapabilities();
   fetch("links.json").then((r) => (r.ok ? r.json() : {})).then((j) => {
@@ -535,16 +662,15 @@ a.btn { text-decoration: none; display: inline-block; }
   if (FEEDBACK_URL) { const f = $("feedback"); f.href = FEEDBACK_URL; f.hidden = false; }
   fetch("data.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {
     D = d;
-    $("m-date").textContent = d.meta.register_date || "—";
-    $("m-rows").textContent = nf.format(d.meta.raw_rows);
-    $("m-orgs").textContent = nf.format(d.meta.orgs);
-    if (d.meta.added > 0) { $("only-new-wrap").hidden = false; $("m-orgs").textContent += `（新增 ${nf.format(d.meta.added)}，移除 ${nf.format(d.meta.removed)}）`; }
+    setMeta();
+    if (d.meta.added > 0) $("only-new-wrap").hidden = false;
     const counts = new Map(); d.rows.forEach((r) => counts.set(r[1], (counts.get(r[1]) || 0) + 1));
     const dl = $("towns");
     [...counts.entries()].filter(([i, n]) => i >= 0 && n >= 15).sort((x, y) => y[1] - x[1]).forEach(([i]) => { const o = document.createElement("option"); o.value = d.towns[i]; dl.append(o); });
     buildFilters(); refresh(); starCount();
   }).catch(() => {
-    $("list").innerHTML = '<div class="empty">名单数据没有载入成功，请刷新页面。</div>';
+    const e = document.createElement("div"); e.className = "empty"; e.textContent = t("loadFail");
+    $("list").innerHTML = ""; $("list").append(e);
     $("count").textContent = "";
   });
 })();
