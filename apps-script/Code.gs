@@ -8,7 +8,10 @@
  *   然后推送到微信（PushPlus）并发邮件给你。
  *
  * 第一次使用：
- *   1. 在下方「设置」里确认 PUSHPLUS_TOKEN 和 KEYWORDS。
+ *   1. 左侧齿轮「项目设置」→ 最下面「脚本属性」→ 添加两条：
+ *        PUSHPLUS_TOKEN = 你的 PushPlus 用户 token
+ *        EMAIL_TO       = 接收通知的邮箱
+ *      （放在脚本属性里，代码公开到 GitHub 也不会泄露。）然后按需修改下方 KEYWORDS / PLACES。
  *   2. 在顶部函数下拉框选 setup，点「运行」，按提示授权（Drive、外部网络、发邮件）。
  *      setup 会建好每日定时，并立刻跑一次，建立第一版基线。
  *   3. 想测试微信推送，选 testPush 运行。
@@ -19,7 +22,7 @@
 /** PushPlus 用户 token。更稳妥的做法：放到「项目设置 → 脚本属性」里，属性名 PUSHPLUS_TOKEN，然后把这里清空。 */
 const PUSHPLUS_TOKEN = ''; // 不要把 token 写在这里提交到 GitHub，放在「项目设置 → 脚本属性」PUSHPLUS_TOKEN
 
-/** 收邮件的地址；留空则发给运行脚本的 Google 账号。 */
+/** 收邮件的地址。推荐放在「项目设置 → 脚本属性」EMAIL_TO（多个地址用逗号分隔）；都没填则发给运行脚本的 Google 账号。 */
 const EMAIL_TO = '';
 
 /** 你关注的关键词（公司名里出现就会在通知里优先列出、加 ★）。不区分大小写。 */
@@ -63,8 +66,12 @@ function setup() {
 
 /** 测试微信推送是否通。 */
 function testPush() {
-  const ok = pushPlus_('测试：担保名单通知已接通', '<p>这是一条测试消息。以后 gov.uk 名单更新时，会在这里收到新增和移除的公司。</p>');
-  Logger.log(ok ? 'PushPlus 推送成功，请看微信。' : 'PushPlus 推送失败，请检查 token。');
+  const html = '<p>这是一条测试消息。以后 gov.uk 名单更新时，会在这里收到新增和移除的公司。</p>';
+  const ok = pushPlus_('测试：担保名单通知已接通', html);
+  Logger.log(ok ? 'PushPlus 推送成功，请看微信。' : 'PushPlus 推送失败，请检查脚本属性 PUSHPLUS_TOKEN。');
+  const to = PropertiesService.getScriptProperties().getProperty('EMAIL_TO') || EMAIL_TO || Session.getEffectiveUser().getEmail();
+  MailApp.sendEmail({ to: to, subject: '测试：担保名单通知已接通', htmlBody: html, name: '担保名单更新' });
+  Logger.log('测试邮件已发到 ' + to + '（如果收件箱没有，看看垃圾邮件）');
 }
 
 /** 每日主流程。 */
@@ -254,7 +261,7 @@ function notify_(dateLabel, current, diff, csvUrl, sheetUrl) {
     : `担保名单 ${dateLabel}：已建立基线（${current.orgCount} 家）`;
   const html = buildHtml_(dateLabel, current, diff, csvUrl, sheetUrl);
   pushPlus_(title, html);
-  const to = EMAIL_TO || Session.getEffectiveUser().getEmail();
+  const to = PropertiesService.getScriptProperties().getProperty('EMAIL_TO') || EMAIL_TO || Session.getEffectiveUser().getEmail();
   if (to) MailApp.sendEmail({ to: to, subject: title, htmlBody: html, name: '担保名单更新' });
 }
 

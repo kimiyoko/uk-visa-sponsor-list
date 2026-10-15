@@ -101,6 +101,9 @@ a.btn { text-decoration: none; display: inline-block; }
 .star[aria-pressed="true"] { color: var(--stamp); }
 .ai-btn { font: inherit; font-size: 12px; background: none; border: 1px dashed var(--accent); color: var(--accent); border-radius: 4px; padding: 3px 8px; cursor: pointer; white-space: nowrap; }
 .ai-btn:disabled { opacity: .55; cursor: default; }
+.row .verify-form { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 12px; padding: 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; }
+.vf-field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-2); min-width: 0; }
+.vf-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .ai-msg { font-size: 12px; color: var(--ink-3); max-width: 180px; text-align: right; }
 @media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr); } .side { flex-direction: row; align-items: center; justify-content: space-between; } .ai-msg { text-align: left; max-width: none; } }
 .more { display: flex; justify-content: center; padding: 14px; border-top: 1px solid var(--rule); }
@@ -166,12 +169,14 @@ a.btn { text-decoration: none; display: inline-block; }
             <option value="new">新增优先</option>
           </select>
           <button class="btn" type="button" id="export">导出当前结果 CSV</button>
+          <button class="btn" type="button" id="export-stars">下载我的收藏</button>
           <a class="btn" id="feedback" href="#" target="_blank" rel="noopener noreferrer" hidden>提建议</a>
         </div>
       </div>
       <div class="list" id="list"><div class="loading">正在载入 12 万多家机构的数据…<div class="bar"></div></div></div>
       <div class="legend">
         <p><b>官网 / 招聘页</b>：带 <span class="vs ok">已核实</span> 的是查证过的直达链接；带 <span class="vs ai">AI 推测</span> 的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。</p>
+        <p><b>收藏与下载</b>：点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。</p>
         <p><b>AI 查网址</b>：让 Claude 推测这家公司的官网和招聘页，结果保存在名单里，下次打开还在。会用到你自己的 Claude 用量。</p>
       </div>
     </section>
@@ -188,7 +193,7 @@ a.btn { text-decoration: none; display: inline-block; }
   const FEEDBACK_URL = "";
   const QUICK = ["London", "Manchester", "Birmingham", "Stoke-On-Trent", "Leeds", "Edinburgh", "Bristol"];
   const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyNew: false, sort: "name", shown: PAGE };
-  let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null;
+  let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null, canVerify = false;
   function mergeLinks() { links = new Map([...staticLinks, ...dbLinks]); }
 
   // ---- per-viewer conveniences (browser storage) ----
@@ -202,6 +207,7 @@ a.btn { text-decoration: none; display: inline-block; }
       }
     } catch (e) {}
   }
+  function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? `下载我的收藏（${stars.size}）` : "下载我的收藏"; }
   function saveLocal() {
     try { localStorage.setItem("sponsor-stars", JSON.stringify([...stars])); } catch (e) {}
     try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort })); } catch (e) {}
@@ -358,20 +364,64 @@ a.btn { text-decoration: none; display: inline-block; }
     const side = document.createElement("div"); side.className = "side";
     const s = document.createElement("button"); s.type = "button"; s.className = "star";
     s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.setAttribute("aria-label", "收藏"); s.textContent = stars.has(k) ? "★" : "☆";
-    s.onclick = () => { stars.has(k) ? stars.delete(k) : stars.add(k); s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.textContent = stars.has(k) ? "★" : "☆"; saveLocal(); };
+    s.onclick = () => { stars.has(k) ? stars.delete(k) : stars.add(k); s.setAttribute("aria-pressed", stars.has(k) ? "true" : "false"); s.textContent = stars.has(k) ? "★" : "☆"; saveLocal(); starCount(); };
     side.append(s);
-    if (sample && db) {
-      const L = links.get(k);
-      if (!L || L.status !== "verified") {
-        const b = document.createElement("button"); b.type = "button"; b.className = "ai-btn";
-        b.textContent = L ? "AI 重新查" : "AI 查网址";
-        const msg = document.createElement("div"); msg.className = "ai-msg";
-        b.onclick = () => aiLookup(r, b, msg);
-        side.append(b, msg);
-      }
+    const L = links.get(k);
+    const msg = document.createElement("div"); msg.className = "ai-msg";
+    if (sample && db && (!L || L.status !== "verified")) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "ai-btn";
+      b.textContent = L ? "AI 重新查" : "AI 查网址";
+      b.onclick = () => aiLookup(r, b, msg);
+      side.append(b);
     }
+    if (canVerify && db) {
+      const v = document.createElement("button"); v.type = "button"; v.className = "ai-btn verify-btn";
+      v.textContent = L && L.status === "verified" ? "修改链接" : "核实 / 填链接";
+      v.onclick = () => openVerify(r, row);
+      side.append(v);
+    }
+    side.append(msg);
     row.append(side);
     return row;
+  }
+
+  // ---- owner: confirm links and mark as verified ----
+  function openVerify(r, row) {
+    const old = row.querySelector(".verify-form"); if (old) { old.remove(); return; }
+    const k = keyOf(r), L = links.get(k) || {};
+    const f = document.createElement("form"); f.className = "verify-form";
+    const mk = (id, label, val, ph) => {
+      const w = document.createElement("label"); w.className = "vf-field"; w.htmlFor = id + k;
+      const span = document.createElement("span"); span.textContent = label;
+      const inp = document.createElement("input"); inp.type = "url"; inp.id = id + k; inp.value = val || ""; inp.placeholder = ph;
+      w.append(span, inp); return [w, inp];
+    };
+    const [w1, site] = mk("vf-site-", "官网", L.website, "https://…");
+    const [w2, car] = mk("vf-car-", "招聘页", L.careers, "https://…/careers");
+    const actions = document.createElement("div"); actions.className = "vf-actions";
+    const save = document.createElement("button"); save.type = "submit"; save.className = "btn primary"; save.textContent = "保存为已核实";
+    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn"; cancel.textContent = "取消";
+    cancel.onclick = () => f.remove();
+    const out = document.createElement("span"); out.className = "note";
+    actions.append(save, cancel, out);
+    f.append(w1, w2, actions);
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const ok = (u) => !u || /^https?:\/\/\S+\.\S+/i.test(u);
+      const website = site.value.trim(), careers = car.value.trim();
+      if (!website && !careers) { out.textContent = "至少填一个链接。"; return; }
+      if (!ok(website) || !ok(careers)) { out.textContent = "链接要以 https:// 开头。"; return; }
+      save.disabled = true; out.textContent = "保存中…";
+      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: "verified", note: "人工核实", updatedAt: new Date().toISOString() };
+      try {
+        await db.collection("links").doc(k).set(body);
+        dbLinks.set(k, body); mergeLinks(); render(); toast("已标为已核实");
+      } catch (err) {
+        save.disabled = false; out.textContent = "没有保存成功，请稍后再试。";
+      }
+    };
+    row.append(f);
+    site.focus();
   }
 
   // ---- AI lookup (sample) + shared storage (db) ----
@@ -407,12 +457,16 @@ a.btn { text-decoration: none; display: inline-block; }
 
   async function initCapabilities() {
     if (!window.claude || !window.claude.use) return;
-    const [dbNs, sampleNs, dlNs] = await Promise.all([
+    const [dbNs, sampleNs, dlNs, userNs] = await Promise.all([
       window.claude.use("db").catch(() => null),
       window.claude.use("sample").catch(() => null),
       window.claude.use("downloads").catch(() => null),
+      window.claude.use("user").catch(() => null),
     ]);
     downloads = dlNs; sample = sampleNs;
+    if (userNs) {
+      try { canVerify = (await userNs.isOwner()) || (await userNs.canEdit()); } catch (e) { canVerify = false; }
+    }
     if (dbNs) {
       db = dbNs;
       db.collection("links").limit(1000).onSnapshot((snap) => {
@@ -427,7 +481,13 @@ a.btn { text-decoration: none; display: inline-block; }
 
   // ---- export ----
   function csvCell(v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
-  $("export").onclick = async () => {
+  $("export").onclick = () => exportRows(results, "sponsor-list");
+  $("export-stars").onclick = () => {
+    const rows = D ? D.rows.filter((r) => stars.has(keyOf(r))) : [];
+    if (!rows.length) { toast("还没有收藏公司，点每行右侧的 ☆ 收藏"); return; }
+    exportRows(rows, "my-shortlist");
+  };
+  async function exportRows(results, prefix) {
     if (!results.length) { toast("当前没有结果可导出"); return; }
     const head = ["公司名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "已收藏"];
     const lines = [head.join(",")];
@@ -442,16 +502,16 @@ a.btn { text-decoration: none; display: inline-block; }
       if (!window.claude) {
         const blob = new Blob([data], { type: "text/csv;charset=utf-8" });
         const el = document.createElement("a");
-        el.href = URL.createObjectURL(blob); el.download = `sponsor-list-${D.meta.register_date || "export"}.csv`;
+        el.href = URL.createObjectURL(blob); el.download = `${prefix}-${D.meta.register_date || "export"}.csv`;
         document.body.append(el); el.click(); el.remove();
         setTimeout(() => URL.revokeObjectURL(el.href), 5000);
         toast(`已导出 ${nf.format(results.length)} 行`);
       } else toast("这个查看方式不支持下载，请登录 claude.ai 后再试");
       return;
     }
-    try { await downloads.save({ filename: `sponsor-list-${D.meta.register_date || "export"}.csv`, data }); toast(`已导出 ${nf.format(results.length)} 行`); }
+    try { await downloads.save({ filename: `${prefix}-${D.meta.register_date || "export"}.csv`, data }); toast(`已导出 ${nf.format(results.length)} 行`); }
     catch (e) { if (e && e.code !== "declined") toast("导出没有完成，请再试一次"); }
-  };
+  }
 
   // ---- wire inputs ----
   $("q").addEventListener("input", (e) => { st.q = e.target.value; refresh(true); });
@@ -482,7 +542,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const counts = new Map(); d.rows.forEach((r) => counts.set(r[1], (counts.get(r[1]) || 0) + 1));
     const dl = $("towns");
     [...counts.entries()].filter(([i, n]) => i >= 0 && n >= 15).sort((x, y) => y[1] - x[1]).forEach(([i]) => { const o = document.createElement("option"); o.value = d.towns[i]; dl.append(o); });
-    buildFilters(); refresh();
+    buildFilters(); refresh(); starCount();
   }).catch(() => {
     $("list").innerHTML = '<div class="empty">名单数据没有载入成功，请刷新页面。</div>';
     $("count").textContent = "";
