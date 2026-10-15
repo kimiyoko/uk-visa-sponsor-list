@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.DS_Store
+# raw downloads are large; only the processed data is versioned
+*.csv
+!data/history.csv
+.env

@@ -1,0 +1,42 @@
+name: Daily register update
+
+on:
+  schedule:
+    # gov.uk usually publishes the register around 09:00 UK time on weekdays.
+    - cron: "20 10 * * 1-5"   # 10:20 UTC (11:20 BST / 10:20 GMT)
+    - cron: "20 15 * * 1-5"   # second try in the afternoon for late updates
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: register-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download latest register and rebuild data
+        id: update
+        run: python3 scripts/update_register.py
+
+      - name: Rebuild public page
+        if: steps.update.outputs.updated == 'true'
+        run: python3 scripts/make_static.py
+
+      - name: Commit
+        if: steps.update.outputs.updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs data
+          git commit -m "Register ${{ steps.update.outputs.register_date }}: ${{ steps.update.outputs.summary }}"
+          git push
