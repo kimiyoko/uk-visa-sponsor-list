@@ -1,35 +1,222 @@
 {
- "3923ea9aa76030df": {
-  "name": "University Hospitals North Midlands NHS Trust",
-  "town": "Stoke-on-Trent",
-  "website": "https://www.uhnm.nhs.uk/",
-  "careers": "https://www.uhnm.nhs.uk/jobs",
+ "0480b41e8c2bea7b": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "ACCEL SOFTWARE SERVICES LIMITED",
+  "note": "人工核实",
+  "status": "checked",
+  "town": "Greater Manchester",
+  "website": null
+ },
+ "1c2fefb8e482deb3": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "Apple Web Task Ltd",
+  "note": "人工核实",
   "status": "verified",
-  "note": "联网核实：官网与招聘页均为 uhnm.nhs.uk，职位也发布在 NHS Jobs",
-  "hiring": null,
+  "town": "Manchester",
+  "website": "https://applewebtask.co.uk/"
+ },
+ "1d3595b3940e74b6": {
+  "careers": "https://careers.adbsafegate.com/search?searchResultView=LIST",
+  "checkedAt": "2026-10-16",
+  "hiring": "yes",
+  "industry": null,
+  "name": "ADB Safegate Airport Systems UK Ltd",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://adbsafegate.com/contact/airport-systems/"
+ },
+ "2d15663f7502b918": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "no",
+  "industry": "consult",
+  "name": "Ascend Digital Solutions Ltd",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://ascenddigital.co.uk/"
+ },
+ "3923ea9aa76030df": {
+  "careers": "https://www.uhnm.nhs.uk/jobs",
   "checkedAt": null,
-  "industry": null
+  "hiring": null,
+  "industry": null,
+  "name": "University Hospitals North Midlands NHS Trust",
+  "note": "联网核实：官网与招聘页均为 uhnm.nhs.uk，职位也发布在 NHS Jobs",
+  "status": "verified",
+  "town": "Stoke-on-Trent",
+  "website": "https://www.uhnm.nhs.uk/"
+ },
+ "43e1e537f7589354": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "Aigo Digital Repairs",
+  "note": "人工核实",
+  "status": "checked",
+  "town": "Manchester",
+  "website": null
+ },
+ "47cd83d97149bfd6": {
+  "careers": "https://www.azonetwork.com/marketing-science/careers",
+  "checkedAt": "2026-10-16",
+  "hiring": "no",
+  "industry": null,
+  "name": "AZo Network UK Limited",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.azonetwork.com/"
+ },
+ "546ff025b6403466": {
+  "careers": "https://www.streetgroup.co.uk/vacancies",
+  "checkedAt": "2026-10-16",
+  "hiring": "yes",
+  "industry": null,
+  "name": "Agent Software Limited",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.streetgroup.co.uk/"
+ },
+ "6d588c60f25141ed": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "Blockwise Network Limited",
+  "note": "人工核实",
+  "status": "checked",
+  "town": "Manchester",
+  "website": null
+ },
+ "776ccb7bf0163406": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": null,
+  "industry": null,
+  "name": "ANWAR IT SERVICES LTD",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.hubeleven.com/"
+ },
+ "7f4be049d36902f6": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "BankiFi Technology Limited",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.bankifi.com/"
+ },
+ "8c759b8eec91f04d": {
+  "careers": "https://fournet.co.uk/about-us/vacancies/",
+  "checkedAt": "2026-10-16",
+  "hiring": "yes",
+  "industry": null,
+  "name": "4 Net Technologies LTD (t/a FourNet)",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://fournet.co.uk/"
+ },
+ "8f5012add350e9a8": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": "edu",
+  "name": "Amaechi Performance Systems Ltd",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.apsintel.com/"
  },
  "91f2125ffa49a5ba": {
-  "name": "AAA Mobiles & Computers Limited",
-  "town": "Manchester",
-  "website": null,
   "careers": null,
-  "status": "industry",
+  "checkedAt": "2026-10-16",
   "hiring": null,
   "industry": "retail",
+  "name": "AAA Mobiles & Computers Limited",
+  "note": "人工核实",
+  "status": "industry",
+  "town": "Manchester",
+  "website": null
+ },
+ "92ad6777c58cca12": {
+  "careers": "https://www.apisassay.com/open-positions",
   "checkedAt": "2026-10-16",
-  "note": "人工核实"
+  "hiring": "yes",
+  "industry": "science",
+  "name": "Apis Assay Technologies",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.apisassay.com/"
+ },
+ "b7752c6bc8c27214": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "AP Drywall Systems Ltd",
+  "note": "人工核实",
+  "status": "checked",
+  "town": "Manchester",
+  "website": null
  },
  "d0d4358ba3ec7a66": {
-  "name": "42Gears Mobility Systems (UK) Ltd",
-  "town": "Manchester",
-  "website": "https://www.42gears.com/",
   "careers": "https://www.42gears.com/careers",
-  "status": "verified",
-  "hiring": "no",
   "checkedAt": "2026-10-16",
+  "hiring": "no",
+  "industry": null,
+  "name": "42Gears Mobility Systems (UK) Ltd",
   "note": "人工核实",
-  "industry": null
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.42gears.com/"
+ },
+ "ddd438232b6ac55c": {
+  "careers": null,
+  "checkedAt": "2026-10-16",
+  "hiring": "noinfo",
+  "industry": null,
+  "name": "A Tech IT Services Ltd",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://a-tech.co.uk/"
+ },
+ "e1af136efc0d7ac7": {
+  "careers": "https://careers.finova.tech/jobs",
+  "checkedAt": "2026-10-16",
+  "hiring": "yes",
+  "industry": "finance",
+  "name": "BEP Systems Limited",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.finova.tech/"
+ },
+ "e74d911375785a54": {
+  "careers": "https://betfredgroup.talosats-careers.com/",
+  "checkedAt": "2026-10-16",
+  "hiring": "yes",
+  "industry": "creative",
+  "name": "Betfred Technology Limited",
+  "note": "人工核实",
+  "status": "verified",
+  "town": "Manchester",
+  "website": "https://www.betfredgroup.com/"
  }
 }
