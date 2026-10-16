@@ -249,8 +249,8 @@ a.btn { text-decoration: none; display: inline-block; }
       aiLocal: "已找到链接（仅本次显示，你没有保存到名单的权限）", aiDenied: "未允许使用 Claude，已隐藏此功能。",
       aiRate: "查得太频繁了，稍后再试。", aiFail: "这次没查到，可以再试一次。", aiNoteLang: "Simplified Chinese",
       verifyBtn: "核实 / 填链接", editBtn: "修改链接", saveVerified: "保存为已核实", cancel: "取消",
-      needOne: "至少填一个链接，或选择英国招聘状态。",
-      hideNoHire: "隐藏暂无英国岗位的公司", hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位",
+      needOne: "至少填一个链接、选择英国招聘状态，或修改行业类别。",
+      hideNoHire: "隐藏暂无英国岗位的公司", industryLabel: "行业类别", industryAuto: (x) => `自动判断（${x}）`, hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位",
       hireBadgeNo: (d) => `暂无英国岗位 · ${d} 核实`, hireBadgeYes: (d) => `有英国岗位 · ${d} 核实`, csvHiring: "英国招聘状态", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
       saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实",
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
@@ -287,8 +287,8 @@ a.btn { text-decoration: none; display: inline-block; }
       aiLocal: "Links found (shown to you only; you can't save to the shared list)", aiDenied: "Claude isn't allowed here, so this feature is hidden.",
       aiRate: "Too many lookups. Try again in a moment.", aiFail: "Nothing found this time. You can try again.", aiNoteLang: "English",
       verifyBtn: "Verify / add links", editBtn: "Edit links", saveVerified: "Save as verified", cancel: "Cancel",
-      needOne: "Enter at least one link, or choose a UK hiring status.",
-      hideNoHire: "Hide companies with no UK openings", hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings",
+      needOne: "Enter a link, choose a UK hiring status, or change the industry.",
+      hideNoHire: "Hide companies with no UK openings", industryLabel: "Industry", industryAuto: (x) => `Automatic (${x})`, hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings",
       hireBadgeNo: (d) => `No UK openings · checked ${d}`, hireBadgeYes: (d) => `Hiring in the UK · checked ${d}`, csvHiring: "UK hiring status", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
       saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand",
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
@@ -375,6 +375,16 @@ a.btn { text-decoration: none; display: inline-block; }
   const ageOf = (r) => (r[7] > 0 ? todayN - r[7] : Infinity);
   const isNewAdded = (r) => ageOf(r) <= 1;
   const sortName = (r) => { if (r._s === undefined) r._s = r[0].replace(/^[^A-Za-z0-9]+/, "").toLowerCase() || r[0].toLowerCase(); return r._s; };
+  // Industry tags as a bit mask; a manual choice saved while verifying replaces the guessed tags.
+  const tagsOf = (r) => {
+    const L = links.get(keyOf(r));
+    if (L && L.industry) {
+      if (L.industry === "none") return 0;
+      const i = D.industries.findIndex(([k]) => k === L.industry);
+      if (i >= 0) return 1 << i;
+    }
+    return r[3];
+  };
   const keyOf = (r) => { if (r._k === undefined) r._k = hash(r[0].toLowerCase() + "|" + town(r).toLowerCase()); return r._k; };
 
   function toast(msg) {
@@ -389,10 +399,12 @@ a.btn { text-decoration: none; display: inline-block; }
     $("m-orgs").textContent = nf.format(D.meta.orgs) + (D.meta.added > 0 ? t("metaDiff", nf.format(D.meta.added), nf.format(D.meta.removed)) : "");
   }
   function buildFilters() {
-    const counts = D.meta.tag_counts;
+    const counts = {}; let untagged = 0;
+    D.industries.forEach(([k]) => { counts[k] = 0; });
+    for (const r of D.rows) { const m = tagsOf(r); if (!m) untagged++; else D.industries.forEach(([k], i) => { if (m & (1 << i)) counts[k]++; }); }
     const ic = $("ind-chips"); ic.innerHTML = "";
     D.industries.forEach(([k], i) => ic.append(chip(indName(k), counts[k], st.inds.has(i), () => toggle(st.inds, i))));
-    ic.append(chip(t("untagged"), D.meta.untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
+    ic.append(chip(t("untagged"), untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
     const sc = $("since-chips"); sc.innerHTML = "";
@@ -435,7 +447,7 @@ a.btn { text-decoration: none; display: inline-block; }
     for (const r of D.rows) {
       if (st.onlyA && r[5] !== "a") continue;
       if (routeMask && !(r[4] & routeMask)) continue;
-      if (st.inds.size && !((r[3] & indMask) || (wantUntagged && r[3] === 0))) continue;
+      if (st.inds.size) { const m = tagsOf(r); if (!((m & indMask) || (wantUntagged && m === 0))) continue; }
       if (pl && !(plTowns.has(r[1]) || plCounties.has(r[2]))) continue;
       if (q && !r[0].toLowerCase().includes(q)) continue;
       if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
@@ -513,7 +525,8 @@ a.btn { text-decoration: none; display: inline-block; }
     wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
     main.append(wh);
     const tags = document.createElement("div"); tags.className = "tags";
-    D.industries.forEach(([key], i) => { if (r[3] & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
+    const tm = tagsOf(r);
+    D.industries.forEach(([key], i) => { if (tm & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
     D.routes.forEach(([key], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = routeShort(key); tags.append(s); } });
     main.append(tags);
 
@@ -578,25 +591,34 @@ a.btn { text-decoration: none; display: inline-block; }
     [["", t("hiringUnknown")], ["yes", t("hiringYes")], ["no", t("hiringNo")]].forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; hire.append(o); });
     hire.value = L.hiring || "";
     w3.append(s3, hire);
+    const w4 = document.createElement("label"); w4.className = "vf-field"; w4.htmlFor = "vf-ind-" + k;
+    const s4 = document.createElement("span"); s4.textContent = t("industryLabel");
+    const ind = document.createElement("select"); ind.id = "vf-ind-" + k;
+    const guessed = D.industries.filter((_, i) => r[3] & (1 << i)).map(([key]) => indName(key)).join(" / ") || t("untagged");
+    [["", t("industryAuto", guessed)], ...D.industries.map(([key]) => [key, indName(key)]), ["none", t("untagged")]].forEach(([v, label]) => {
+      const o = document.createElement("option"); o.value = v; o.textContent = label; ind.append(o);
+    });
+    ind.value = L.industry || "";
+    w4.append(s4, ind);
     const actions = document.createElement("div"); actions.className = "vf-actions";
     const save = document.createElement("button"); save.type = "submit"; save.className = "btn primary"; save.textContent = t("saveVerified");
     const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn"; cancel.textContent = t("cancel");
     cancel.onclick = () => f.remove();
     const out = document.createElement("span"); out.className = "note";
     actions.append(save, cancel, out);
-    f.append(w1, w2, w3, actions);
+    f.append(w1, w2, w3, w4, actions);
     f.onsubmit = async (e) => {
       e.preventDefault();
       const ok = (u) => !u || /^https?:\/\/\S+\.\S+/i.test(u);
       const website = site.value.trim(), careers = car.value.trim();
-      if (!website && !careers && !hire.value) { out.textContent = t("needOne"); return; }
+      if (!website && !careers && !hire.value && !ind.value && !L.industry) { out.textContent = t("needOne"); return; }
       if (!ok(website) || !ok(careers)) { out.textContent = t("needHttps"); return; }
       save.disabled = true; out.textContent = t("saving");
       const checkedAt = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" });
-      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : "checked", hiring: hire.value || null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
+      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : hire.value ? "checked" : "industry", hiring: hire.value || null, industry: ind.value || null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
       try {
         await db.collection("links").doc(k).set(body);
-        dbLinks.set(k, body); mergeLinks(); render(); toast(t("savedToast"));
+        dbLinks.set(k, body); mergeLinks(); buildFilters(); results = filter(); render(); toast(t("savedToast"));
       } catch (err) {
         save.disabled = false; out.textContent = t("saveFail");
       }
@@ -652,7 +674,7 @@ a.btn { text-decoration: none; display: inline-block; }
         const m = new Map();
         snap.docs.forEach((d) => { const v = d.data(); if (v) m.set(d.id, v); });
         dbLinks = m; mergeLinks();
-        if (D) { if (st.onlyLink) results = filter(); render(); }
+        if (D) { buildFilters(); results = filter(); render(); }
       }, () => {});
     }
     $("lg-ai").hidden = !(sample && db);
@@ -672,7 +694,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const lines = [t("csvHead").map(csvCell).join(",")];
     rows.forEach((r) => {
       const L = links.get(keyOf(r)) || {};
-      const ind = D.industries.filter((_, i) => r[3] & (1 << i)).map(([k]) => indName(k)).join(" / ");
+      const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" ? t("verified") : L.status === "ai" ? t("aiGuess") : "";
       lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
@@ -715,7 +737,7 @@ a.btn { text-decoration: none; display: inline-block; }
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("hide-nohire").checked = st.hideNoHire; $("sort").value = st.sort;
   initCapabilities();
   fetch("links.json").then((r) => (r.ok ? r.json() : {})).then((j) => {
-    staticLinks = new Map(Object.entries(j || {})); mergeLinks(); if (D) render();
+    staticLinks = new Map(Object.entries(j || {})); mergeLinks(); if (D) { buildFilters(); results = filter(); render(); }
   }).catch(() => {});
   if (FEEDBACK_URL) { const f = $("feedback"); f.href = FEEDBACK_URL; f.hidden = false; }
   fetch("data.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {

@@ -7,7 +7,19 @@
   "status": "verified",
   "note": "联网核实：官网与招聘页均为 uhnm.nhs.uk，职位也发布在 NHS Jobs",
   "hiring": null,
-  "checkedAt": null
+  "checkedAt": null,
+  "industry": null
+ },
+ "91f2125ffa49a5ba": {
+  "name": "AAA Mobiles & Computers Limited",
+  "town": "Manchester",
+  "website": null,
+  "careers": null,
+  "status": "industry",
+  "hiring": null,
+  "industry": "retail",
+  "checkedAt": "2026-10-16",
+  "note": "人工核实"
  },
  "d0d4358ba3ec7a66": {
   "name": "42Gears Mobility Systems (UK) Ltd",
@@ -17,6 +29,7 @@
   "status": "verified",
   "hiring": "no",
   "checkedAt": "2026-10-16",
-  "note": "人工核实"
+  "note": "人工核实",
+  "industry": null
  }
 }
