@@ -1,6 +1,6 @@
 """Pick the next organisations to look up with Google AI Mode.
 
-Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry it]
+Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry it] [--rating a]
 
 <links_dir_or_json> is either a folder of saved database documents (one JSON file per
 document, as ArtifactData's out_dir writes them) or a links.json object. Organisations
@@ -50,6 +50,7 @@ def main():
     ap.add_argument("--limit", type=int, default=25)
     ap.add_argument("--place", default="manchester")
     ap.add_argument("--industry", default="it")
+    ap.add_argument("--rating", default="", help="a = A-rated only, b = B-rated, p = provisional; empty = any")
     a = ap.parse_args()
 
     d = json.load(open(a.data, encoding="utf-8"))
@@ -64,6 +65,8 @@ def main():
         if a.place and a.place not in norm(town + " " + county):
             continue
         if bit and not (r[3] & bit):
+            continue
+        if a.rating and r[5] != a.rating:
             continue
         oid = js_hash(r[0].lower() + "|" + town.lower())
         if oid in done:
