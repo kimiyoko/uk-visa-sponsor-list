@@ -106,6 +106,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .vs.ok { background: var(--ok-soft); color: var(--ok); }
 .vs.ai { background: var(--warn-soft); color: var(--warn); }
 .vs.gg { background: var(--accent-soft); color: var(--accent); }
+.vs.cw { background: var(--accent-soft); color: var(--accent); }
 .side { display: flex; flex-direction: column; gap: 6px; align-items: end; }
 .star { font: inherit; font-size: 18px; line-height: 1; background: none; border: 0; cursor: pointer; color: var(--ink-3); padding: 2px 4px; }
 .star[aria-pressed="true"] { color: var(--stamp); }
@@ -239,7 +240,7 @@ a.btn { text-decoration: none; display: inline-block; }
       countSuffix: " 家机构符合条件", empty: "没有符合条件的机构。试着减少行业或城市筛选。",
       more: (n, shown, total) => `再显示 ${n} 家（已显示 ${shown} / ${total}）`,
       ratingB: "B 级", ratingP: "临时许可", noPlace: "地点未填写",
-      site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", srcGoogle: "Google AI", byGoogle: "Google AI 查询", searchTitle: "在 Google 搜索", noCareers: "已核实：这家公司没有招聘页面", noSite: "已核实：这家公司没有官网",
+      site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", srcGoogle: "Google AI", byGoogle: "Google AI 查询", srcWeb: "Claude 搜索", byWeb: "Claude 联网查询", searchTitle: "在 Google 搜索", noCareers: "已核实：这家公司没有招聘页面", noSite: "已核实：这家公司没有官网",
       linkedin: "LinkedIn 职位", star: "收藏", googleAi: "谷歌 AI 搜索", googleAiTitle: "在谷歌 AI 模式中查这家公司的官网、招聘页和英国岗位",
       aiFind: "AI 查网址", aiAgain: "AI 重新查", aiBusy: "Claude 正在查…", aiUnsure: "Claude 没有把握，请用搜索链接查找。",
       aiLocal: "已找到链接（仅本次显示，你没有保存到名单的权限）", aiDenied: "未允许使用 Claude，已隐藏此功能。",
@@ -254,7 +255,7 @@ a.btn { text-decoration: none; display: inline-block; }
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
       csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "核实日期", "已收藏"], yes: "是",
       lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是人工查证过的直达链接；带", lgLinksG: "的来自 Google AI 搜索的自动查询，未经人工确认；带",
-      lgLinks3: "的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
+      lgLinks3: "的是 Claude 凭已有知识给出的；带「Claude 搜索」的是 Claude 联网搜索查到的，同样未经人工确认，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
       lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
       lgAiT: "AI 查网址", lgAi: "让 Claude 凭已有知识推测官网和招聘页（不联网，小公司常查不到）。会用到你自己的 Claude 用量。查不到时用「谷歌 AI 搜索」，它会联网查。",
       lgGoogleT: "谷歌 AI 搜索", lgGoogle: "在新标签页打开谷歌 AI 模式，自动带上公司名和城市，查官网、招聘页和英国岗位。核对后用「核实 / 填链接」保存。",
@@ -279,7 +280,7 @@ a.btn { text-decoration: none; display: inline-block; }
       countSuffix: " organisations match", empty: "No organisations match. Try fewer industry or place filters.",
       more: (n, shown, total) => `Show ${n} more (${shown} of ${total} shown)`,
       ratingB: "B-rated", ratingP: "Provisional", noPlace: "No town listed",
-      site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", srcGoogle: "Google AI", byGoogle: "Google AI", searchTitle: "Search on Google", noCareers: "Checked: this company has no careers page", noSite: "Checked: this company has no website",
+      site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", srcGoogle: "Google AI", byGoogle: "Google AI", srcWeb: "Claude search", byWeb: "Claude web search", searchTitle: "Search on Google", noCareers: "Checked: this company has no careers page", noSite: "Checked: this company has no website",
       linkedin: "LinkedIn jobs", star: "Save", googleAi: "Google AI search", googleAiTitle: "Ask Google AI Mode for this company's website, careers page and UK openings",
       aiFind: "Find with AI", aiAgain: "Ask AI again", aiBusy: "Claude is looking…", aiUnsure: "Claude isn't sure. Try the search links.",
       aiLocal: "Links found (shown to you only; you can't save to the shared list)", aiDenied: "Claude isn't allowed here, so this feature is hidden.",
@@ -294,7 +295,7 @@ a.btn { text-decoration: none; display: inline-block; }
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
       csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Checked on", "Saved"], yes: "Yes",
       lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked", lgLinksG: "come from automatic Google AI searches and haven't been checked by hand. Links marked",
-      lgLinks3: "come from Claude's own knowledge, so check the domain before you use them. Unmarked links open a search for that company.",
+      lgLinks3: "come from Claude's own knowledge; links marked “Claude search” come from Claude's web searches and haven't been checked by hand either. Check the domain before you use them. Unmarked links open a search for that company.",
       lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
       lgAiT: "Find with AI", lgAi: "Asks Claude for the website and careers page from its own knowledge (no web access, so small companies often come back empty). This uses your own Claude allowance. If it finds nothing, use Google AI search, which searches the web.",
       lgGoogleT: "Google AI search", lgGoogle: "Opens Google AI Mode in a new tab with the company name and town filled in, to find the website, careers page and UK openings. Check the result, then save it with “Verify / add links”.",
@@ -475,7 +476,7 @@ a.btn { text-decoration: none; display: inline-block; }
   function linkFor(r, kind) {
     const L = links.get(keyOf(r));
     const url = L && (kind === "site" ? L.website : L.careers);
-    if (url && /^https?:\/\//i.test(url)) return { url, status: L.status === "verified" ? "ok" : L.status === "google" ? "gg" : "ai" };
+    if (url && /^https?:\/\//i.test(url)) return { url, status: L.status === "verified" ? "ok" : L.status === "google" ? "gg" : L.status === "web" ? "cw" : "ai" };
     // Checked by hand and this field was left empty: there is no website / careers page to open.
     if (L && (L.status === "verified" || L.status === "checked")) return { url: null, status: "none" };
     return kind === "site"
@@ -518,8 +519,8 @@ a.btn { text-decoration: none; display: inline-block; }
     if (r[5] === "p") nm.append(badge("p", t("ratingP")));
     if (isNewAdded(r)) nm.append(badge("new", t("newAdded")));
     const HL = links.get(k);
-    const by = HL && HL.status === "google" ? t("byGoogle") : "";
-    if (HL && (HL.status === "google" || HL.status === "ai")) { const b = badge("src-ai", t("badgeAi")); b.title = t("badgeAiTitle"); nm.append(b); }
+    const by = HL && HL.status === "google" ? t("byGoogle") : HL && HL.status === "web" ? t("byWeb") : "";
+    if (HL && (HL.status === "google" || HL.status === "web" || HL.status === "ai")) { const b = badge("src-ai", t("badgeAi")); b.title = t("badgeAiTitle"); nm.append(b); }
     if (HL && (HL.status === "verified" || HL.status === "checked")) { const b = badge("src-ok", t("badgeOk")); b.title = t("badgeOkTitle"); nm.append(b); }
     if (!HL || !HL.status || HL.status === "industry") { const b = badge("src-none", t("badgeNone")); b.title = t("badgeNoneTitle"); nm.append(b); }
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "", by)));
@@ -545,7 +546,7 @@ a.btn { text-decoration: none; display: inline-block; }
         lk.append(el); return;
       }
       const el = a(L.url, L.status ? label : label + " ↗", L.status ? "direct" : "");
-      if (L.status) { const v = document.createElement("span"); v.className = "vs " + L.status; v.textContent = L.status === "ok" ? t("verified") : L.status === "gg" ? t("srcGoogle") : t("aiGuess"); el.append(v); }
+      if (L.status) { const v = document.createElement("span"); v.className = "vs " + L.status; v.textContent = L.status === "ok" ? t("verified") : L.status === "gg" ? t("srcGoogle") : L.status === "cw" ? t("srcWeb") : t("aiGuess"); el.append(v); }
       el.title = L.status ? L.url : t("searchTitle");
       lk.append(el);
     });
@@ -700,7 +701,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const out = {};
     [...dbLinks.keys()].sort().forEach((id) => {
       const v = dbLinks.get(id);
-      if (!v || !["verified", "checked", "industry", "google"].includes(v.status)) return;
+      if (!v || !["verified", "checked", "industry", "google", "web"].includes(v.status)) return;
       const o = {}; FIELDS.forEach((f) => { o[f] = v[f] === undefined ? null : v[f]; }); out[id] = o;
     });
     const n = Object.keys(out).length;
@@ -715,7 +716,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const L = links.get(keyOf(r)) || {};
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
-      const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "ai" ? t("aiGuess") : "";
+      const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "web" ? t("srcWeb") : L.status === "ai" ? t("aiGuess") : "";
       lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
