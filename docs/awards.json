@@ -1,0 +1,424 @@
+{
+ "lists": {
+  "fast50": {
+   "zh": "Fast 50",
+   "en": "Fast 50",
+   "title_zh": "德勤英国科技 Fast 50（2025）",
+   "title_en": "Deloitte UK Technology Fast 50 2025",
+   "source": "https://www.deloitte.co.uk/fast50/winners/2025/",
+   "published": "2025-11-07"
+  },
+  "gender50": {
+   "zh": "性别平等 Top 50",
+   "en": "Gender Equality Top 50",
+   "title_zh": "泰晤士报性别平等最佳雇主 Top 50（2026）",
+   "title_en": "The Times Top 50 Employers for Gender Equality 2026",
+   "source": "https://www.bitc.org.uk/news/the-times-top-50-employers-for-gender-equality-2026-announced/",
+   "published": "2026-06-18"
+  }
+ },
+ "orgs": {
+  "2e22152744b71cb2": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "bcfbb24590d06c9c": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "fa8f62d026fadad5": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "63bf34593ae72f4c": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "921b242bcc52ac12": [
+   {
+    "list": "fast50",
+    "rank": 7
+   }
+  ],
+  "9313c709cf98e21e": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "16941f0a4b1c6b0d": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "56c480ff53b19416": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "182b733dae1860dc": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "620780a2dde2c617": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "ce304385a8ecea7a": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "0d615dbb63439014": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "c585bd5d169f1d38": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "58f78672d08a2a19": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "3b2df0f31b239170": [
+   {
+    "list": "fast50",
+    "rank": 13
+   }
+  ],
+  "81e749fded3146ce": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "e3c32ab46fa17fbf": [
+   {
+    "list": "fast50",
+    "rank": 21
+   }
+  ],
+  "382bc9d3513fdb50": [
+   {
+    "list": "fast50",
+    "rank": 15
+   }
+  ],
+  "423c61742e0bc72b": [
+   {
+    "list": "fast50",
+    "rank": 37
+   }
+  ],
+  "97a4611735279176": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "d2e4f15e584eb99f": [
+   {
+    "list": "fast50",
+    "rank": 24
+   }
+  ],
+  "e9efc58647f270f3": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "3e184219c1a06350": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "a61242198802a53a": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "ce5599350422ed50": [
+   {
+    "list": "fast50",
+    "rank": 36
+   }
+  ],
+  "2cc94ba631b2ae4d": [
+   {
+    "list": "fast50",
+    "rank": 22
+   }
+  ],
+  "2ec6aaa326e2ec32": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "b8962abb9741a68c": [
+   {
+    "list": "fast50",
+    "rank": 48
+   }
+  ],
+  "82a1097f7e54563c": [
+   {
+    "list": "fast50",
+    "rank": 20
+   }
+  ],
+  "be3c8e4a06a12327": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "abc401cffe544d16": [
+   {
+    "list": "fast50",
+    "rank": 1
+   }
+  ],
+  "6cd70bbf084929ba": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "79133449a3a11c68": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "63aabf338e60494a": [
+   {
+    "list": "fast50",
+    "rank": 16
+   }
+  ],
+  "e857d17822a84eb9": [
+   {
+    "list": "fast50",
+    "rank": 27
+   }
+  ],
+  "c0d75c50e449238f": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "9c408ee3ae68df1e": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "309a786e7574d457": [
+   {
+    "list": "fast50",
+    "rank": 3
+   }
+  ],
+  "b9e32113cc4b3670": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "9e9ad6104d6477e7": [
+   {
+    "list": "fast50",
+    "rank": 23
+   }
+  ],
+  "3ed64d1a5f437a97": [
+   {
+    "list": "fast50",
+    "rank": 2
+   }
+  ],
+  "76c0356ec0ecb939": [
+   {
+    "list": "fast50",
+    "rank": 50
+   }
+  ],
+  "c775bc1f8e0683f6": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "200862e0bce58603": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "89c06af8ac4717c7": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "76a9d0d99a1b81fa": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "9edf6bdf4a98107c": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "3bdab2a247883d27": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "eb8845d7805b6012": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "6b38a674ec497529": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "86661b7e8144195d": [
+   {
+    "list": "fast50",
+    "rank": 44
+   }
+  ],
+  "520fe7962c7e9bfb": [
+   {
+    "list": "fast50",
+    "rank": 17
+   }
+  ],
+  "46b9dc6510f659de": [
+   {
+    "list": "fast50",
+    "rank": 33
+   }
+  ],
+  "d2e4afba588a14c1": [
+   {
+    "list": "fast50",
+    "rank": 49
+   }
+  ],
+  "bdc17c93826b9f64": [
+   {
+    "list": "fast50",
+    "rank": 14
+   }
+  ],
+  "dec0f0384ad1c879": [
+   {
+    "list": "fast50",
+    "rank": 4
+   }
+  ],
+  "d31255807f206fa3": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "4518528ff94374d2": [
+   {
+    "list": "fast50",
+    "rank": 30
+   }
+  ],
+  "0df790d66d0d4971": [
+   {
+    "list": "fast50",
+    "rank": 28
+   }
+  ],
+  "e951b7f948a01508": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "f026dc6a68d2f303": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "98dfa130405e438f": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "39b682012a50faf4": [
+   {
+    "list": "fast50",
+    "rank": 10
+   }
+  ],
+  "91de56bd161fd984": [
+   {
+    "list": "fast50",
+    "rank": 19
+   }
+  ],
+  "ffa2ce6f6e927054": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "7508b5b08809531b": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "d641fddc07ddd0e7": [
+   {
+    "list": "fast50",
+    "rank": 43
+   }
+  ],
+  "bfb80678f6f53163": [
+   {
+    "list": "fast50",
+    "rank": 8
+   }
+  ],
+  "a8dec2120334b88b": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "0c42465877f45bf3": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "21427ec70efa833a": [
+   {
+    "list": "gender50"
+   }
+  ],
+  "14a37f18efe4433f": [
+   {
+    "list": "fast50",
+    "rank": 45
+   }
+  ],
+  "4462dad71ee6149a": [
+   {
+    "list": "fast50",
+    "rank": 40
+   }
+  ],
+  "f6b70c41f4c8ec6a": [
+   {
+    "list": "fast50",
+    "rank": 34
+   }
+  ]
+ }
+}

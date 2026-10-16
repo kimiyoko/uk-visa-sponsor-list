@@ -93,6 +93,8 @@ a.btn { text-decoration: none; display: inline-block; }
 .badge.hire-yes { background: var(--ok-soft); color: var(--ok); }
 .badge.src-ai { background: var(--accent-soft); color: var(--accent); }
 .badge.src-ok { background: var(--ok); color: var(--sheet); }
+.badge.award { background: var(--stamp-soft); color: var(--stamp); }
+.tag.size { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
 .badge.src-none { background: transparent; color: var(--ink-3); border: 1px solid var(--rule); }
 .badge.hire-noinfo { background: var(--paper); color: var(--ink-2); border: 1px solid var(--rule); }
 .vf-field select { width: 100%; font: inherit; font-size: 14px; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 8px; }
@@ -178,6 +180,15 @@ a.btn { text-decoration: none; display: inline-block; }
         <div class="chips" id="route-chips"></div>
       </div>
       <div class="fgroup">
+        <div class="flabel"><span data-i18n="fAward">榜单</span><button type="button" id="award-clear" data-i18n="all">全部</button></div>
+        <div class="chips" id="award-chips"></div>
+        <p class="note" id="award-note"></p>
+      </div>
+      <div class="fgroup">
+        <div class="flabel"><span data-i18n="fSize">公司规模</span><button type="button" id="size-clear" data-i18n="all">全部</button></div>
+        <div class="chips" id="size-chips"></div>
+      </div>
+      <div class="fgroup">
         <label class="check"><input type="checkbox" id="only-a" checked> <span data-i18n="onlyA">只看 A 级评级（可正常发 CoS）</span></label>
         <label class="check"><input type="checkbox" id="only-star"> <span data-i18n="onlyStar">只看我收藏的</span></label>
         <label class="check"><input type="checkbox" id="only-link"> <span data-i18n="onlyLink">只看已有官网链接的</span></label>
@@ -253,7 +264,8 @@ a.btn { text-decoration: none; display: inline-block; }
       exportLinks: "导出 links.json（GitHub 用）", linksExported: (n) => `已导出 ${n} 家核实数据，上传到仓库 docs/links.json`, noLinks: "还没有核实过的公司",
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
-      csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "核实日期", "已收藏"], yes: "是",
+      csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "规模", "榜单", "核实日期", "已收藏"], yes: "是",
+      fAward: "榜单", awardNote: "公司按登记表上的名称与榜单对应，可能有遗漏。", fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中", large: "大" }, sizeTag: (x) => `规模：${x}`,
       lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是人工查证过的直达链接；带", lgLinksG: "的来自 Google AI 搜索的自动查询，未经人工确认；带",
       lgLinks3: "的是 Claude 凭已有知识给出的；带「Claude 搜索」的是 Claude 联网搜索查到的，同样未经人工确认，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
       lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
@@ -293,7 +305,8 @@ a.btn { text-decoration: none; display: inline-block; }
       exportLinks: "Export links.json (for GitHub)", linksExported: (n) => `Exported ${n} verified companies. Upload it to docs/links.json in the repo.`, noLinks: "No verified companies yet",
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
-      csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Checked on", "Saved"], yes: "Yes",
+      csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Size", "Lists", "Checked on", "Saved"], yes: "Yes",
+      fAward: "Award lists", awardNote: "Companies are matched to lists by their register name, so a few may be missed.", fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Medium", large: "Large" }, sizeTag: (x) => `Size: ${x}`,
       lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked", lgLinksG: "come from automatic Google AI searches and haven't been checked by hand. Links marked",
       lgLinks3: "come from Claude's own knowledge; links marked “Claude search” come from Claude's web searches and haven't been checked by hand either. Check the domain before you use them. Unmarked links open a search for that company.",
       lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
@@ -336,7 +349,12 @@ a.btn { text-decoration: none; display: inline-block; }
   }
 
   // ---------------- state ----------------
-  const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyHire: false, since: 0, sort: "name", shown: PAGE };
+  const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyHire: false, lists: new Set(), sizes: new Set(), since: 0, sort: "name", shown: PAGE };
+  let AW = { lists: {}, orgs: {} };
+  const SIZES = ["small", "medium", "large"];
+  const sizeName = (k) => (I18N[lang].size || I18N.zh.size)[k] || k;
+  const awardsOf = (r) => AW.orgs[keyOf(r)] || [];
+  const awardName = (k) => { const m = AW.lists[k]; return m ? (lang === "en" ? m.en : m.zh) : k; };
   let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null, canVerify = false;
   function mergeLinks() { links = new Map([...staticLinks, ...dbLinks]); }
 
@@ -347,14 +365,14 @@ a.btn { text-decoration: none; display: inline-block; }
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
         st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.inds || []); st.routes = new Set(f.routes || ["sw"]);
-        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire;
+        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set(f.lists || []); st.sizes = new Set(f.sizes || []);
       }
     } catch (e) {}
   }
   function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? t("exportStarsN", stars.size) : t("exportStars"); }
   function saveLocal() {
     try { localStorage.setItem("sponsor-stars", JSON.stringify([...stars])); } catch (e) {}
-    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort, since: st.since, onlyHire: st.onlyHire })); } catch (e) {}
+    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort, since: st.since, onlyHire: st.onlyHire, lists: [...st.lists], sizes: [...st.sizes] })); } catch (e) {}
   }
 
   // stable id per organisation (name + town)
@@ -408,6 +426,12 @@ a.btn { text-decoration: none; display: inline-block; }
     ic.append(chip(t("untagged"), untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
+    const ac = $("award-chips"); ac.innerHTML = "";
+    const acount = {}; Object.values(AW.orgs).forEach((es) => es.forEach((e) => { acount[e.list] = (acount[e.list] || 0) + 1; }));
+    Object.keys(AW.lists).forEach((k) => { const c = chip(awardName(k), acount[k] || 0, st.lists.has(k), () => toggle(st.lists, k)); const m = AW.lists[k]; c.title = (lang === "en" ? m.title_en : m.title_zh) || ""; ac.append(c); });
+    $("award-note").textContent = Object.keys(AW.lists).length ? t("awardNote") : "";
+    const zc = $("size-chips"); zc.innerHTML = "";
+    SIZES.forEach((k) => zc.append(chip(sizeName(k), null, st.sizes.has(k), () => toggle(st.sizes, k))));
     const sc = $("since-chips"); sc.innerHTML = "";
     const sinceCount = (d) => (d ? D.rows.reduce((n, r) => n + (ageOf(r) <= (d === 1 ? 1 : d - 1) ? 1 : 0), 0) : null);
     [[0, "sinceAll"], [1, "since1"], [7, "since7"], [30, "since30"]].forEach(([d, key]) => {
@@ -453,6 +477,8 @@ a.btn { text-decoration: none; display: inline-block; }
       if (q && !r[0].toLowerCase().includes(q)) { const L = links.get(keyOf(r)); if (!(L && L.tradingName && String(L.tradingName).toLowerCase().includes(q))) continue; }
       if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
       if (st.onlyStar && !stars.has(keyOf(r))) continue;
+      if (st.lists.size && !awardsOf(r).some((e) => st.lists.has(e.list))) continue;
+      if (st.sizes.size) { const L = links.get(keyOf(r)); if (!L || !st.sizes.has(L.size)) continue; }
       if (st.onlyLink) { const L = links.get(keyOf(r)); if (!L || !(L.website || L.careers)) continue; }
       if (st.onlyHire) { const L = links.get(keyOf(r)); if (!L || L.hiring !== "yes") continue; }
       out.push(r);
@@ -526,6 +552,7 @@ a.btn { text-decoration: none; display: inline-block; }
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "", by)));
+    awardsOf(r).forEach((e) => { const m = AW.lists[e.list]; const b = badge("award", awardName(e.list) + (e.rank ? " #" + e.rank : "")); if (m) b.title = (lang === "en" ? m.title_en : m.title_zh) || ""; nm.append(b); });
     main.append(nm);
     if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + t("colon") + HL.tradingName; main.append(tn); }
     const wh = document.createElement("div"); wh.className = "where";
@@ -534,6 +561,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const tags = document.createElement("div"); tags.className = "tags";
     const tm = tagsOf(r);
     D.industries.forEach(([key], i) => { if (tm & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
+    if (HL && SIZES.includes(HL.size)) { const s = document.createElement("span"); s.className = "tag size"; s.textContent = t("sizeTag", sizeName(HL.size)); if (HL.sizeBasis) s.title = HL.sizeBasis; tags.append(s); }
     D.routes.forEach(([key], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = routeShort(key); tags.append(s); } });
     main.append(tags);
 
@@ -606,13 +634,19 @@ a.btn { text-decoration: none; display: inline-block; }
     });
     ind.value = L.industry || "";
     w4.append(s4, ind);
+    const w5 = document.createElement("label"); w5.className = "vf-field"; w5.htmlFor = "vf-size-" + k;
+    const s5 = document.createElement("span"); s5.textContent = t("sizeLabel");
+    const sz = document.createElement("select"); sz.id = "vf-size-" + k;
+    [["", t("sizeUnknown")], ...SIZES.map((x) => [x, sizeName(x)])].forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; sz.append(o); });
+    sz.value = L.size || "";
+    w5.append(s5, sz);
     const actions = document.createElement("div"); actions.className = "vf-actions";
     const save = document.createElement("button"); save.type = "submit"; save.className = "btn primary"; save.textContent = t("saveVerified");
     const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn"; cancel.textContent = t("cancel");
     cancel.onclick = () => f.remove();
     const out = document.createElement("span"); out.className = "note";
     actions.append(save, cancel, out);
-    f.append(w1, w2, w0, w3, w4, actions);
+    f.append(w1, w2, w0, w3, w4, w5, actions);
     f.onsubmit = async (e) => {
       e.preventDefault();
       const ok = (u) => !u || /^https?:\/\/\S+\.\S+/i.test(u);
@@ -621,7 +655,7 @@ a.btn { text-decoration: none; display: inline-block; }
       if (!ok(website) || !ok(careers)) { out.textContent = t("needHttps"); return; }
       save.disabled = true; out.textContent = t("saving");
       const checkedAt = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" });
-      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : hire.value ? "checked" : "industry", hiring: hire.value || null, industry: ind.value || null, tradingName: tradingName || null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
+      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : hire.value ? "checked" : "industry", hiring: hire.value || null, industry: ind.value || null, tradingName: tradingName || null, size: sz.value || null, sizeBasis: sz.value ? (sz.value === L.size ? L.sizeBasis || null : t("manualNote")) : null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
       try {
         await db.collection("links").doc(k).set(body);
         dbLinks.set(k, body); mergeLinks(); buildFilters(); results = filter(); render(); toast(t("savedToast"));
@@ -697,7 +731,7 @@ a.btn { text-decoration: none; display: inline-block; }
   };
   // Verified companies in the same shape as the repo's docs/links.json (keys sorted, indent 1, no trailing newline).
   $("export-links").onclick = async () => {
-    const FIELDS = ["careers", "checkedAt", "hiring", "industry", "name", "note", "status", "town", "tradingName", "website"];
+    const FIELDS = ["careers", "checkedAt", "hiring", "industry", "name", "note", "size", "sizeBasis", "status", "town", "tradingName", "website"];
     const out = {};
     [...dbLinks.keys()].sort().forEach((id) => {
       const v = dbLinks.get(id);
@@ -717,7 +751,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "web" ? t("srcWeb") : L.status === "ai" ? t("aiGuess") : "";
-      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
+      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", SIZES.includes(L.size) ? sizeName(L.size) : "", awardsOf(r).map((e) => awardName(e.list) + (e.rank ? " #" + e.rank : "")).join(" / "), L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
     const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
@@ -744,6 +778,8 @@ a.btn { text-decoration: none; display: inline-block; }
   $("place-clear").onclick = () => { st.place = ""; $("place").value = ""; buildFilters(); refresh(); };
   $("ind-clear").onclick = () => { st.inds.clear(); buildFilters(); refresh(); };
   $("route-clear").onclick = () => { st.routes.clear(); buildFilters(); refresh(); };
+  $("award-clear").onclick = () => { st.lists.clear(); buildFilters(); refresh(); };
+  $("size-clear").onclick = () => { st.sizes.clear(); buildFilters(); refresh(); };
   $("only-a").onchange = (e) => { st.onlyA = e.target.checked; refresh(); };
   $("only-star").onchange = (e) => { st.onlyStar = e.target.checked; refresh(); };
   $("only-link").onchange = (e) => { st.onlyLink = e.target.checked; refresh(); };
@@ -756,6 +792,9 @@ a.btn { text-decoration: none; display: inline-block; }
   applyLang();
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("only-hire").checked = st.onlyHire; $("sort").value = st.sort;
   initCapabilities();
+  fetch("awards.json").then((r) => (r.ok ? r.json() : null)).then((j) => {
+    if (j && j.lists && j.orgs) { AW = j; if (D) { buildFilters(); results = filter(); render(); } }
+  }).catch(() => {});
   fetch("links.json").then((r) => (r.ok ? r.json() : {})).then((j) => {
     staticLinks = new Map(Object.entries(j || {})); mergeLinks(); if (D) { buildFilters(); results = filter(); render(); }
   }).catch(() => {});

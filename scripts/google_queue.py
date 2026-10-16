@@ -1,6 +1,6 @@
 """Pick the next organisations to look up with Google AI Mode.
 
-Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry it] [--rating a]
+Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry it[,health,...]] [--rating a] [--route sw]
 
 <links_dir_or_json> is either a folder of saved database documents (one JSON file per
 document, as ArtifactData's out_dir writes them) or a links.json object. Organisations
@@ -26,8 +26,12 @@ def js_hash(s):
 QUESTION = (
     '"{name}" {town} UK. Find its official website and its careers/jobs page. '
     "Does the careers page currently list any open roles based in the UK? "
+    "Does it trade under another name? What does it do? "
+    "From Companies House or its accounts, roughly how many employees does it have, "
+    "and what type were its latest accounts (micro, small, medium, full, group)? "
     "End your answer with one line exactly in this format: "
-    "RESULT | WEBSITE: <url or NONE> | CAREERS: <url or NONE> | UK_HIRING: YES or NO or NO_INFO"
+    "RESULT | WEBSITE: <url or NONE> | CAREERS: <url or NONE> | UK_HIRING: YES or NO or NO_INFO | "
+    "TRADING_AS: <name or NONE> | EMPLOYEES: <number or NONE> | ACCOUNTS: <micro, small, medium, full, group or NONE>"
 )
 
 
@@ -50,13 +54,18 @@ def main():
     ap.add_argument("--limit", type=int, default=25)
     ap.add_argument("--place", default="manchester")
     ap.add_argument("--industry", default="it")
+    ap.add_argument("--route", default="", help="visa route key from data.json routes, e.g. sw; empty = any")
     ap.add_argument("--rating", default="", help="a = A-rated only, b = B-rated, p = provisional; empty = any")
     a = ap.parse_args()
 
     d = json.load(open(a.data, encoding="utf-8"))
     done = load_done(a.links)
     keys = [k for k, _ in d["industries"]]
-    bit = 1 << keys.index(a.industry) if a.industry else 0
+    bit = 0
+    for k in filter(None, (a.industry or "").split(",")):
+        bit |= 1 << keys.index(k.strip())
+    rkeys = [k for k, _ in d["routes"]]
+    rbit = 1 << rkeys.index(a.route) if a.route else 0
     norm = lambda x: x.lower().replace("-", " ")
     out, remaining = [], 0
     for r in sorted(d["rows"], key=lambda r: r[0].lower()):
@@ -65,6 +74,8 @@ def main():
         if a.place and a.place not in norm(town + " " + county):
             continue
         if bit and not (r[3] & bit):
+            continue
+        if rbit and not (r[4] & rbit):
             continue
         if a.rating and r[5] != a.rating:
             continue
