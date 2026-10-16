@@ -91,6 +91,8 @@ a.btn { text-decoration: none; display: inline-block; }
 .badge.p { background: var(--warn-soft); color: var(--warn); }
 .badge.hire-no { background: var(--warn-soft); color: var(--warn); }
 .badge.hire-yes { background: var(--ok-soft); color: var(--ok); }
+.badge.src-ai { background: var(--accent-soft); color: var(--accent); }
+.badge.src-ok { background: var(--ok); color: var(--sheet); }
 .badge.hire-noinfo { background: var(--paper); color: var(--ink-2); border: 1px solid var(--rule); }
 .vf-field select { width: 100%; font: inherit; font-size: 14px; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 8px; }
 .badge.new { background: var(--stamp); color: var(--sheet); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: 9.5px; padding: 2px 6px; border-radius: 2px 8px 2px 8px; align-self: flex-start; transform: translateY(-4px); }
@@ -245,7 +247,7 @@ a.btn { text-decoration: none; display: inline-block; }
       needOne: "至少填一个链接、选择英国招聘状态，或修改行业类别。",
       hideNoHire: "隐藏暂无英国岗位的公司", industryLabel: "行业类别", industryAuto: (x) => `自动判断（${x}）`, hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位", hiringNoInfo: "查不到信息",
       hireBadgeNo: (d, by) => `暂无英国岗位 · ${d} ${by || "核实"}`, hireBadgeYes: (d, by) => `有英国岗位 · ${d} ${by || "核实"}`, hireBadgeNoInfo: (d, by) => `查不到招聘信息 · ${d} ${by || "核实"}`, csvHiring: "英国招聘状态", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
-      saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实", tradingAs: "经营名称（Trading as）", tradingPh: "例如 Thinc",
+      saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实", badgeAi: "AI 查找", badgeAiTitle: "Google AI 自动查询的结果，还没有人工核实", badgeOk: "已核实", badgeOkTitle: "已人工核实", tradingAs: "经营名称（Trading as）", tradingPh: "例如 Thinc",
       exportLinks: "导出 links.json（GitHub 用）", linksExported: (n) => `已导出 ${n} 家核实数据，上传到仓库 docs/links.json`, noLinks: "还没有核实过的公司",
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
@@ -285,7 +287,7 @@ a.btn { text-decoration: none; display: inline-block; }
       needOne: "Enter a link, choose a UK hiring status, or change the industry.",
       hideNoHire: "Hide companies with no UK openings", industryLabel: "Industry", industryAuto: (x) => `Automatic (${x})`, hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings", hiringNoInfo: "No info found",
       hireBadgeNo: (d, by) => `No UK openings · ${by ? by + " " : "checked "}${d}`, hireBadgeYes: (d, by) => `Hiring in the UK · ${by ? by + " " : "checked "}${d}`, hireBadgeNoInfo: (d, by) => `No hiring info found · ${by ? by + " " : "checked "}${d}`, csvHiring: "UK hiring status", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
-      saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand", tradingAs: "Trading as", tradingPh: "e.g. Thinc",
+      saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand", badgeAi: "AI lookup", badgeAiTitle: "Found by an automatic Google AI search; not checked by hand yet", badgeOk: "Verified", badgeOkTitle: "Checked by hand", tradingAs: "Trading as", tradingPh: "e.g. Thinc",
       exportLinks: "Export links.json (for GitHub)", linksExported: (n) => `Exported ${n} verified companies. Upload it to docs/links.json in the repo.`, noLinks: "No verified companies yet",
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
@@ -516,11 +518,13 @@ a.btn { text-decoration: none; display: inline-block; }
     if (isNewAdded(r)) nm.append(badge("new", t("newAdded")));
     const HL = links.get(k);
     const by = HL && HL.status === "google" ? t("byGoogle") : "";
+    if (HL && (HL.status === "google" || HL.status === "ai")) { const b = badge("src-ai", t("badgeAi")); b.title = t("badgeAiTitle"); nm.append(b); }
+    if (HL && (HL.status === "verified" || HL.status === "checked")) { const b = badge("src-ok", t("badgeOk")); b.title = t("badgeOkTitle"); nm.append(b); }
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "", by)));
     main.append(nm);
-    if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + "：" + HL.tradingName; main.append(tn); }
+    if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + t("colon") + HL.tradingName; main.append(tn); }
     const wh = document.createElement("div"); wh.className = "where";
     wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
     main.append(wh);
