@@ -96,6 +96,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .links a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
 .links a:hover { border-bottom-color: currentColor; }
 .links .direct { font-weight: 700; }
+.links .none { color: var(--ink-3); opacity: .6; cursor: not-allowed; text-decoration: line-through; text-decoration-thickness: 1px; }
 .vs { font-family: var(--f-data); font-size: 10px; padding: 0 5px; border-radius: 3px; margin-left: 4px; vertical-align: 1px; }
 .vs.ok { background: var(--ok-soft); color: var(--ok); }
 .vs.ai { background: var(--warn-soft); color: var(--warn); }
@@ -231,7 +232,7 @@ a.btn { text-decoration: none; display: inline-block; }
       countSuffix: " 家机构符合条件", empty: "没有符合条件的机构。试着减少行业或城市筛选。",
       more: (n, shown, total) => `再显示 ${n} 家（已显示 ${shown} / ${total}）`,
       ratingB: "B 级", ratingP: "临时许可", noPlace: "地点未填写",
-      site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", searchTitle: "在 Google 搜索",
+      site: "官网", careers: "招聘页", verified: "已核实", aiGuess: "AI 推测", searchTitle: "在 Google 搜索", noCareers: "已核实：这家公司没有招聘页面",
       linkedin: "LinkedIn 职位", star: "收藏",
       aiFind: "AI 查网址", aiAgain: "AI 重新查", aiBusy: "Claude 正在查…", aiUnsure: "Claude 没有把握，请用搜索链接查找。",
       aiLocal: "已找到链接（仅本次显示，你没有保存到名单的权限）", aiDenied: "未允许使用 Claude，已隐藏此功能。",
@@ -269,7 +270,7 @@ a.btn { text-decoration: none; display: inline-block; }
       countSuffix: " organisations match", empty: "No organisations match. Try fewer industry or place filters.",
       more: (n, shown, total) => `Show ${n} more (${shown} of ${total} shown)`,
       ratingB: "B-rated", ratingP: "Provisional", noPlace: "No town listed",
-      site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", searchTitle: "Search on Google",
+      site: "Website", careers: "Careers", verified: "Verified", aiGuess: "AI guess", searchTitle: "Search on Google", noCareers: "Checked: this company has no careers page",
       linkedin: "LinkedIn jobs", star: "Save",
       aiFind: "Find with AI", aiAgain: "Ask AI again", aiBusy: "Claude is looking…", aiUnsure: "Claude isn't sure. Try the search links.",
       aiLocal: "Links found (shown to you only; you can't save to the shared list)", aiDenied: "Claude isn't allowed here, so this feature is hidden.",
@@ -452,6 +453,8 @@ a.btn { text-decoration: none; display: inline-block; }
     const L = links.get(keyOf(r));
     const url = L && (kind === "site" ? L.website : L.careers);
     if (url && /^https?:\/\//i.test(url)) return { url, status: L.status === "verified" ? "ok" : "ai" };
+    // Checked by hand and the careers field was left empty: there is no careers page to open.
+    if (kind === "careers" && L && (L.status === "verified" || L.status === "checked")) return { url: null, status: "none" };
     return kind === "site"
       ? { url: g(`"${r[0]}" ${town(r)} official website`), status: null }
       : { url: g(`"${r[0]}" careers jobs vacancies`), status: null };
@@ -506,6 +509,11 @@ a.btn { text-decoration: none; display: inline-block; }
     const lk = document.createElement("div"); lk.className = "links";
     [["site", t("site")], ["careers", t("careers")]].forEach(([kind, label]) => {
       const L = linkFor(r, kind);
+      if (L.status === "none") {
+        const el = document.createElement("span"); el.className = "none"; el.textContent = label;
+        el.setAttribute("aria-disabled", "true"); el.title = t("noCareers");
+        lk.append(el); return;
+      }
       const el = a(L.url, L.status ? label : label + " ↗", L.status ? "direct" : "");
       if (L.status) { const v = document.createElement("span"); v.className = "vs " + L.status; v.textContent = L.status === "ok" ? t("verified") : t("aiGuess"); el.append(v); }
       el.title = L.status ? L.url : t("searchTitle");
