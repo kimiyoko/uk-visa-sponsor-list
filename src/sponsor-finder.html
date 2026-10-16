@@ -90,6 +90,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .badge.p { background: var(--warn-soft); color: var(--warn); }
 .badge.hire-no { background: var(--warn-soft); color: var(--warn); }
 .badge.hire-yes { background: var(--ok-soft); color: var(--ok); }
+.badge.hire-noinfo { background: var(--paper); color: var(--ink-2); border: 1px solid var(--rule); }
 .vf-field select { width: 100%; font: inherit; font-size: 14px; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 8px; }
 .badge.new { background: var(--stamp); color: var(--sheet); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: 9.5px; padding: 2px 6px; border-radius: 2px 8px 2px 8px; align-self: flex-start; transform: translateY(-4px); }
 .links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; align-items: center; }
@@ -239,8 +240,8 @@ a.btn { text-decoration: none; display: inline-block; }
       aiRate: "查得太频繁了，稍后再试。", aiFail: "这次没查到，可以再试一次。", aiNoteLang: "Simplified Chinese",
       verifyBtn: "核实 / 填链接", editBtn: "修改链接", saveVerified: "保存为已核实", cancel: "取消",
       needOne: "至少填一个链接、选择英国招聘状态，或修改行业类别。",
-      hideNoHire: "隐藏暂无英国岗位的公司", industryLabel: "行业类别", industryAuto: (x) => `自动判断（${x}）`, hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位",
-      hireBadgeNo: (d) => `暂无英国岗位 · ${d} 核实`, hireBadgeYes: (d) => `有英国岗位 · ${d} 核实`, csvHiring: "英国招聘状态", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
+      hideNoHire: "隐藏暂无英国岗位的公司", industryLabel: "行业类别", industryAuto: (x) => `自动判断（${x}）`, hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位", hiringNoInfo: "查不到信息",
+      hireBadgeNo: (d) => `暂无英国岗位 · ${d} 核实`, hireBadgeYes: (d) => `有英国岗位 · ${d} 核实`, hireBadgeNoInfo: (d) => `查不到招聘信息 · ${d} 核实`, csvHiring: "英国招聘状态", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
       saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实",
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
@@ -277,8 +278,8 @@ a.btn { text-decoration: none; display: inline-block; }
       aiRate: "Too many lookups. Try again in a moment.", aiFail: "Nothing found this time. You can try again.", aiNoteLang: "English",
       verifyBtn: "Verify / add links", editBtn: "Edit links", saveVerified: "Save as verified", cancel: "Cancel",
       needOne: "Enter a link, choose a UK hiring status, or change the industry.",
-      hideNoHire: "Hide companies with no UK openings", industryLabel: "Industry", industryAuto: (x) => `Automatic (${x})`, hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings",
-      hireBadgeNo: (d) => `No UK openings · checked ${d}`, hireBadgeYes: (d) => `Hiring in the UK · checked ${d}`, csvHiring: "UK hiring status", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
+      hideNoHire: "Hide companies with no UK openings", industryLabel: "Industry", industryAuto: (x) => `Automatic (${x})`, hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings", hiringNoInfo: "No info found",
+      hireBadgeNo: (d) => `No UK openings · checked ${d}`, hireBadgeYes: (d) => `Hiring in the UK · checked ${d}`, hireBadgeNoInfo: (d) => `No hiring info found · checked ${d}`, csvHiring: "UK hiring status", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
       saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand",
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
@@ -509,6 +510,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const HL = links.get(k);
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "")));
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "")));
+    if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "")));
     main.append(nm);
     const wh = document.createElement("div"); wh.className = "where";
     wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
@@ -577,7 +579,7 @@ a.btn { text-decoration: none; display: inline-block; }
     const w3 = document.createElement("label"); w3.className = "vf-field"; w3.htmlFor = "vf-hire-" + k;
     const s3 = document.createElement("span"); s3.textContent = t("hiringLabel");
     const hire = document.createElement("select"); hire.id = "vf-hire-" + k;
-    [["", t("hiringUnknown")], ["yes", t("hiringYes")], ["no", t("hiringNo")]].forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; hire.append(o); });
+    [["", t("hiringUnknown")], ["yes", t("hiringYes")], ["no", t("hiringNo")], ["noinfo", t("hiringNoInfo")]].forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; hire.append(o); });
     hire.value = L.hiring || "";
     w3.append(s3, hire);
     const w4 = document.createElement("label"); w4.className = "vf-field"; w4.htmlFor = "vf-ind-" + k;
@@ -686,7 +688,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" ? t("verified") : L.status === "ai" ? t("aiGuess") : "";
-      lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
+      lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
     const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
