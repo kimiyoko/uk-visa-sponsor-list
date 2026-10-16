@@ -1,3 +1,22 @@
 {
- "3923ea9aa76030df": {"name": "University Hospitals North Midlands NHS Trust", "town": "Stoke-on-Trent", "website": "https://www.uhnm.nhs.uk/", "careers": "https://www.uhnm.nhs.uk/jobs", "status": "verified", "note": "联网核实：官网与招聘页均为 uhnm.nhs.uk，职位也发布在 NHS Jobs"}
+ "3923ea9aa76030df": {
+  "name": "University Hospitals North Midlands NHS Trust",
+  "town": "Stoke-on-Trent",
+  "website": "https://www.uhnm.nhs.uk/",
+  "careers": "https://www.uhnm.nhs.uk/jobs",
+  "status": "verified",
+  "note": "联网核实：官网与招聘页均为 uhnm.nhs.uk，职位也发布在 NHS Jobs",
+  "hiring": null,
+  "checkedAt": null
+ },
+ "d0d4358ba3ec7a66": {
+  "name": "42Gears Mobility Systems (UK) Ltd",
+  "town": "Manchester",
+  "website": "https://www.42gears.com/",
+  "careers": "https://www.42gears.com/careers",
+  "status": "verified",
+  "hiring": "no",
+  "checkedAt": "2026-10-16",
+  "note": "人工核实"
+ }
 }
