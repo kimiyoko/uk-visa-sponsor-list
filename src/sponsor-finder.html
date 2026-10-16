@@ -82,6 +82,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .row .main { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .name { font-weight: 700; font-size: 15px; overflow-wrap: anywhere; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 .where { font-size: 13px; color: var(--ink-2); }
+.trading { font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .tag { font-size: 11.5px; padding: 1px 7px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
 .tag.route { background: transparent; border: 1px solid var(--rule); color: var(--ink-2); font-family: var(--f-data); font-size: 10.5px; }
@@ -244,11 +245,11 @@ a.btn { text-decoration: none; display: inline-block; }
       needOne: "至少填一个链接、选择英国招聘状态，或修改行业类别。",
       hideNoHire: "隐藏暂无英国岗位的公司", industryLabel: "行业类别", industryAuto: (x) => `自动判断（${x}）`, hiringLabel: "英国招聘状态", hiringUnknown: "未确认", hiringYes: "有英国岗位", hiringNo: "暂无英国岗位", hiringNoInfo: "查不到信息",
       hireBadgeNo: (d, by) => `暂无英国岗位 · ${d} ${by || "核实"}`, hireBadgeYes: (d, by) => `有英国岗位 · ${d} ${by || "核实"}`, hireBadgeNoInfo: (d, by) => `查不到招聘信息 · ${d} ${by || "核实"}`, csvHiring: "英国招聘状态", needHttps: "链接要以 https:// 开头。", saving: "保存中…", savedToast: "已标为已核实",
-      saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实",
+      saveFail: "没有保存成功，请稍后再试。", manualNote: "人工核实", tradingAs: "经营名称（Trading as）", tradingPh: "例如 Thinc",
       exportLinks: "导出 links.json（GitHub 用）", linksExported: (n) => `已导出 ${n} 家核实数据，上传到仓库 docs/links.json`, noLinks: "还没有核实过的公司",
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
-      csvHead: ["公司名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "核实日期", "已收藏"], yes: "是",
+      csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "核实日期", "已收藏"], yes: "是",
       lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是人工查证过的直达链接；带", lgLinksG: "的来自 Google AI 搜索的自动查询，未经人工确认；带",
       lgLinks3: "的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
       lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
@@ -284,11 +285,11 @@ a.btn { text-decoration: none; display: inline-block; }
       needOne: "Enter a link, choose a UK hiring status, or change the industry.",
       hideNoHire: "Hide companies with no UK openings", industryLabel: "Industry", industryAuto: (x) => `Automatic (${x})`, hiringLabel: "UK hiring status", hiringUnknown: "Not checked", hiringYes: "Hiring in the UK", hiringNo: "No UK openings", hiringNoInfo: "No info found",
       hireBadgeNo: (d, by) => `No UK openings · ${by ? by + " " : "checked "}${d}`, hireBadgeYes: (d, by) => `Hiring in the UK · ${by ? by + " " : "checked "}${d}`, hireBadgeNoInfo: (d, by) => `No hiring info found · ${by ? by + " " : "checked "}${d}`, csvHiring: "UK hiring status", needHttps: "Links must start with https://", saving: "Saving…", savedToast: "Marked as verified",
-      saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand",
+      saveFail: "Couldn't save. Please try again.", manualNote: "Verified by hand", tradingAs: "Trading as", tradingPh: "e.g. Thinc",
       exportLinks: "Export links.json (for GitHub)", linksExported: (n) => `Exported ${n} verified companies. Upload it to docs/links.json in the repo.`, noLinks: "No verified companies yet",
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
-      csvHead: ["Organisation", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Checked on", "Saved"], yes: "Yes",
+      csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Checked on", "Saved"], yes: "Yes",
       lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked", lgLinksG: "come from automatic Google AI searches and haven't been checked by hand. Links marked",
       lgLinks3: "come from Claude's own knowledge, so check the domain before you use them. Unmarked links open a search for that company.",
       lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
@@ -445,7 +446,7 @@ a.btn { text-decoration: none; display: inline-block; }
       if (routeMask && !(r[4] & routeMask)) continue;
       if (st.inds.size) { const m = tagsOf(r); if (!((m & indMask) || (wantUntagged && m === 0))) continue; }
       if (pl && !(plTowns.has(r[1]) || plCounties.has(r[2]))) continue;
-      if (q && !r[0].toLowerCase().includes(q)) continue;
+      if (q && !r[0].toLowerCase().includes(q)) { const L = links.get(keyOf(r)); if (!(L && L.tradingName && String(L.tradingName).toLowerCase().includes(q))) continue; }
       if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
       if (st.onlyStar && !stars.has(keyOf(r))) continue;
       if (st.onlyLink) { const L = links.get(keyOf(r)); if (!L || !(L.website || L.careers)) continue; }
@@ -519,6 +520,7 @@ a.btn { text-decoration: none; display: inline-block; }
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "", by)));
     main.append(nm);
+    if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + "：" + HL.tradingName; main.append(tn); }
     const wh = document.createElement("div"); wh.className = "where";
     wh.textContent = [town(r), county(r)].filter(Boolean).join(" · ") || t("noPlace");
     main.append(wh);
@@ -581,6 +583,7 @@ a.btn { text-decoration: none; display: inline-block; }
     };
     const [w1, site] = mk("vf-site-", t("site"), L.website, "https://…");
     const [w2, car] = mk("vf-car-", t("careers"), L.careers, "https://…/careers");
+    const [w0, tradeIn] = mk("vf-tn-", t("tradingAs"), L.tradingName, t("tradingPh")); tradeIn.type = "text";
     const w3 = document.createElement("label"); w3.className = "vf-field"; w3.htmlFor = "vf-hire-" + k;
     const s3 = document.createElement("span"); s3.textContent = t("hiringLabel");
     const hire = document.createElement("select"); hire.id = "vf-hire-" + k;
@@ -602,16 +605,16 @@ a.btn { text-decoration: none; display: inline-block; }
     cancel.onclick = () => f.remove();
     const out = document.createElement("span"); out.className = "note";
     actions.append(save, cancel, out);
-    f.append(w1, w2, w3, w4, actions);
+    f.append(w1, w2, w0, w3, w4, actions);
     f.onsubmit = async (e) => {
       e.preventDefault();
       const ok = (u) => !u || /^https?:\/\/\S+\.\S+/i.test(u);
-      const website = site.value.trim(), careers = car.value.trim();
-      if (!website && !careers && !hire.value && !ind.value && !L.industry) { out.textContent = t("needOne"); return; }
+      const website = site.value.trim(), careers = car.value.trim(), tradingName = tradeIn.value.trim().slice(0, 120);
+      if (!website && !careers && !hire.value && !ind.value && !L.industry && !tradingName) { out.textContent = t("needOne"); return; }
       if (!ok(website) || !ok(careers)) { out.textContent = t("needHttps"); return; }
       save.disabled = true; out.textContent = t("saving");
       const checkedAt = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/London" });
-      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : hire.value ? "checked" : "industry", hiring: hire.value || null, industry: ind.value || null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
+      const body = { name: r[0], town: town(r), website: website || null, careers: careers || null, status: website || careers ? "verified" : hire.value ? "checked" : "industry", hiring: hire.value || null, industry: ind.value || null, tradingName: tradingName || null, checkedAt, note: t("manualNote"), updatedAt: new Date().toISOString() };
       try {
         await db.collection("links").doc(k).set(body);
         dbLinks.set(k, body); mergeLinks(); buildFilters(); results = filter(); render(); toast(t("savedToast"));
@@ -687,7 +690,7 @@ a.btn { text-decoration: none; display: inline-block; }
   };
   // Verified companies in the same shape as the repo's docs/links.json (keys sorted, indent 1, no trailing newline).
   $("export-links").onclick = async () => {
-    const FIELDS = ["careers", "checkedAt", "hiring", "industry", "name", "note", "status", "town", "website"];
+    const FIELDS = ["careers", "checkedAt", "hiring", "industry", "name", "note", "status", "town", "tradingName", "website"];
     const out = {};
     [...dbLinks.keys()].sort().forEach((id) => {
       const v = dbLinks.get(id);
@@ -707,7 +710,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "ai" ? t("aiGuess") : "";
-      lines.push([r[0], town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
+      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
     const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
