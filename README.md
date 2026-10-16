@@ -17,7 +17,7 @@ A tool for finding UK employers that can sponsor a work visa. The data comes fro
 - Filter by **industry** (18 categories guessed from the company name), **town / county**, **visa route** (Skilled Worker, Global Business Mobility and others) and **rating**, and search by company name
 - Filter by **date added to the register**: last 24 hours, last 7 days, last 30 days. Join dates are recorded from 2026-10-15 onwards
 - Organisations added in the last 24 hours carry a **New added** badge next to their name
-- Every organisation has links to its **website, careers page, LinkedIn jobs and Companies House**. Hand-checked links go straight to the page; the rest open a search for that company
+- Every organisation has links to its **website, careers page and LinkedIn jobs**. Hand-checked links go straight to the page; the rest open a search for that company
 - Save companies with ☆ and **download your saved list** as a CSV, or export the current filtered results
 - Switch between **中文 and English** from the top right of the page
 
@@ -81,7 +81,7 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
 - 按 **行业**（从公司名推断，18 类）、**城市 / 郡**、**签证路线**（Skilled Worker、Global Business Mobility 等）、**评级** 筛选，支持搜索公司名
 - 按 **加入名单时间** 筛选：24 小时内、7 日内、30 日内。从 2026-10-15 起记录每家公司加入名单的日期
 - 24 小时内新加入的公司，名称旁会显示「今日新增」角标
-- 每家公司附 **官网、招聘页、LinkedIn 职位、Companies House** 链接。核实过的直接打开对应页面，其余的打开该公司的搜索结果
+- 每家公司附 **官网、招聘页、LinkedIn 职位** 链接。核实过的直接打开对应页面，其余的打开该公司的搜索结果
 - 点 ☆ 收藏公司，可以 **一键下载收藏名单**（CSV），也可以导出当前筛选结果
 - 页面右上角可切换 **中文 / English**
 
