@@ -2,6 +2,8 @@
 
 **[English](#english)** · **[中文](#chinese)**
 
+**Project roadmap / 项目路线图：** [ROADMAP.md](ROADMAP.md) · [Milestones](https://github.com/kimiyoko/uk-visa-sponsor-list/milestones)
+
 **Live site / 在线使用：** https://kimiyoko.github.io/uk-visa-sponsor-list/ (add `#en` or `#zh` to open in English or Chinese / 链接末尾加 `#en` 或 `#zh` 可直接打开对应语言)
 
 ---
