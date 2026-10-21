@@ -94,6 +94,7 @@ a.btn { text-decoration: none; display: inline-block; }
 .badge.src-ai { background: var(--accent-soft); color: var(--accent); }
 .badge.src-ok { background: var(--ok); color: var(--sheet); }
 .badge.award { background: var(--stamp-soft); color: var(--stamp); }
+.tag.dim { background: var(--stamp-soft); color: var(--stamp); cursor: help; }
 .tag.size { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
 .badge.src-none { background: transparent; color: var(--ink-3); border: 1px solid var(--rule); }
 .badge.hire-noinfo { background: var(--paper); color: var(--ink-2); border: 1px solid var(--rule); }
@@ -645,8 +646,6 @@ table.aw a { color: var(--accent); }
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "", by)));
-    const dm = dimsOf(r);
-    DIM_KEYS.forEach((d) => { if (!dm[d]) return; const b = badge("award", dimName(d)); b.title = dm[d].map((e) => awardName(e.list) + " · " + yearsText(e.years)).join("\n"); nm.append(b); });
     main.append(nm);
     if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + t("colon") + HL.tradingName; main.append(tn); }
     const wh = document.createElement("div"); wh.className = "where";
@@ -655,6 +654,8 @@ table.aw a { color: var(--accent); }
     const tags = document.createElement("div"); tags.className = "tags";
     const tm = tagsOf(r);
     D.industries.forEach(([key], i) => { if (tm & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
+    const dm = dimsOf(r);
+    DIM_KEYS.forEach((d) => { if (!dm[d]) return; const s = document.createElement("span"); s.className = "tag dim"; s.textContent = dimName(d); s.title = dm[d].map((e) => awardName(e.list) + " · " + yearsText(e.years)).join("\n"); tags.append(s); });
     if (HL && SIZES.includes(HL.size)) { const s = document.createElement("span"); s.className = "tag size"; s.textContent = t("sizeTag", sizeName(HL.size)); if (HL.sizeBasis) s.title = HL.sizeBasis; tags.append(s); }
     D.routes.forEach(([key], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = routeShort(key); tags.append(s); } });
     main.append(tags);
