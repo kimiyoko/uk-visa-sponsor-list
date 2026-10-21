@@ -134,9 +134,47 @@ a.btn { text-decoration: none; display: inline-block; }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
 .legend .source { color: var(--ink-3); }
 .legend a { color: var(--accent); }
+.topbar { justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.views { display: inline-flex; gap: 4px; border-bottom: 1px solid var(--rule); }
+.views button { font: inherit; font-size: 14px; font-weight: 700; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ink-2); padding: 6px 4px; margin-bottom: -1px; cursor: pointer; }
+.views button + button { margin-left: 14px; }
+.views button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--stamp); }
+.note a, .note button.linkish { color: var(--accent); }
+button.linkish { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.badge.award { cursor: help; }
+/* awards reference view */
+#awards-view { display: flex; flex-direction: column; gap: 22px; }
+#awards-view h2 { font-family: var(--f-display); font-size: 22px; margin: 0; }
+#awards-view h3 { font-family: var(--f-display); font-size: 17px; margin: 0; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+#awards-view p { margin: 0; }
+.aw-intro { display: flex; flex-direction: column; gap: 8px; max-width: 78ch; color: var(--ink-2); }
+.dimcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.dimcard { background: var(--sheet); border: 1px solid var(--rule); border-top: 3px solid var(--stamp); border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.dimcard .big { font-family: var(--f-display); font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.dimcard .small { font-size: 12.5px; color: var(--ink-2); }
+.dimcard .btn { align-self: flex-start; margin-top: 4px; }
+.dimsec { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.dimsec .desc { color: var(--ink-2); font-size: 13px; }
+.tablewrap { overflow-x: auto; }
+table.aw { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.aw th { text-align: left; font-size: 12px; color: var(--ink-2); font-weight: 700; border-bottom: 1px solid var(--rule); padding: 6px 8px; white-space: nowrap; }
+table.aw td { border-bottom: 1px solid var(--rule); padding: 7px 8px; vertical-align: top; }
+table.aw td.num { font-family: var(--f-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.aw tr.missing td { color: var(--ink-3); }
+table.aw a { color: var(--accent); }
+.aw-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.aw-tools input[type="search"] { width: min(320px, 100%); }
+.aw-tools select { width: auto; }
+.on-reg { color: var(--ok); }
+.off-reg { color: var(--ink-3); }
+.yrs { font-family: var(--f-data); font-size: 11.5px; color: var(--ink-2); }
 </style>
 <div class="wrap">
   <div class="topbar">
+    <div class="views" role="tablist" aria-label="Pages / 页面">
+      <button type="button" role="tab" id="view-list" aria-selected="true" aria-controls="list-view" data-i18n="viewList">担保名单</button>
+      <button type="button" role="tab" id="view-awards" aria-selected="false" aria-controls="awards-view" data-i18n="viewAwards">榜单参考清单</button>
+    </div>
     <div class="lang" role="group" aria-label="Language / 语言">
       <button type="button" id="lang-zh" lang="zh-CN" aria-pressed="true">中文</button>
       <button type="button" id="lang-en" lang="en" aria-pressed="false">English</button>
@@ -154,7 +192,7 @@ a.btn { text-decoration: none; display: inline-block; }
     </div>
   </header>
 
-  <div class="grid">
+  <div class="grid" id="list-view" role="tabpanel" aria-labelledby="view-list">
     <aside id="filters" aria-label="筛选">
       <div class="fgroup">
         <label class="flabel" for="q" data-i18n="fName">公司名称</label>
@@ -182,7 +220,7 @@ a.btn { text-decoration: none; display: inline-block; }
       <div class="fgroup">
         <div class="flabel"><span data-i18n="fAward">榜单</span><button type="button" id="award-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="award-chips"></div>
-        <p class="note" id="award-note"></p>
+        <p class="note"><span id="award-note"></span> <button type="button" class="linkish" id="award-more" data-i18n="awardMore">看榜单参考清单</button></p>
       </div>
       <div class="fgroup">
         <div class="flabel"><span data-i18n="fSize">公司规模</span><button type="button" id="size-clear" data-i18n="all">全部</button></div>
@@ -221,6 +259,27 @@ a.btn { text-decoration: none; display: inline-block; }
       </div>
     </section>
   </div>
+
+  <section id="awards-view" role="tabpanel" aria-labelledby="view-awards" hidden>
+    <div class="aw-intro">
+      <h2 data-i18n="awTitle">榜单参考清单</h2>
+      <p data-i18n="awIntro1">名单页的「榜单」筛选不是一份一份榜单单独列，而是按 4 个维度合并：金融科技、女性友好、独角兽、高增长。每个维度由几份公开榜单组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。</p>
+      <p data-i18n="awIntro2">榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。所以这里是线索，投之前仍要核实。</p>
+    </div>
+    <div class="dimcards" id="aw-cards"></div>
+    <div id="aw-dims" style="display:flex;flex-direction:column;gap:16px"></div>
+    <div class="dimsec">
+      <h3 data-i18n="awCompanies">榜单公司一览</h3>
+      <div class="aw-tools">
+        <input type="search" id="aw-q" data-i18n-ph="awSearchPh" placeholder="搜索公司名" autocomplete="off">
+        <select id="aw-dim" aria-label="维度"></select>
+        <label class="check"><input type="checkbox" id="aw-only"> <span data-i18n="awOnlyReg">只看在担保名单上的</span></label>
+        <span class="note" id="aw-count"></span>
+      </div>
+      <div class="tablewrap"><table class="aw" id="aw-table"></table></div>
+      <div class="more" id="aw-more" hidden></div>
+    </div>
+  </section>
 </div>
 <div class="toast" id="toast" hidden></div>
 
@@ -265,7 +324,18 @@ a.btn { text-decoration: none; display: inline-block; }
       noStars: "还没有收藏公司，点每行右侧的 ☆ 收藏", noRows: "当前没有结果可导出",
       exported: (n) => `已导出 ${n} 行`, noDownload: "这个查看方式不支持下载，请登录 claude.ai 后再试", exportFail: "导出没有完成，请再试一次",
       csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "规模", "榜单", "核实日期", "已收藏"], yes: "是",
-      fAward: "榜单", awardNote: "公司按登记表上的名称与榜单对应，可能有遗漏。", fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中", large: "大" }, sizeTag: (x) => `规模：${x}`,
+      fAward: "榜单（按维度合并，可多选）", awardNote: "每个维度由几份榜单、近几年的名单合并，按公司名称对应，可能有遗漏或撞名。", awardMore: "看榜单参考清单",
+      viewList: "担保名单", viewAwards: "榜单参考清单", awTitle: "榜单参考清单",
+      awIntro1: "名单页的「榜单」筛选不是一份一份榜单单独列，而是按 4 个维度合并：金融科技、女性友好、独角兽、高增长。每个维度由几份公开榜单组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。",
+      awIntro2: "榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。所以这里是线索，投之前仍要核实。",
+      awCardOrgs: "家担保名单上的机构", awCardLists: (n, c) => `${n} 份榜单 · 收录 ${c} 家公司`, awFilterBtn: "在名单里筛选",
+      awColList: "榜单", awColPub: "发布方", awColYears: "年份", awColCount: "收录公司", awColMatched: "对上担保名单", awColNote: "收录情况", awColSrc: "来源",
+      awMissing: "未收录", awScopeUk: "英国榜单", awScopeGlobal: "全球榜单", awSourceLink: "查看",
+      awCompanies: "榜单公司一览", awSearchPh: "搜索公司名", awAllDims: "全部维度", awOnlyReg: "只看在担保名单上的",
+      awColCompany: "公司（榜单上的名称）", awColOn: "担保名单上的机构", awNotFound: "未找到同名机构", awAmb: (n) => `名称较短或是常用词，名单上有 ${n} 家同名机构，不一定是同一家，未自动对应`,
+      awShown: (s, n) => `显示 ${s} / ${n} 家`, awMore: (n) => `再显示 ${n} 家`, awOpenInList: "在名单里查看", awUkHq: "英国总部",
+      awEmpty: "没有符合条件的公司。", awLoading: "榜单数据载入中…", awBadgeTitle: (lines) => lines.join("\n"),
+      fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中", large: "大" }, sizeTag: (x) => `规模：${x}`,
       lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是人工查证过的直达链接；带", lgLinksG: "的来自 Google AI 搜索的自动查询，未经人工确认；带",
       lgLinks3: "的是 Claude 凭已有知识给出的；带「Claude 搜索」的是 Claude 联网搜索查到的，同样未经人工确认，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
       lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
@@ -306,7 +376,18 @@ a.btn { text-decoration: none; display: inline-block; }
       noStars: "No saved companies yet. Tap ☆ on a row to save it.", noRows: "Nothing to export",
       exported: (n) => `Exported ${n} rows`, noDownload: "Downloads don't work in this view. Sign in to claude.ai and try again.", exportFail: "The export didn't finish. Please try again.",
       csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Size", "Lists", "Checked on", "Saved"], yes: "Yes",
-      fAward: "Award lists", awardNote: "Companies are matched to lists by their register name, so a few may be missed.", fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Medium", large: "Large" }, sizeTag: (x) => `Size: ${x}`,
+      fAward: "Award lists (grouped, multi-select)", awardNote: "Each group combines several lists over recent years. Companies are matched by name, so some may be missed or mismatched.", awardMore: "See the award list reference",
+      viewList: "Sponsor list", viewAwards: "Award list reference", awTitle: "Award list reference",
+      awIntro1: "The award filter on the sponsor list doesn't show each list on its own. Lists are grouped into four themes: fintech, women-friendly, unicorn and high growth. Each theme combines several public lists; yearly lists cover up to the last five years, and appearing in any year counts.",
+      awIntro2: "List companies are matched to the sponsor register by name (the same name once endings such as Ltd, UK and Group are removed). Global companies often register in the UK under a subsidiary with a different name, so they won't match. Very short generic names (such as Unit or Merge) clash easily, so they are only matched on UK lists and only when exactly one register organisation has that name. Treat matches as leads and check before applying.",
+      awCardOrgs: "organisations on the register", awCardLists: (n, c) => `${n} lists · ${c} companies`, awFilterBtn: "Filter the sponsor list",
+      awColList: "List", awColPub: "Publisher", awColYears: "Years", awColCount: "Companies", awColMatched: "On the register", awColNote: "Coverage", awColSrc: "Source",
+      awMissing: "Not included", awScopeUk: "UK list", awScopeGlobal: "Global list", awSourceLink: "Open",
+      awCompanies: "All listed companies", awSearchPh: "Search companies", awAllDims: "All themes", awOnlyReg: "Only those on the register",
+      awColCompany: "Company (name on the list)", awColOn: "Register organisation", awNotFound: "No organisation with this name", awAmb: (n) => `Short or common name: ${n} register organisation${n > 1 ? "s" : ""} share${n > 1 ? "" : "s"} it and may be a different company, so it isn't matched automatically`,
+      awShown: (s, n) => `Showing ${s} of ${n}`, awMore: (n) => `Show ${n} more`, awOpenInList: "View in sponsor list", awUkHq: "UK HQ",
+      awEmpty: "No companies match.", awLoading: "Loading award lists…", awBadgeTitle: (lines) => lines.join("\n"),
+      fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Medium", large: "Large" }, sizeTag: (x) => `Size: ${x}`,
       lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked", lgLinksG: "come from automatic Google AI searches and haven't been checked by hand. Links marked",
       lgLinks3: "come from Claude's own knowledge; links marked “Claude search” come from Claude's web searches and haven't been checked by hand either. Check the domain before you use them. Unmarked links open a search for that company.",
       lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
@@ -325,8 +406,9 @@ a.btn { text-decoration: none; display: inline-block; }
   const routeShort = (k) => I18N[lang].routeShort[k] || k;
 
   function pickInitialLang() {
-    const h = (location.hash || "").replace("#", "").toLowerCase();
-    if (h === "en" || h === "zh") return h;
+    const parts = (location.hash || "").replace("#", "").toLowerCase().split(/[-_,&]/);
+    if (parts.includes("en")) return "en";
+    if (parts.includes("zh")) return "zh";
     try { const s = localStorage.getItem("sponsor-lang"); if (s === "en" || s === "zh") return s; } catch (e) {}
     return /^zh/i.test(navigator.language || "") ? "zh" : "en";
   }
@@ -341,6 +423,7 @@ a.btn { text-decoration: none; display: inline-block; }
     $("lang-en").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
     starCount();
     if (D) { setMeta(); buildFilters(); render(); }
+    if (view === "awards") renderAwards();
   }
   function setLang(l) {
     lang = l;
@@ -350,11 +433,17 @@ a.btn { text-decoration: none; display: inline-block; }
 
   // ---------------- state ----------------
   const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyHire: false, lists: new Set(), sizes: new Set(), since: 0, sort: "name", shown: PAGE };
-  let AW = { lists: {}, orgs: {} };
+  let AW = { dims: {}, lists: {}, orgs: {}, entries: {}, missing: [] };
+  const DIM_KEYS = ["fintech", "women", "unicorn", "growth"];
   const SIZES = ["small", "medium", "large"];
   const sizeName = (k) => (I18N[lang].size || I18N.zh.size)[k] || k;
   const awardsOf = (r) => AW.orgs[keyOf(r)] || [];
   const awardName = (k) => { const m = AW.lists[k]; return m ? (lang === "en" ? m.en : m.zh) : k; };
+  const dimName = (k) => { const m = AW.dims[k]; return m ? (lang === "en" ? m.en : m.zh) : k; };
+  // award entries of one organisation grouped by theme: { fintech: [{list, years}], ... }
+  const dimsOf = (r) => { const out = {}; awardsOf(r).forEach((e) => { const m = AW.lists[e.list]; if (!m) return; (out[m.dim] = out[m.dim] || []).push(e); }); return out; };
+  const yearsText = (ys) => (ys || []).join(", ");
+  let view = "list";
   let D = null, results = [], links = new Map(), staticLinks = new Map(), dbLinks = new Map(), stars = new Set(), db = null, sample = null, downloads = null, canVerify = false;
   function mergeLinks() { links = new Map([...staticLinks, ...dbLinks]); }
 
@@ -365,7 +454,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
         st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.inds || []); st.routes = new Set(f.routes || ["sw"]);
-        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set(f.lists || []); st.sizes = new Set(f.sizes || []);
+        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set((f.lists || []).filter((k) => DIM_KEYS.includes(k))); st.sizes = new Set(f.sizes || []);
       }
     } catch (e) {}
   }
@@ -427,9 +516,13 @@ a.btn { text-decoration: none; display: inline-block; }
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
     const ac = $("award-chips"); ac.innerHTML = "";
-    const acount = {}; Object.values(AW.orgs).forEach((es) => es.forEach((e) => { acount[e.list] = (acount[e.list] || 0) + 1; }));
-    Object.keys(AW.lists).forEach((k) => { const c = chip(awardName(k), acount[k] || 0, st.lists.has(k), () => toggle(st.lists, k)); const m = AW.lists[k]; c.title = (lang === "en" ? m.title_en : m.title_zh) || ""; ac.append(c); });
-    $("award-note").textContent = Object.keys(AW.lists).length ? t("awardNote") : "";
+    const dcount = dimCounts();
+    Object.keys(AW.dims).forEach((k) => {
+      const c = chip(dimName(k), dcount[k] || 0, st.lists.has(k), () => toggle(st.lists, k));
+      c.title = Object.values(AW.lists).filter((m) => m.dim === k).map((m) => (lang === "en" ? m.en : m.zh) + " · " + yearsText(m.years)).join("\n");
+      ac.append(c);
+    });
+    $("award-note").textContent = Object.keys(AW.dims).length ? t("awardNote") : "";
     const zc = $("size-chips"); zc.innerHTML = "";
     SIZES.forEach((k) => zc.append(chip(sizeName(k), null, st.sizes.has(k), () => toggle(st.sizes, k))));
     const sc = $("since-chips"); sc.innerHTML = "";
@@ -477,7 +570,7 @@ a.btn { text-decoration: none; display: inline-block; }
       if (q && !r[0].toLowerCase().includes(q)) { const L = links.get(keyOf(r)); if (!(L && L.tradingName && String(L.tradingName).toLowerCase().includes(q))) continue; }
       if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
       if (st.onlyStar && !stars.has(keyOf(r))) continue;
-      if (st.lists.size && !awardsOf(r).some((e) => st.lists.has(e.list))) continue;
+      if (st.lists.size && !awardsOf(r).some((e) => AW.lists[e.list] && st.lists.has(AW.lists[e.list].dim))) continue;
       if (st.sizes.size) { const L = links.get(keyOf(r)); if (!L || !st.sizes.has(L.size)) continue; }
       if (st.onlyLink) { const L = links.get(keyOf(r)); if (!L || !(L.website || L.careers)) continue; }
       if (st.onlyHire) { const L = links.get(keyOf(r)); if (!L || L.hiring !== "yes") continue; }
@@ -552,7 +645,8 @@ a.btn { text-decoration: none; display: inline-block; }
     if (HL && HL.hiring === "no") nm.append(badge("hire-no", t("hireBadgeNo", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "yes") nm.append(badge("hire-yes", t("hireBadgeYes", HL.checkedAt || "", by)));
     if (HL && HL.hiring === "noinfo") nm.append(badge("hire-noinfo", t("hireBadgeNoInfo", HL.checkedAt || "", by)));
-    awardsOf(r).forEach((e) => { const m = AW.lists[e.list]; const b = badge("award", awardName(e.list) + (e.rank ? " #" + e.rank : "")); if (m) b.title = (lang === "en" ? m.title_en : m.title_zh) || ""; nm.append(b); });
+    const dm = dimsOf(r);
+    DIM_KEYS.forEach((d) => { if (!dm[d]) return; const b = badge("award", dimName(d)); b.title = dm[d].map((e) => awardName(e.list) + " · " + yearsText(e.years)).join("\n"); nm.append(b); });
     main.append(nm);
     if (HL && HL.tradingName) { const tn = document.createElement("div"); tn.className = "trading"; tn.textContent = t("tradingAs") + t("colon") + HL.tradingName; main.append(tn); }
     const wh = document.createElement("div"); wh.className = "where";
@@ -751,7 +845,7 @@ a.btn { text-decoration: none; display: inline-block; }
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "web" ? t("srcWeb") : L.status === "ai" ? t("aiGuess") : "";
-      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", SIZES.includes(L.size) ? sizeName(L.size) : "", awardsOf(r).map((e) => awardName(e.list) + (e.rank ? " #" + e.rank : "")).join(" / "), L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
+      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", SIZES.includes(L.size) ? sizeName(L.size) : "", awardsOf(r).map((e) => awardName(e.list) + " (" + yearsText(e.years) + ")").join(" / "), L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
     const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
@@ -770,7 +864,153 @@ a.btn { text-decoration: none; display: inline-block; }
     catch (e) { if (e && e.code !== "declined") toast(t("exportFail")); }
   }
 
+  // ---------------- award themes ----------------
+  let dimCountCache = null;
+  function dimCounts() {
+    if (dimCountCache || !D) return dimCountCache || {};
+    const c = {};
+    for (const r of D.rows) { const ds = new Set(awardsOf(r).map((e) => AW.lists[e.list] && AW.lists[e.list].dim)); ds.forEach((d) => { if (d) c[d] = (c[d] || 0) + 1; }); }
+    return (dimCountCache = c);
+  }
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  // ---------------- views ----------------
+  function showView(v, keepHash) {
+    view = v === "awards" ? "awards" : "list";
+    $("list-view").hidden = view !== "list";
+    $("awards-view").hidden = view !== "awards";
+    $("view-list").setAttribute("aria-selected", view === "list" ? "true" : "false");
+    $("view-awards").setAttribute("aria-selected", view === "awards" ? "true" : "false");
+    if (!keepHash) { try { history.replaceState(null, "", view === "awards" ? "#awards" : location.pathname + location.search); } catch (e) {} }
+    if (view === "awards") renderAwards();
+    window.scrollTo(0, 0);
+  }
+  function filterByDim(d) {
+    st.lists = new Set([d]);
+    showView("list"); buildFilters(); refresh();
+  }
+  function openInList(name) {
+    st.q = name; st.place = ""; st.inds.clear(); st.routes.clear(); st.lists.clear(); st.sizes.clear(); st.since = 0;
+    st.onlyA = false; st.onlyStar = false; st.onlyLink = false; st.onlyHire = false;
+    $("q").value = name; $("place").value = ""; $("only-a").checked = false; $("only-star").checked = false; $("only-link").checked = false; $("only-hire").checked = false;
+    showView("list"); buildFilters(); refresh();
+  }
+
+  const awSt = { q: "", dim: "", only: false, shown: 100 };
+  let awRows = null;
+  const awNorm = (s) => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ").replace(/\(.*?\)/g, " ").replace(/[^a-z0-9]+/g, " ")
+    .replace(/\b(limited|ltd|plc|llp|inc|corp|corporation|group|holdings?|uk|international|the)\b/g, " ").replace(/\s+/g, " ").trim();
+  function buildAwRows() {
+    const groups = new Map();
+    Object.entries(AW.entries || {}).forEach(([lk, rows]) => {
+      rows.forEach((e) => {
+        const key = e.m ? "o:" + e.m[0][0] : "n:" + (awNorm(e.n) || e.n.toLowerCase());
+        let g = groups.get(key);
+        if (!g) { g = { names: [], lists: [], m: e.m || null, amb: e.amb || 0, uk: false }; groups.set(key, g); }
+        if (!g.names.includes(e.n)) g.names.push(e.n);
+        g.lists.push({ list: lk, years: e.y });
+        if (e.uk) g.uk = true;
+        if (e.amb && !g.m) g.amb = Math.max(g.amb, e.amb);
+      });
+    });
+    awRows = [...groups.values()].map((g) => ({ ...g, sortKey: g.names[0].replace(/^[^A-Za-z0-9]+/, "").toLowerCase(), search: (g.names.join(" ") + " " + (g.m ? g.m.map((x) => x[1]).join(" ") : "")).toLowerCase() }));
+    awRows.sort((a, b) => a.sortKey.localeCompare(b.sortKey, "en"));
+  }
+  function renderAwards() {
+    const hasData = Object.keys(AW.dims || {}).length > 0;
+    const cards = $("aw-cards"), dims = $("aw-dims");
+    cards.innerHTML = ""; dims.innerHTML = "";
+    if (!hasData) { cards.append(el("p", "note", t("awLoading"))); return; }
+    const dc = dimCounts();
+    Object.entries(AW.dims).forEach(([d, m]) => {
+      const ls = Object.values(AW.lists).filter((x) => x.dim === d);
+      const card = el("div", "dimcard");
+      card.append(el("h3", null, lang === "en" ? m.en : m.zh));
+      const big = el("div", "big", D ? nf.format(dc[d] || 0) : "…"); card.append(big);
+      card.append(el("div", "small", t("awCardOrgs")));
+      card.append(el("div", "small", t("awCardLists", ls.length, nf.format(ls.reduce((n, x) => n + x.count, 0)))));
+      const b = el("button", "btn", t("awFilterBtn")); b.type = "button"; b.onclick = () => filterByDim(d); card.append(b);
+      cards.append(card);
+
+      const sec = el("div", "dimsec");
+      const h = el("h3", null, lang === "en" ? m.en : m.zh); sec.append(h);
+      sec.append(el("p", "desc", lang === "en" ? m.desc_en : m.desc_zh));
+      const wrap = el("div", "tablewrap"); const tb = el("table", "aw");
+      const hr = el("tr"); ["awColList", "awColPub", "awColYears", "awColCount", "awColMatched", "awColNote", "awColSrc"].forEach((k) => hr.append(el("th", null, t(k))));
+      const thead = el("thead"); thead.append(hr); tb.append(thead);
+      const tbody = el("tbody");
+      Object.entries(AW.lists).filter(([, x]) => x.dim === d).forEach(([, x]) => {
+        const tr = el("tr");
+        const name = el("td"); name.append(el("b", null, lang === "en" ? x.en : x.zh)); name.append(el("div", "yrs", (lang === "en" ? "" : x.en + " · ") + (x.scope === "uk" ? t("awScopeUk") : t("awScopeGlobal")))); tr.append(name);
+        tr.append(el("td", null, x.publisher));
+        tr.append(el("td", "num", yearsText(x.years)));
+        tr.append(el("td", "num", nf.format(x.count)));
+        tr.append(el("td", "num", nf.format(x.matched)));
+        tr.append(el("td", null, lang === "en" ? x.coverage_en : x.coverage_zh));
+        const src = el("td"); src.append(a(x.url, t("awSourceLink") + " ↗")); tr.append(src);
+        tbody.append(tr);
+      });
+      (AW.missing || []).filter((x) => x.dim === d).forEach((x) => {
+        const tr = el("tr", "missing");
+        const name = el("td"); name.append(el("b", null, lang === "en" ? x.en : x.zh)); tr.append(name);
+        tr.append(el("td", null, x.publisher));
+        tr.append(el("td", null, t("awMissing")));
+        tr.append(el("td", "num", "—")); tr.append(el("td", "num", "—"));
+        tr.append(el("td", null, lang === "en" ? x.reason_en : x.reason_zh));
+        const src = el("td"); src.append(a(x.url, t("awSourceLink") + " ↗")); tr.append(src);
+        tbody.append(tr);
+      });
+      tb.append(tbody); wrap.append(tb); sec.append(wrap);
+      dims.append(sec);
+    });
+    const sel = $("aw-dim"); sel.innerHTML = "";
+    const o0 = el("option", null, t("awAllDims")); o0.value = ""; sel.append(o0);
+    Object.entries(AW.dims).forEach(([d, m]) => { const o = el("option", null, lang === "en" ? m.en : m.zh); o.value = d; sel.append(o); });
+    sel.value = awSt.dim;
+    renderAwTable();
+  }
+  function renderAwTable() {
+    if (!awRows) buildAwRows();
+    const q = awSt.q.trim().toLowerCase();
+    const rows = awRows.filter((g) => (!q || g.search.includes(q)) && (!awSt.only || g.m) && (!awSt.dim || g.lists.some((e) => AW.lists[e.list] && AW.lists[e.list].dim === awSt.dim)));
+    const tb = $("aw-table"); tb.innerHTML = "";
+    const hr = el("tr"); ["awColCompany", "awColList", "awColOn"].forEach((k) => hr.append(el("th", null, t(k))));
+    const thead = el("thead"); thead.append(hr); tb.append(thead);
+    const tbody = el("tbody");
+    if (!rows.length) { const tr = el("tr"); const td = el("td", "note", t("awEmpty")); td.colSpan = 3; tr.append(td); tbody.append(tr); }
+    rows.slice(0, awSt.shown).forEach((g) => {
+      const tr = el("tr");
+      const c = el("td"); c.append(el("b", null, g.names[0]));
+      if (g.names.length > 1) c.append(el("div", "yrs", g.names.slice(1).join(" / ")));
+      if (g.uk) c.append(el("div", "yrs", t("awUkHq")));
+      tr.append(c);
+      const l = el("td");
+      g.lists.forEach((e) => { const m = AW.lists[e.list]; if (!m) return; const line = el("div"); line.append(dimName(m.dim) + " · " + (lang === "en" ? m.en : m.zh) + " "); line.append(el("span", "yrs", yearsText(e.years))); l.append(line); });
+      tr.append(l);
+      const on = el("td");
+      if (g.m) {
+        g.m.forEach(([, nm, tw]) => {
+          const line = el("div", "on-reg"); line.append("✓ " + nm + (tw ? " · " + tw : "") + " ");
+          const b = el("button", "linkish", t("awOpenInList")); b.type = "button"; b.onclick = () => openInList(nm); line.append(b);
+          on.append(line);
+        });
+      } else on.append(el("span", "off-reg", g.amb ? t("awAmb", g.amb) : t("awNotFound")));
+      tr.append(on);
+      tbody.append(tr);
+    });
+    tb.append(tbody);
+    $("aw-count").textContent = t("awShown", nf.format(Math.min(awSt.shown, rows.length)), nf.format(rows.length));
+    const more = $("aw-more"); more.innerHTML = ""; more.hidden = rows.length <= awSt.shown;
+    if (!more.hidden) { const b = el("button", "btn", t("awMore", Math.min(100, rows.length - awSt.shown))); b.type = "button"; b.onclick = () => { awSt.shown += 100; renderAwTable(); }; more.append(b); }
+  }
+
   // ---------------- wire inputs ----------------
+  $("view-list").onclick = () => showView("list");
+  $("view-awards").onclick = () => showView("awards");
+  $("award-more").onclick = () => showView("awards");
+  $("aw-q").addEventListener("input", (e) => { awSt.q = e.target.value; awSt.shown = 100; renderAwTable(); });
+  $("aw-dim").onchange = (e) => { awSt.dim = e.target.value; awSt.shown = 100; renderAwTable(); };
+  $("aw-only").onchange = (e) => { awSt.only = e.target.checked; awSt.shown = 100; renderAwTable(); };
   $("lang-zh").onclick = () => setLang("zh");
   $("lang-en").onclick = () => setLang("en");
   $("q").addEventListener("input", (e) => { st.q = e.target.value; refresh(true); });
@@ -792,8 +1032,13 @@ a.btn { text-decoration: none; display: inline-block; }
   applyLang();
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("only-hire").checked = st.onlyHire; $("sort").value = st.sort;
   initCapabilities();
+  if ((location.hash || "").toLowerCase().split(/[-_,&#]/).includes("awards")) showView("awards", true);
   fetch("awards.json").then((r) => (r.ok ? r.json() : null)).then((j) => {
-    if (j && j.lists && j.orgs) { AW = j; if (D) { buildFilters(); results = filter(); render(); } }
+    if (j && j.lists && j.orgs && j.dims) {
+      AW = j; dimCountCache = null; awRows = null;
+      if (D) { buildFilters(); results = filter(); render(); }
+      if (view === "awards") renderAwards();
+    }
   }).catch(() => {});
   fetch("links.json").then((r) => (r.ok ? r.json() : {})).then((j) => {
     staticLinks = new Map(Object.entries(j || {})); mergeLinks(); if (D) { buildFilters(); results = filter(); render(); }
@@ -805,7 +1050,9 @@ a.btn { text-decoration: none; display: inline-block; }
     const counts = new Map(); d.rows.forEach((r) => counts.set(r[1], (counts.get(r[1]) || 0) + 1));
     const dl = $("towns");
     [...counts.entries()].filter(([i, n]) => i >= 0 && n >= 15).sort((x, y) => y[1] - x[1]).forEach(([i]) => { const o = document.createElement("option"); o.value = d.towns[i]; dl.append(o); });
+    dimCountCache = null;
     buildFilters(); refresh(); starCount();
+    if (view === "awards") renderAwards();
   }).catch(() => {
     const e = document.createElement("div"); e.className = "empty"; e.textContent = t("loadFail");
     $("list").innerHTML = ""; $("list").append(e);

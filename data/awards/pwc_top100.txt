@@ -1,0 +1,4 @@
+2025: SpaceX; ByteDance; OpenAI; Anthropic; Databricks; Revolut; Mistral AI; Helsing; Kavak; Swiggy; Stripe; Ramp; Plaid; Rapyd Financial Network
+2024: Canva; Revolut; J&T Express; Stripe; ChangXin Memory Technologies; Anthropic; CoreWeave; Wiz; UST Global; Scale AI; Anduril
+2023: ByteDance; Ant Group; OpenAI; SpaceX; Stripe; GAC Aion; SHEIN; Wiz
+2022: ByteDance; Klarna

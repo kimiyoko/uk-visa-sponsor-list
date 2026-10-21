@@ -20,6 +20,8 @@ A tool for finding UK employers that can sponsor a work visa. The data comes fro
 - Filter by **date added to the register**: last 24 hours, last 7 days, last 30 days. Join dates are recorded from 2026-10-15 onwards
 - Organisations added in the last 24 hours carry a **New added** badge next to their name
 - Every organisation has links to its **website, careers page and LinkedIn jobs**. Hand-checked links go straight to the page; the rest open a search for that company
+- Filter by **award themes**: fintech, women-friendly, unicorn and high growth. Each theme combines several public lists over the last five years (Forbes Fintech 50, IDC FinTech Top 100, Forbes World's Top Companies for Women, UK's Best Workplaces for Women, The Times Top 50 Employers for Gender Equality, CB Insights unicorns, Hurun, PwC Top 100 Unicorns, Deloitte UK Technology Fast 50)
+- An **award list reference** page shows every list, the years covered, how many companies matched the register, and each listed company
 - Save companies with ☆ and **download your saved list** as a CSV, or export the current filtered results
 - Switch between **中文 and English** from the top right of the page
 
@@ -30,7 +32,9 @@ Please note: being on the register means an organisation is **allowed** to spons
 | Path | Contents |
 |---|---|
 | `src/sponsor-finder.html` | Page source (also used for the claude.ai version) |
-| `docs/` | The GitHub Pages site: `index.html`, `data.json` (register data) and `links.json` (hand-checked website and careers links) |
+| `docs/` | The GitHub Pages site: `index.html`, `data.json` (register data), `links.json` (hand-checked website and careers links) and `awards.json` (award themes) |
+| `data/awards/` | Raw award lists, one file per list |
+| `scripts/build_awards.py` | Groups the award lists into themes and matches them to the register by name |
 | `scripts/build_data.py` | Turns the official CSV into the page data, adds industry tags and records join dates |
 | `scripts/update_register.py` | Downloads the latest register, compares it with the previous one and updates the data |
 | `scripts/make_static.py` | Builds `docs/index.html` from `src/` |
@@ -64,6 +68,8 @@ cp /tmp/out/data.json docs/data.json
 
 To add a hand-checked website or careers link, edit `docs/links.json`. Each key is the organisation ID: a hash of `lower-case name|lower-case town` (see `hash()` in `src/sponsor-finder.html`). Set `status` to `verified`. Links verified on the claude.ai version are copied here automatically each weekday morning.
 
+To update the award lists, edit the files in `data/awards/` and run `python3 scripts/build_awards.py`.
+
 **Data format note:** each row in `data.json` ends with the join date, stored as days since 2020-01-01. `0` means the organisation was already on the register when tracking began.
 
 ### Data source and licence
@@ -84,6 +90,8 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
 - 按 **加入名单时间** 筛选：24 小时内、7 日内、30 日内。从 2026-10-15 起记录每家公司加入名单的日期
 - 24 小时内新加入的公司，名称旁会显示「今日新增」角标
 - 每家公司附 **官网、招聘页、LinkedIn 职位** 链接。核实过的直接打开对应页面，其余的打开该公司的搜索结果
+- 按 **榜单维度** 筛选：金融科技、女性友好、独角兽、高增长。每个维度由几份公开榜单合并，按年份发布的收近 5 年（福布斯金融科技 50 强、IDC 金融科技百强、福布斯全球女性最佳雇主、英国女性最佳职场、泰晤士报性别平等雇主 50 强、CB Insights 独角兽、胡润、普华永道独角兽 100 强、德勤英国科技 Fast 50）
+- **榜单参考清单** 页面列出每份榜单的年份、收录数量、对上担保名单的数量，以及每家上榜公司
 - 点 ☆ 收藏公司，可以 **一键下载收藏名单**（CSV），也可以导出当前筛选结果
 - 页面右上角可切换 **中文 / English**
 
@@ -94,7 +102,9 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
 | 路径 | 内容 |
 |---|---|
 | `src/sponsor-finder.html` | 网页源文件（claude.ai 版本也用它） |
-| `docs/` | GitHub Pages 发布的网页：`index.html`、`data.json`（名单数据）、`links.json`（核实过的官网 / 招聘页） |
+| `docs/` | GitHub Pages 发布的网页：`index.html`、`data.json`（名单数据）、`links.json`（核实过的官网 / 招聘页）、`awards.json`（榜单维度） |
+| `data/awards/` | 各份榜单的原始名单，每份一个文件 |
+| `scripts/build_awards.py` | 把榜单合并成维度，并按名称和担保名单对应 |
 | `scripts/build_data.py` | 把官方 CSV 转成网页数据，给公司打行业标签，并记录加入日期 |
 | `scripts/update_register.py` | 下载最新登记表、和上一版对比、更新数据 |
 | `scripts/make_static.py` | 由 `src/` 生成 `docs/index.html` |
@@ -127,6 +137,8 @@ cp /tmp/out/data.json docs/data.json
 ```
 
 添加核实过的官网 / 招聘页：编辑 `docs/links.json`。每条的键是公司 ID，由「公司名小写|城市小写」做哈希得到（算法见 `src/sponsor-finder.html` 里的 `hash()`），`status` 写 `verified`。在 claude.ai 版本里核实的链接，每个工作日早上会自动同步到这里。
+
+更新榜单：修改 `data/awards/` 里的文件，然后运行 `python3 scripts/build_awards.py`。
 
 **数据格式说明：** `data.json` 每行最后一个字段是加入日期，存为自 2020-01-01 起的天数；`0` 表示开始记录前已在名单上。
 
