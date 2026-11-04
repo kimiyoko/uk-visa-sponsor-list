@@ -1,4 +1,4 @@
-"""Build docs/awards.json: award lists grouped into four dimensions and matched to the sponsor register.
+"""Build docs/awards.json: award lists grouped into themes and matched to the sponsor register.
 
 Usage: python3 scripts/build_awards.py [docs/data.json] [docs/awards.json]
 
@@ -8,7 +8,15 @@ Companies are matched to the register by name only, so the result is a lead, not
     (Ltd, plc, LLP, UK, Group, Holdings, International...) stripped from the end;
   - a match needs the same core name. One-word names that are short (≤ 6 letters) or an
     ordinary English word (e.g. "Unit", "Merge", "Chapter") are only matched for UK-only lists and only when exactly one register
-    organisation has that core name; otherwise they are listed as "not matched".
+    organisation has that core name; otherwise they are listed as "not matched";
+  - trading names count: a register entry such as "ABC Ltd T/A Brand", "t/as", "TA", "trading as",
+    "d/b/a" or "(formerly X)" is indexed under the legal name and under each trading / former name.
+    A legal-name match wins; a trading name is used only when no legal name matches, exactly one
+    organisation trades under it (many "t/a Specsavers" franchisees are not Specsavers itself)
+    and it isn't a short or ordinary word;
+  - one name, one answer: if a name is matched on any list, the same name on every other list
+    is matched to the same organisation (so a company never appears twice, matched and unmatched).
+Runs in the daily update (.github/workflows/update.yml) after the register is refreshed.
 Organisation IDs are the same hash the page uses: hash(lower-case name | lower-case town).
 """
 import json, os, re, sys, unicodedata, datetime
@@ -24,7 +32,11 @@ DIMS = {
     "unicorn": {"zh": "独角兽", "en": "Unicorn",
                 "desc_zh": "估值 10 亿美元以上、尚未上市的创业公司。", "desc_en": "Private start-ups valued at $1bn or more."},
     "growth": {"zh": "高增长", "en": "High growth",
-               "desc_zh": "按营收增长排名的英国科技公司。", "desc_en": "UK tech companies ranked by revenue growth."},
+               "desc_zh": "按营收增长排名的公司、热门创业公司和英国国王企业奖得主。", "desc_en": "Companies ranked by revenue growth, rising start-ups and King's Award for Enterprise winners."},
+    "ai": {"zh": "人工智能", "en": "AI",
+           "desc_zh": "人工智能领域的创业公司榜单。", "desc_en": "Lists of AI start-ups."},
+    "employer": {"zh": "最佳雇主", "en": "Best employer",
+                 "desc_zh": "按员工评价或人力资源认证评出的英国最佳雇主。", "desc_en": "UK best employers, rated by staff reviews or HR certification."},
 }
 
 # fmt: "years" = lines "YYYY: a; b; c"; "digits" = "Name|<last digits of 202x years>[|UK]" joined by ';';
@@ -66,13 +78,71 @@ LISTS = {
         zh="德勤英国科技 Fast 50", en="Deloitte UK Technology Fast 50", publisher="Deloitte",
         url="https://www.deloitte.co.uk/fast50/winners/2025/",
         coverage_zh="2021–2025 年，每年 50 家，完整收录。", coverage_en="2021–2025, 50 a year, complete."),
+    "cbinsights_fintech100": dict(dim="fintech", file="cbinsights_fintech100.txt", fmt="years", scope="global",
+        zh="CB Insights 金融科技 100 强", en="CB Insights Fintech 100", publisher="CB Insights",
+        url="https://www.cbinsights.com/research/report/fintech-100-most-promising-fintech-startups-2025/",
+        coverage_zh="2023–2026 年，从榜单图片逐个转录，可能有个别拼写差异；2022 年发布的是 Fintech 250，未收录。", coverage_en="2023–2026, transcribed from the list images, so a few spellings may differ; 2022 was the Fintech 250 and isn't included."),
+    "wifc": dict(dim="women", file="wifc.txt", fmt="years", scope="uk",
+        zh="金融业女性宪章签署机构", en="Women in Finance Charter signatories", publisher="HM Treasury (英国财政部)",
+        url="https://www.gov.uk/government/publications/women-in-finance-charter",
+        coverage_zh="英国政府数据。2026 年 6 月的当前签署名单，约 420 家；名单只有当前版本，没有按年份。", coverage_en="UK government data. Current signatories as of June 2026, about 420; only the current list exists, not one per year."),
+    "gender_pay_gap": dict(dim="women", file="gender_pay_gap.txt", fmt="digits", scope="uk",
+        zh="性别薪酬差距小的雇主", en="Employers with a small gender pay gap", publisher="UK gender pay gap service (英国政府)",
+        url="https://gender-pay-gap.service.gov.uk/",
+        coverage_zh="英国政府数据，250 人以上雇主必须申报。筛选条件：时薪中位数差距 ≤ 5%，且薪酬最高四分之一里女性 ≥ 40%，近 5 个申报年里至少 3 年符合。年份按公布年份记（2021/22 申报年记为 2022）。", coverage_en="UK government data; employers with 250+ staff must report. Included if the median hourly pay gap is 5% or less and women are at least 40% of the top pay quarter, in at least 3 of the last 5 reporting years. Years are the year published (2021/22 shows as 2022)."),
+    "gptw_best": dict(dim="employer", file="gptw_best.txt", fmt="digits", scope="uk",
+        zh="英国最佳职场", en="UK's Best Workplaces", publisher="Great Place To Work UK",
+        url="https://www.greatplacetowork.co.uk/best-workplaces/2026",
+        coverage_zh="2022–2026 年，大、中、小型组织全部类别，完整收录，约 1,000 家。", coverage_en="2022–2026, all size categories, complete, about 1,000 organisations."),
+    "glassdoor_uk": dict(dim="employer", file="glassdoor_uk.txt", fmt="years", scope="uk",
+        zh="Glassdoor 英国最佳工作场所", en="Glassdoor Best Places to Work UK", publisher="Glassdoor",
+        url="https://www.glassdoor.co.uk/Award/Best-Places-to-Work-UK-LST_KQ0,22.htm",
+        coverage_zh="2022–2026 年，每年 50 家，按员工匿名评价评出，完整收录。", coverage_en="2022–2026, 50 a year, based on anonymous staff reviews, complete."),
+    "top_employers_uk": dict(dim="employer", file="top_employers_uk.txt", fmt="years", scope="uk",
+        zh="英国杰出雇主认证", en="Top Employers United Kingdom", publisher="Top Employers Institute",
+        url="https://www.top-employers.com/en-GB/",
+        coverage_zh="2026 年约 100 家（来自媒体公布的完整名单）；2025 年只找到媒体点名的 23 家；更早年份没有公开名单。", coverage_en="2026: about 100 (full list published in the press); 2025: only the 23 named in the press; no public list for earlier years."),
+    "forbes_ai50": dict(dim="ai", file="forbes_ai50.txt", fmt="years", scope="global",
+        zh="福布斯 AI 50", en="Forbes AI 50", publisher="Forbes",
+        url="https://www.forbes.com/lists/ai50/",
+        coverage_zh="2022–2026 年，每年 50 家，完整收录。大多是美国公司。", coverage_en="2022–2026, 50 a year, complete. Mostly US companies."),
+    "cbinsights_ai100": dict(dim="ai", file="cbinsights_ai100.txt", fmt="years", scope="global",
+        zh="CB Insights AI 100", en="CB Insights AI 100", publisher="CB Insights",
+        url="https://www.cbinsights.com/research/report/artificial-intelligence-top-startups-2025/",
+        coverage_zh="2022、2024、2025、2026 年，从榜单图片逐个转录；2023 年的榜单页没有找到。", coverage_en="2022, 2024, 2025 and 2026, transcribed from the list images; the 2023 page couldn't be found."),
+    "ft1000_uk": dict(dim="growth", file="ft1000_uk.txt", fmt="years", scope="uk",
+        zh="金融时报欧洲增长最快公司 1000 强（英国部分）", en="FT 1000: Europe's Fastest-Growing Companies (UK entries)", publisher="Financial Times × Statista",
+        url="https://rankings.statista.com/en/fastest-growing-companies/rankings/europes-fastest-growing-companies-2026/",
+        coverage_zh="2025、2026 年，只收总部在英国的公司（每年 130–180 家）；2022–2024 年 Statista 已不提供。", coverage_en="2025 and 2026, UK-headquartered companies only (130–180 a year); 2022–2024 are no longer on Statista."),
+    "linkedin_startups_uk": dict(dim="growth", file="linkedin_startups_uk.txt", fmt="years", scope="uk",
+        zh="领英英国热门创业公司", en="LinkedIn Top Startups UK", publisher="LinkedIn News UK",
+        url="https://www.linkedin.com/pulse/linkedin-top-startups-2025-20-uk-companies-rise-linkedin-news-uk-vczpc",
+        coverage_zh="2022–2025 年，每年 15–20 家，完整收录；2026 年版还没找到。", coverage_en="2022–2025, 15–20 a year, complete; the 2026 edition wasn't found yet."),
+    "kings_awards": dict(dim="growth", file="kings_awards.txt", fmt="years", scope="uk",
+        zh="英国国王企业奖", en="King's Awards for Enterprise", publisher="The Gazette (英国政府公报)",
+        url="https://www.gov.uk/kings-awards-for-enterprise",
+        coverage_zh="英国政府奖项，含国际贸易、创新、可持续发展、促进机会四类。2022–2026 年（2022 年为女王企业奖），从政府公报 PDF 解析，个别名称可能被拆开或合并。", coverage_en="UK government award for international trade, innovation, sustainable development and promoting opportunity. 2022–2026 (Queen's Awards in 2022), parsed from Gazette PDFs, so a few names may be split or joined."),
 }
 
 MISSING = [
     dict(dim="fintech", zh="CNBC × Statista 全球金融科技榜", en="CNBC World's Top Fintech Companies", publisher="CNBC × Statista",
          url="https://www.cnbc.com/the-worlds-top-fintech-companies-2025/",
          reason_zh="CNBC 网站拒绝访问，网页存档里也没有名单表格，暂未收录。", reason_en="CNBC's site refused access and archived copies don't contain the tables, so it isn't included yet."),
+    dict(dim="fintech", zh="CNBC × Statista 英国金融科技 150 强", en="CNBC × Statista Top Fintech Companies UK", publisher="CNBC × Statista",
+         url="https://www.cnbc.com/",
+         reason_zh="和全球榜一样，CNBC 网站拒绝访问、存档里没有表格，暂未收录。", reason_en="As with the world list, CNBC's site refused access and archives have no tables, so it isn't included yet."),
+    dict(dim="fintech", zh="毕马威 × H2 Ventures 金融科技 100 强", en="KPMG × H2 Ventures Fintech100", publisher="KPMG × H2 Ventures",
+         url="https://home.kpmg/xx/en/home/industries/financial-services/fintech100.html",
+         reason_zh="2019 年后停办，最近一期已超出 5 年范围，不收录。", reason_en="Discontinued after 2019, so the latest edition is outside the five-year window; not included."),
+    dict(dim="growth", zh="德勤 EMEA 科技 Fast 500", en="Deloitte Technology Fast 500 EMEA", publisher="Deloitte",
+         url="https://www.deloitte.com/uk/en/services/deloitte-private/about/emea-tech-fast500-winners.html",
+         reason_zh="网页只列前几名，完整 500 家名单不公开发布，暂未收录。英国部分基本已被德勤英国 Fast 50 覆盖。", reason_en="The site lists only the top few; the full 500 isn't published, so it isn't included. UK entries are mostly covered by the Deloitte UK Fast 50."),
 ]
+
+# Hand-checked false matches: (core name on the list, register organisation name) that are NOT the same company.
+NOT_SAME = {
+    ("gupshup", "A Squared Eats Ltd t/a Gupshup"),  # restaurant, not the messaging unicorn
+}
 
 GENERIC_END = set("""limited ltd plc llp lp llc inc incorporated corp corporation co company companies group holdings holding
 uk u k gb britain great international intl europe emea global worldwide the and services ireland i ag sa se nv bv gmbh
@@ -88,6 +158,16 @@ def norm(s):
     s = re.sub(r"[^a-z0-9]+", " ", s)
     s = re.sub(r"\bunited kingdom\b", " uk ", s)
     return s.split()
+
+
+TA_SPLIT_CS = re.compile(r"\sTA\s")  # bare "TA" only in capitals, so words like "Pasta Ta Mare" aren't split
+
+
+def name_parts(s):
+    """Legal name first, then any trading or former names: "ABC Ltd T/A Brand (formerly Old)" -> [ABC Ltd, Brand, Old]."""
+    s = TA_SPLIT_CS.sub(" t/a ", s)
+    parts = [p.strip(" ()'\"") for p in re.split(r"\s*[(,]?\s*\b(?:t\s*/\s*as?|trading\s+as|d\s*/\s*b\s*/\s*a|dba|formerly)\b\.?\s*:?\s*", s, flags=re.I)]
+    return [p for p in parts if p]
 
 
 def core(s):
@@ -174,41 +254,65 @@ def main():
     data_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "docs", "data.json")
     out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, "docs", "awards.json")
     d = json.load(open(data_path, encoding="utf-8"))
-    index = {}
+    index, n_trading = {}, 0
     for r in d["rows"]:
         town = d["towns"][r[1]] if r[1] >= 0 else ""
         oid = js_hash(r[0].lower() + "|" + town.lower())
-        names = [r[0]] + [p for p in re.split(r"\bt/a\b|\btrading as\b", r[0], flags=re.I)[1:]]
-        for nm in names:
+        parts = name_parts(r[0])
+        for i, nm in enumerate(parts):
             c = core(nm)
-            if c:
-                index.setdefault(c, []).append((oid, r[0], town))
+            if c and all(h[0] != oid for h in index.get(c, [])):
+                index.setdefault(c, []).append((oid, r[0], town, int(i > 0)))
+                if i > 0:
+                    n_trading += 1
+
+    def pick(hits):
+        """Legal names win. A trading name only counts when one organisation uses it:
+        "t/a Specsavers" or "t/a McDonald's" is a franchisee, not the company on the list."""
+        legal = [h for h in hits if not h[3]]
+        if legal:
+            return legal
+        return hits if len(hits) == 1 else []
+
+    loaded = {key: read_list(cfg) for key, cfg in LISTS.items()}
+    # pass 1: names each list can match on its own; a name matched anywhere is matched everywhere
+    confirmed = {}
+    for key, cfg in LISTS.items():
+        for n in loaded[key][0]:
+            c = core(n)
+            hits = pick([h for h in index.get(c, []) if (c, h[1]) not in NOT_SAME])
+            if hits and hits[0][3] and weak(c):
+                hits = []  # "t/a Reward", "t/a Impact": an ordinary word as a trading name is too loose
+            if hits and (not weak(c) or (cfg["scope"] == "uk" and len(hits) == 1)):
+                confirmed[c] = hits
 
     lists, orgs, entries = {}, {}, {}
+    via_trading = 0
     for key, cfg in LISTS.items():
-        names, uk = read_list(cfg)
+        names, uk = loaded[key]
         rows, matched = [], 0
         for n in sorted(names, key=str.lower):
             c = core(n)
-            hits = index.get(c, [])
-            ok = bool(hits) and (not weak(c) or (cfg["scope"] == "uk" and len(hits) == 1))
+            hits = confirmed.get(c) or []
             years = sorted(names[n])
             row = {"n": n, "y": years}
             if n in uk:
                 row["uk"] = 1
-            if ok:
+            if hits:
                 matched += 1
-                row["m"] = [[oid, nm, town] for oid, nm, town in hits[:5]]
-                for oid, _, _ in hits:
+                row["m"] = [[oid, nm, town, ta] for oid, nm, town, ta in hits[:5]]
+                via_trading += sum(h[3] for h in hits[:5])
+                for oid, _, _, _ in hits:
                     orgs.setdefault(oid, []).append({"list": key, "years": years})
-            elif hits:
-                row["amb"] = len(hits)
+            elif index.get(c):
+                row["amb"] = len(index[c])
             rows.append(row)
         entries[key] = rows
         ys = sorted({y for v in names.values() for y in v})
         lists[key] = {k: cfg[k] for k in ("dim", "zh", "en", "publisher", "url", "coverage_zh", "coverage_en", "scope")}
         lists[key].update(years=ys, count=len(rows), matched=matched)
         print(f"{key:22s} {len(rows):5d} companies  {matched:4d} matched  years {ys}")
+    print(f"register trading / former names indexed: {n_trading}; list matches made through a trading name: {via_trading}")
 
     out = {"version": 2, "generated": datetime.date.today().isoformat(), "dims": DIMS, "lists": lists,
            "missing": MISSING, "orgs": orgs, "entries": entries}

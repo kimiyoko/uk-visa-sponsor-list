@@ -28,6 +28,14 @@ jobs:
         id: update
         run: python3 scripts/update_register.py
 
+      # Re-match award lists to the new register, including trading names (T/A, trading as).
+      # The English word list decides which one-word names count as "ordinary words" (see build_awards.py).
+      - name: Re-match award lists to the register (legal and trading names)
+        if: steps.update.outputs.updated == 'true'
+        run: |
+          sudo apt-get install -y --no-install-recommends hunspell-en-us >/dev/null
+          python3 scripts/build_awards.py
+
       - name: Rebuild public page
         if: steps.update.outputs.updated == 'true'
         run: python3 scripts/make_static.py

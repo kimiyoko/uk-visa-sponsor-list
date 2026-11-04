@@ -264,8 +264,8 @@ table.aw a { color: var(--accent); }
   <section id="awards-view" role="tabpanel" aria-labelledby="view-awards" hidden>
     <div class="aw-intro">
       <h2 data-i18n="awTitle">榜单参考清单</h2>
-      <p data-i18n="awIntro1">名单页的「榜单」筛选不是一份一份榜单单独列，而是按 4 个维度合并：金融科技、女性友好、独角兽、高增长。每个维度由几份公开榜单组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。</p>
-      <p data-i18n="awIntro2">榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。所以这里是线索，投之前仍要核实。</p>
+      <p data-i18n="awIntro1">名单页的「榜单」筛选不是一份一份榜单单独列，而是按 6 个维度合并：金融科技、人工智能、高增长、独角兽、女性友好、最佳雇主。每个维度由几份公开榜单（包括英国政府数据）组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。</p>
+      <p data-i18n="awIntro2">榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。担保名单上的商号（T/A、trading as 后面的名字）也参与对应：比如「BrightGen Limited, T/A Credera」能对上榜单上的 Credera；法定名称优先，多家机构用同一个商号（比如各地 Specsavers 加盟店）时不对应。同一个名称在一份榜单上对上了，在其他榜单上也算同一家。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。每天更新担保名单时会重新对应一次。所以这里是线索，投之前仍要核实。</p>
     </div>
     <div class="dimcards" id="aw-cards"></div>
     <div id="aw-dims" style="display:flex;flex-direction:column;gap:16px"></div>
@@ -327,13 +327,13 @@ table.aw a { color: var(--accent); }
       csvHead: ["公司名称", "经营名称", "城市", "郡", "行业标签", "签证路线", "评级", "官网", "招聘页", "链接状态", "英国招聘状态", "规模", "榜单", "核实日期", "已收藏"], yes: "是",
       fAward: "榜单（按维度合并，可多选）", awardNote: "每个维度由几份榜单、近几年的名单合并，按公司名称对应，可能有遗漏或撞名。", awardMore: "看榜单参考清单",
       viewList: "担保名单", viewAwards: "榜单参考清单", awTitle: "榜单参考清单",
-      awIntro1: "名单页的「榜单」筛选不是一份一份榜单单独列，而是按 4 个维度合并：金融科技、女性友好、独角兽、高增长。每个维度由几份公开榜单组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。",
-      awIntro2: "榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。所以这里是线索，投之前仍要核实。",
+      awIntro1: "名单页的「榜单」筛选不是一份一份榜单单独列，而是按 6 个维度合并：金融科技、人工智能、高增长、独角兽、女性友好、最佳雇主。每个维度由几份公开榜单（包括英国政府数据）组成，按年份发布的榜单尽量收近 5 年，任意一年上榜都算。",
+      awIntro2: "榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。担保名单上的商号（T/A、trading as 后面的名字）也参与对应：比如「BrightGen Limited, T/A Credera」能对上榜单上的 Credera；法定名称优先，多家机构用同一个商号（比如各地 Specsavers 加盟店）时不对应。同一个名称在一份榜单上对上了，在其他榜单上也算同一家。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。每天更新担保名单时会重新对应一次。所以这里是线索，投之前仍要核实。",
       awCardOrgs: "家担保名单上的机构", awCardLists: (n, c) => `${n} 份榜单 · 收录 ${c} 家公司`, awFilterBtn: "在名单里筛选",
       awColList: "榜单", awColPub: "发布方", awColYears: "年份", awColCount: "收录公司", awColMatched: "对上担保名单", awColNote: "收录情况", awColSrc: "来源",
       awMissing: "未收录", awScopeUk: "英国榜单", awScopeGlobal: "全球榜单", awSourceLink: "查看",
       awCompanies: "榜单公司一览", awSearchPh: "搜索公司名", awAllDims: "全部维度", awOnlyReg: "只看在担保名单上的",
-      awColCompany: "公司（榜单上的名称）", awColOn: "担保名单上的机构", awNotFound: "未找到同名机构", awAmb: (n) => `名称较短或是常用词，名单上有 ${n} 家同名机构，不一定是同一家，未自动对应`,
+      awColCompany: "公司（榜单上的名称）", awColOn: "担保名单上的机构", awNotFound: "未找到同名机构", awViaTa: "（按商号对应）", awAmb: (n) => `名称较短或是常用词，名单上有 ${n} 家同名机构，不一定是同一家，未自动对应`,
       awShown: (s, n) => `显示 ${s} / ${n} 家`, awMore: (n) => `再显示 ${n} 家`, awOpenInList: "在名单里查看", awUkHq: "英国总部",
       awEmpty: "没有符合条件的公司。", awLoading: "榜单数据载入中…", awBadgeTitle: (lines) => lines.join("\n"),
       fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中", large: "大" }, sizeTag: (x) => `规模：${x}`,
@@ -379,13 +379,13 @@ table.aw a { color: var(--accent); }
       csvHead: ["Organisation", "Trading as", "Town/City", "County", "Industry", "Visa route", "Rating", "Website", "Careers page", "Link status", "UK hiring status", "Size", "Lists", "Checked on", "Saved"], yes: "Yes",
       fAward: "Award lists (grouped, multi-select)", awardNote: "Each group combines several lists over recent years. Companies are matched by name, so some may be missed or mismatched.", awardMore: "See the award list reference",
       viewList: "Sponsor list", viewAwards: "Award list reference", awTitle: "Award list reference",
-      awIntro1: "The award filter on the sponsor list doesn't show each list on its own. Lists are grouped into four themes: fintech, women-friendly, unicorn and high growth. Each theme combines several public lists; yearly lists cover up to the last five years, and appearing in any year counts.",
-      awIntro2: "List companies are matched to the sponsor register by name (the same name once endings such as Ltd, UK and Group are removed). Global companies often register in the UK under a subsidiary with a different name, so they won't match. Very short generic names (such as Unit or Merge) clash easily, so they are only matched on UK lists and only when exactly one register organisation has that name. Treat matches as leads and check before applying.",
+      awIntro1: "The award filter on the sponsor list doesn't show each list on its own. Lists are grouped into six themes: fintech, AI, high growth, unicorn, women-friendly and best employer. Each theme combines several public lists (UK government data included); yearly lists cover up to the last five years, and appearing in any year counts.",
+      awIntro2: "List companies are matched to the sponsor register by name (the same name once endings such as Ltd, UK and Group are removed). Trading names on the register (after T/A or trading as) count too: \"BrightGen Limited, T/A Credera\" matches Credera on a list. Legal names win, and a trading name shared by several organisations (such as Specsavers franchisees) isn't matched. A name matched on one list is matched to the same organisation on every list. Matching reruns with every daily register update. Global companies often register in the UK under a subsidiary with a different name, so they won't match. Very short generic names (such as Unit or Merge) clash easily, so they are only matched on UK lists and only when exactly one register organisation has that name. Treat matches as leads and check before applying.",
       awCardOrgs: "organisations on the register", awCardLists: (n, c) => `${n} lists · ${c} companies`, awFilterBtn: "Filter the sponsor list",
       awColList: "List", awColPub: "Publisher", awColYears: "Years", awColCount: "Companies", awColMatched: "On the register", awColNote: "Coverage", awColSrc: "Source",
       awMissing: "Not included", awScopeUk: "UK list", awScopeGlobal: "Global list", awSourceLink: "Open",
       awCompanies: "All listed companies", awSearchPh: "Search companies", awAllDims: "All themes", awOnlyReg: "Only those on the register",
-      awColCompany: "Company (name on the list)", awColOn: "Register organisation", awNotFound: "No organisation with this name", awAmb: (n) => `Short or common name: ${n} register organisation${n > 1 ? "s" : ""} share${n > 1 ? "" : "s"} it and may be a different company, so it isn't matched automatically`,
+      awColCompany: "Company (name on the list)", awColOn: "Register organisation", awNotFound: "No organisation with this name", awViaTa: "(matched by trading name)", awAmb: (n) => `Short or common name: ${n} register organisation${n > 1 ? "s" : ""} share${n > 1 ? "" : "s"} it and may be a different company, so it isn't matched automatically`,
       awShown: (s, n) => `Showing ${s} of ${n}`, awMore: (n) => `Show ${n} more`, awOpenInList: "View in sponsor list", awUkHq: "UK HQ",
       awEmpty: "No companies match.", awLoading: "Loading award lists…", awBadgeTitle: (lines) => lines.join("\n"),
       fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Medium", large: "Large" }, sizeTag: (x) => `Size: ${x}`,
@@ -435,7 +435,7 @@ table.aw a { color: var(--accent); }
   // ---------------- state ----------------
   const st = { q: "", place: "", inds: new Set(), routes: new Set(["sw"]), onlyA: true, onlyStar: false, onlyLink: false, onlyHire: false, lists: new Set(), sizes: new Set(), since: 0, sort: "name", shown: PAGE };
   let AW = { dims: {}, lists: {}, orgs: {}, entries: {}, missing: [] };
-  const DIM_KEYS = ["fintech", "women", "unicorn", "growth"];
+  const DIM_KEYS = ["fintech", "ai", "growth", "unicorn", "women", "employer"];
   const SIZES = ["small", "medium", "large"];
   const sizeName = (k) => (I18N[lang].size || I18N.zh.size)[k] || k;
   const awardsOf = (r) => AW.orgs[keyOf(r)] || [];
@@ -990,8 +990,8 @@ table.aw a { color: var(--accent); }
       tr.append(l);
       const on = el("td");
       if (g.m) {
-        g.m.forEach(([, nm, tw]) => {
-          const line = el("div", "on-reg"); line.append("✓ " + nm + (tw ? " · " + tw : "") + " ");
+        g.m.forEach(([, nm, tw, ta]) => {
+          const line = el("div", "on-reg"); line.append("✓ " + nm + (tw ? " · " + tw : "") + " "); if (ta) line.append(el("span", "yrs", t("awViaTa") + " "));
           const b = el("button", "linkish", t("awOpenInList")); b.type = "button"; b.onclick = () => openInList(nm); line.append(b);
           on.append(line);
         });
