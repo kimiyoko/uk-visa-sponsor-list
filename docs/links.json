@@ -27,6 +27,20 @@
   "tradingName": null,
   "website": "https://www.principallogisticstechnologies.com/"
  },
+ "03af668169dee5f8": {
+  "careers": "https://www.360insights.com/careers#careersListing",
+  "checkedAt": "2026-11-04",
+  "hiring": "yes",
+  "industry": "it",
+  "name": "360insights (Europe) Ltd",
+  "note": "Verified by hand",
+  "size": null,
+  "sizeBasis": null,
+  "status": "verified",
+  "town": "Stratford-upon-Avon",
+  "tradingName": null,
+  "website": "https://www.360insights.com/"
+ },
  "0480b41e8c2bea7b": {
   "careers": null,
   "checkedAt": "2026-10-16",
@@ -335,6 +349,20 @@
   "tradingName": null,
   "website": "https://digitalport.org/"
  },
+ "33b721af769740ea": {
+  "careers": "https://www.humara.com/careers",
+  "checkedAt": "2026-11-04",
+  "hiring": "yes",
+  "industry": "it",
+  "name": "15GIFTS LTD",
+  "note": "Verified by hand",
+  "size": null,
+  "sizeBasis": null,
+  "status": "verified",
+  "town": "Brighton",
+  "tradingName": "Humara",
+  "website": "https://www.humara.com/"
+ },
  "343bc5f65cf0c439": {
   "careers": "https://marsdigitalsolution.co.uk/careers/",
   "checkedAt": "2026-10-16",
@@ -348,6 +376,20 @@
   "town": "Manchester",
   "tradingName": null,
   "website": "https://marsdigitalsolution.co.uk/"
+ },
+ "38806b051c89cb34": {
+  "careers": "https://15below.careers.hibob.com/jobs",
+  "checkedAt": "2026-11-04",
+  "hiring": "no",
+  "industry": "it",
+  "name": "15Below Ltd",
+  "note": "Verified by hand",
+  "size": null,
+  "sizeBasis": null,
+  "status": "verified",
+  "town": "Brighton",
+  "tradingName": null,
+  "website": "https://15below.com/"
  },
  "3923ea9aa76030df": {
   "careers": "https://www.uhnm.nhs.uk/jobs",
@@ -628,6 +670,34 @@
   "town": "Manchester",
   "tradingName": null,
   "website": "https://jbc-controls.co.uk/"
+ },
+ "57e72a3e74632b39": {
+  "careers": "https://www.theaccessbankukltd.co.uk/about-us/careers/",
+  "checkedAt": "2026-11-04",
+  "hiring": "yes",
+  "industry": null,
+  "name": "The Access Bank UK Ltd",
+  "note": "人工核实",
+  "size": null,
+  "sizeBasis": null,
+  "status": "verified",
+  "town": "London",
+  "tradingName": null,
+  "website": "https://www.theaccessbankukltd.co.uk/"
+ },
+ "5861672e4ac73e23": {
+  "careers": "https://www.amillionads.com/careers/",
+  "checkedAt": "2026-11-04",
+  "hiring": "no",
+  "industry": "it",
+  "name": "A Million Ads Limited",
+  "note": "人工核实",
+  "size": null,
+  "sizeBasis": null,
+  "status": "verified",
+  "town": "London",
+  "tradingName": "AMA",
+  "website": "https://www.amillionads.com/"
  },
  "58d4be95ba3f54e2": {
   "careers": "https://www.insidertech.co.uk/about-us/careers/",
