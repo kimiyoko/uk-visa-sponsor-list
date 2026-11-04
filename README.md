@@ -26,7 +26,7 @@ A tool for finding UK employers that can sponsor a work visa. The data comes fro
   - High growth: Deloitte UK Technology Fast 50, FT 1000 (UK entries), LinkedIn Top Startups UK, King's Awards for Enterprise (UK government)
   - Unicorn: CB Insights unicorns, Hurun, PwC Top 100 Unicorns
   - Women-friendly: Forbes World's Top Companies for Women, UK's Best Workplaces for Women, The Times Top 50 Employers for Gender Equality, Women in Finance Charter signatories (UK government), employers with a small gender pay gap (UK government data)
-  - Best employer: UK's Best Workplaces (Great Place To Work), Glassdoor Best Places to Work UK, Top Employers UK
+  - Best employer: UK's Best Workplaces (Great Place To Work), Glassdoor Best Places to Work UK, UK's Best Employers (Statista × FT), Top Employers UK
 - Theme tags show on each company, next to industry and visa route; one company can have several
 - List companies are matched to the register by name, **including trading names** (`T/A`, `trading as`), and re-matched on every daily update
 - An **award list reference** page shows every list, the years covered, how many companies matched the register, and each listed company
@@ -104,7 +104,7 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
   - 高增长：德勤英国科技 Fast 50、金融时报增长最快公司 1000 强（英国部分）、领英英国热门创业公司、英国国王企业奖（英国政府）
   - 独角兽：CB Insights 独角兽、胡润、普华永道独角兽 100 强
   - 女性友好：福布斯全球女性最佳雇主、英国女性最佳职场、泰晤士报性别平等雇主 50 强、金融业女性宪章签署机构（英国政府）、性别薪酬差距小的雇主（英国政府数据）
-  - 最佳雇主：英国最佳职场（Great Place To Work）、Glassdoor 英国最佳工作场所、英国杰出雇主认证
+  - 最佳雇主：英国最佳职场（Great Place To Work）、Glassdoor 英国最佳工作场所、英国最佳雇主（Statista × 金融时报）、英国杰出雇主认证
 - 每家公司的标签行显示榜单维度标签，和行业、签证类型在同一行；一家公司可以有多个
 - 榜单公司按名称和担保名单对应，**担保名单上的商号**（`T/A`、`trading as` 后面的名字）也参与对应，每天更新名单时重新对应
 - **榜单参考清单** 页面列出每份榜单的年份、收录数量、对上担保名单的数量，以及每家上榜公司

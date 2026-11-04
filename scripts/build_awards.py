@@ -102,6 +102,10 @@ LISTS = {
         zh="英国杰出雇主认证", en="Top Employers United Kingdom", publisher="Top Employers Institute",
         url="https://www.top-employers.com/en-GB/",
         coverage_zh="2026 年约 100 家（来自媒体公布的完整名单）；2025 年只找到媒体点名的 23 家；更早年份没有公开名单。", coverage_en="2026: about 100 (full list published in the press); 2025: only the 23 named in the press; no public list for earlier years."),
+    "statista_best_employers_uk": dict(dim="employer", file="statista_best_employers_uk.txt", fmt="years", scope="uk",
+        zh="英国最佳雇主（Statista × 金融时报）", en="UK's Best Employers (Statista × Financial Times)", publisher="Statista × Financial Times",
+        url="https://rankings.statista.com/en/employers/rankings/best-employers-uk-2026/",
+        coverage_zh="2025、2026 年，每年 500 家，基于大规模员工匿名调查，完整收录；更早年份 Statista 已不提供。", coverage_en="2025 and 2026, 500 a year, based on a large anonymous staff survey, complete; earlier years are no longer on Statista."),
     "forbes_ai50": dict(dim="ai", file="forbes_ai50.txt", fmt="years", scope="global",
         zh="福布斯 AI 50", en="Forbes AI 50", publisher="Forbes",
         url="https://www.forbes.com/lists/ai50/",
@@ -142,6 +146,9 @@ MISSING = [
 # Hand-checked false matches: (core name on the list, register organisation name) that are NOT the same company.
 NOT_SAME = {
     ("gupshup", "A Squared Eats Ltd t/a Gupshup"),  # restaurant, not the messaging unicorn
+    ("burger king", "NI Trade Ltd T/A Burger King"),  # single franchisee, not Burger King UK
+    ("co op", "DANU RETAIL LIMITED T/A CO OP"),  # a convenience store, not the Co-op Group
+    ("holiday inn", "Pool Cottages (Kenilworth) Limited T/A Holiday Inn"),  # one franchised hotel
 }
 
 GENERIC_END = set("""limited ltd plc llp lp llc inc incorporated corp corporation co company companies group holdings holding
