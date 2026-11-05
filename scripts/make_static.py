@@ -5,12 +5,22 @@ so this adds the document skeleton and the small reset the page relies on.
 Google Fonts are dropped here because fonts.googleapis.com is blocked in mainland China
 and would stall the first paint; the page's font stacks fall back to system fonts.
 
+Anonymous visit statistics: when site-config.json has an "umami_website_id", the Umami
+script (cookieless) is added to <head>. Leave it empty to build without statistics.
+
 Usage: python3 scripts/make_static.py
 """
-import re, pathlib
+import json, re, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src = (ROOT / "src" / "sponsor-finder.html").read_text(encoding="utf-8")
+cfg_path = ROOT / "site-config.json"
+cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
+umami_id = str(cfg.get("umami_website_id") or "").strip()
+if umami_id and not re.fullmatch(r"[0-9a-fA-F-]{36}", umami_id):
+    raise SystemExit("site-config.json: umami_website_id should look like 1a2b3c4d-....")
+analytics = (f'<script defer src="https://cloud.umami.is/script.js" data-website-id="{umami_id}"></script>\n'
+             if umami_id else "")
 
 # Drop Google Fonts (preconnect + stylesheet).
 body = re.sub(r'<link[^>]+fonts\.(googleapis|gstatic)\.com[^>]*>\s*', "", src)
@@ -33,7 +43,7 @@ body{{margin:0;font:14px system-ui,-apple-system,sans-serif}}
 img{{max-width:100%}}
 [hidden]{{display:none!important}}
 </style>
-</head>
+{analytics}</head>
 <body>
 """
 out = head + body.strip() + "\n</body>\n</html>\n"

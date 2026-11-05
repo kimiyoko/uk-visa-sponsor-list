@@ -45,7 +45,10 @@ Please note: being on the register means an organisation is **allowed** to spons
 | `scripts/build_awards.py` | Groups the award lists into themes and matches them to the register by name |
 | `scripts/build_data.py` | Turns the official CSV into the page data, adds industry tags and records join dates |
 | `scripts/update_register.py` | Downloads the latest register, compares it with the previous one and updates the data |
-| `scripts/make_static.py` | Builds `docs/index.html` from `src/` |
+| `scripts/make_static.py` | Builds `docs/index.html` from `src/` (adds the Umami statistics script when `site-config.json` has an ID) |
+| `scripts/build_sizes.py` | Estimates company size from the type of accounts filed at Companies House and writes `docs/sizes.json` |
+| `site-config.json` | Site settings: `umami_website_id` for anonymous visit statistics (leave empty to turn them off) |
+| `.github/workflows/sizes.yml` | Rebuilds `docs/sizes.json` on the 8th of each month |
 | `data/changes/<date>.json` | Organisations added and removed in each update |
 | `data/history.csv` | One summary line per update (date, organisations, added, removed) |
 | `apps-script/Code.gs` | Google Apps Script: saves each day's CSV to Google Drive and sends WeChat (PushPlus) and email alerts |
@@ -58,6 +61,10 @@ Please note: being on the register means an organisation is **allowed** to spons
 **2. Daily updates.** `.github/workflows/update.yml` checks GOV.UK at 10:20 and 15:20 UTC on weekdays. When a newer register is published it updates `docs/data.json`, records the changes and commits them. To run it by hand: Actions → **Daily register update** → **Run workflow**. If the workflow can't commit, go to Settings → Actions → General → Workflow permissions and choose **Read and write permissions**.
 
 **3. WeChat and email alerts (optional).** See the notes at the top of `apps-script/Code.gs`. Put the PushPlus token and the email address in the Apps Script **Project Settings → Script Properties** as `PUSHPLUS_TOKEN` and `EMAIL_TO`. **Never commit the token to this repository.**
+
+**4. Company sizes.** `.github/workflows/sizes.yml` downloads the Companies House Free Company Data Product on the 8th of each month and rebuilds `docs/sizes.json`: Small = micro or small-company exempt accounts, Mid / large = full accounts, Group = group accounts. Organisations not registered at Companies House (NHS bodies, universities, public bodies, sole traders) have no size.
+
+**5. Visit statistics (optional).** Create a free [Umami Cloud](https://cloud.umami.is) account, add the website, copy its Website ID into `site-config.json` as `umami_website_id`, then run `python3 scripts/make_static.py` and commit. Umami is cookieless and stores no personal data.
 
 ### Making changes
 
@@ -123,7 +130,10 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
 | `scripts/build_awards.py` | 把榜单合并成维度，并按名称和担保名单对应 |
 | `scripts/build_data.py` | 把官方 CSV 转成网页数据，给公司打行业标签，并记录加入日期 |
 | `scripts/update_register.py` | 下载最新登记表、和上一版对比、更新数据 |
-| `scripts/make_static.py` | 由 `src/` 生成 `docs/index.html` |
+| `scripts/make_static.py` | 由 `src/` 生成 `docs/index.html`（`site-config.json` 里填了 ID 时加上 Umami 统计代码） |
+| `scripts/build_sizes.py` | 按 Companies House 申报的账目类型推断公司规模，生成 `docs/sizes.json` |
+| `site-config.json` | 网站设置：`umami_website_id` 用于匿名访问统计（留空就不统计） |
+| `.github/workflows/sizes.yml` | 每月 8 日重建 `docs/sizes.json` |
 | `data/changes/<日期>.json` | 每次更新新增和移除的公司 |
 | `data/history.csv` | 每次更新的汇总（日期、机构数、新增、移除） |
 | `apps-script/Code.gs` | Google Apps Script：每天存 CSV 到 Google Drive，推送微信（PushPlus）并发邮件 |
@@ -136,6 +146,10 @@ Register data from GOV.UK, used under the [Open Government Licence v3.0](https:/
 **2. 每日自动更新。** `.github/workflows/update.yml` 会在每个工作日 10:20 和 15:20（UTC）检查 GOV.UK。有新版就更新 `docs/data.json`，记录变化，然后自动提交。手动运行：Actions → **Daily register update** → **Run workflow**。如果 Actions 没有权限提交：Settings → Actions → General → Workflow permissions，选 **Read and write permissions**。
 
 **3. 微信和邮件通知（可选）。** 见 `apps-script/Code.gs` 文件开头的说明。PushPlus token 和收件邮箱放在 Apps Script 的「项目设置 → 脚本属性」里，属性名分别是 `PUSHPLUS_TOKEN` 和 `EMAIL_TO`。**不要把 token 写进代码提交到 GitHub。**
+
+**4. 公司规模。** `.github/workflows/sizes.yml` 每月 8 日下载 Companies House 免费公司数据，重建 `docs/sizes.json`：小 = 微型或小型豁免账目，中大型 = 完整账目，集团 = 集团合并账目。不在 Companies House 登记的机构（NHS、大学、政府机构、个体户）没有规模。
+
+**5. 访问统计（可选）。** 注册免费的 [Umami Cloud](https://cloud.umami.is)，添加网站，把 Website ID 填进 `site-config.json` 的 `umami_website_id`，然后运行 `python3 scripts/make_static.py` 并提交。Umami 不用 cookie，不保存个人信息。
 
 ### 修改
 
