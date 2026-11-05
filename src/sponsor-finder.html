@@ -242,6 +242,7 @@ table.aw a { color: var(--accent); }
         <label class="check"><input type="checkbox" id="only-hire"> <span data-i18n="onlyHire">只看有英国岗位的</span></label>
       </div>
       <p class="note" data-i18n="filterNote">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
+      <p class="note"><b data-i18n="extJobsT">想直接找写明可担保的岗位</b><span data-i18n="colon">：</span><a class="ext-jobs" href="https://www.brightnetwork.co.uk/" target="_blank" rel="noopener noreferrer">Bright Network</a> <span data-i18n="extBright">（招聘网站，以学生和应届岗位为主，部分岗位注明可担保，需免费注册）</span></p>
     </aside>
 
     <section style="display:flex;flex-direction:column;gap:12px;min-width:0">
@@ -314,6 +315,7 @@ table.aw a { color: var(--accent); }
       sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
       newAdded: "今日新增",
       filterNote: "行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。",
+      extJobsT: "想直接找写明可担保的岗位", extBright: "（招聘网站，以学生和应届岗位为主，部分岗位注明可担保，需免费注册）",
       sortName: "按名称 A–Z", sortTown: "按城市", sortNew: "新增优先",
       export: "导出当前结果 CSV", exportStars: "下载我的收藏", exportStarsN: (n) => `下载我的收藏（${n}）`, feedback: "提建议",
       loading: "正在载入 12 万多家机构的数据…", loadFail: "名单数据没有载入成功，请刷新页面。",
@@ -366,6 +368,7 @@ table.aw a { color: var(--accent); }
       onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
       sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
       newAdded: "New added",
+      extJobsT: "Looking for jobs that say they sponsor", extBright: "(a jobs site, mostly student and graduate roles; some list visa sponsorship; free sign-up)",
       filterNote: "Industry tags are guessed from keywords in the company name; names that give no clue go to “Unclassified”. Being on the register means a company can sponsor, not that it is hiring.",
       sortName: "Name A–Z", sortTown: "Town", sortNew: "New first",
       export: "Export results (CSV)", exportStars: "Download my list", exportStarsN: (n) => `Download my list (${n})`, feedback: "Send feedback",
@@ -1035,6 +1038,7 @@ table.aw a { color: var(--accent); }
     const aEl = t0.closest && t0.closest("a");
     if (aEl) {
       if (aEl.classList.contains("li-btn")) trackEv("myLinkedin");
+      else if (aEl.classList.contains("ext-jobs")) trackEv("brightNetwork");
       else if (aEl.href.includes("udm=50")) trackEv("googleAi");
       else if (aEl.href.includes("linkedin.com/jobs")) trackEv("linkedinJobs");
       else if (aEl.closest(".links")) trackEv("companyLink");
