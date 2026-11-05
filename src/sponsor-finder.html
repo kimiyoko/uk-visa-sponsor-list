@@ -144,7 +144,14 @@ a.btn { text-decoration: none; display: inline-block; }
 button.linkish { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .badge.award { cursor: help; }
 /* awards reference view */
-#awards-view { display: flex; flex-direction: column; gap: 22px; }
+#awards-view, #jobs-view { display: flex; flex-direction: column; gap: 22px; }
+#jobs-view h2 { font-family: var(--f-display); font-size: 22px; margin: 0; }
+#jobs-view h3 { font-family: var(--f-display); font-size: 17px; margin: 0; }
+#jobs-view p { margin: 0; }
+.jl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.jl li { display: flex; flex-direction: column; gap: 2px; }
+.jl a { font-weight: 600; color: var(--stamp); }
+.jl-desc { color: var(--ink-2); font-size: 13px; }
 #awards-view h2 { font-family: var(--f-display); font-size: 22px; margin: 0; }
 #awards-view h3 { font-family: var(--f-display); font-size: 17px; margin: 0; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
 #awards-view p { margin: 0; }
@@ -179,6 +186,7 @@ table.aw a { color: var(--accent); }
     <div class="views" role="tablist" aria-label="Pages / 页面">
       <button type="button" role="tab" id="view-list" aria-selected="true" aria-controls="list-view" data-i18n="viewList">担保名单</button>
       <button type="button" role="tab" id="view-awards" aria-selected="false" aria-controls="awards-view" data-i18n="viewAwards">榜单参考清单</button>
+      <button type="button" role="tab" id="view-jobs" aria-selected="false" aria-controls="jobs-view" data-i18n="viewJobs">岗位搜索</button>
     </div>
     <div class="lang" role="group" aria-label="Language / 语言">
       <button type="button" id="lang-zh" lang="zh-CN" aria-pressed="true">中文</button>
@@ -242,7 +250,6 @@ table.aw a { color: var(--accent); }
         <label class="check"><input type="checkbox" id="only-hire"> <span data-i18n="onlyHire">只看有英国岗位的</span></label>
       </div>
       <p class="note" data-i18n="filterNote">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
-      <p class="note"><b data-i18n="extJobsT">想直接找写明可担保的岗位</b><span data-i18n="colon">：</span><a class="ext-jobs" href="https://www.brightnetwork.co.uk/" target="_blank" rel="noopener noreferrer">Bright Network</a> <span data-i18n="extBright">（招聘网站，以学生和应届岗位为主，部分岗位注明可担保，需免费注册）</span></p>
     </aside>
 
     <section style="display:flex;flex-direction:column;gap:12px;min-width:0">
@@ -291,6 +298,27 @@ table.aw a { color: var(--accent); }
       <div class="more" id="aw-more" hidden></div>
     </div>
   </section>
+  <section id="jobs-view" role="tabpanel" aria-labelledby="view-jobs" hidden>
+    <div class="aw-intro">
+      <h2 data-i18n="jbTitle">岗位搜索</h2>
+      <p data-i18n="jbIntro">这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。</p>
+    </div>
+    <div class="dimsec">
+      <h3 data-i18n="jbSecSponsor">专门的担保岗位网站</h3>
+      <ul class="jl">
+        <li><a class="ext-jobs" href="https://huntukvisasponsors.com/" target="_blank" rel="noopener noreferrer">Hunt UK Visa Sponsors</a><span class="jl-desc" data-i18n="jbHunt">按地区和职位列出担保公司的在招岗位</span></li>
+        <li><a class="ext-jobs" href="https://visasponsor.jobs/" target="_blank" rel="noopener noreferrer">visasponsor.jobs</a><span class="jl-desc" data-i18n="jbVsj">英国担保岗位聚合网站</span></li>
+        <li><a class="ext-jobs" href="https://www.brightnetwork.co.uk/" target="_blank" rel="noopener noreferrer">Bright Network</a><span class="jl-desc" data-i18n="jbBright">以学生和应届岗位为主</span></li>
+      </ul>
+    </div>
+    <div class="dimsec">
+      <h3 data-i18n="jbSecBoards">大型招聘网站：用关键词搜担保岗位</h3>
+      <ul class="jl">
+        <li><a class="ext-jobs" href="https://www.linkedin.com/jobs/search/?keywords=%22visa%20sponsorship%22&amp;location=United%20Kingdom" target="_blank" rel="noopener noreferrer">LinkedIn Jobs</a><span class="jl-desc" data-i18n="jbLinkedin">已填好关键词</span></li>
+        <li><a class="ext-jobs" href="https://uk.indeed.com/jobs?q=%22visa+sponsorship%22" target="_blank" rel="noopener noreferrer">Indeed UK</a><span class="jl-desc" data-i18n="jbIndeed">已填好关键词</span></li>
+      </ul>
+    </div>
+  </section>
 </div>
 <div class="toast" id="toast" hidden></div>
 
@@ -315,7 +343,10 @@ table.aw a { color: var(--accent); }
       sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
       newAdded: "今日新增",
       filterNote: "行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。",
-      extJobsT: "想直接找写明可担保的岗位", extBright: "（招聘网站，以学生和应届岗位为主，部分岗位注明可担保，需免费注册）",
+      viewJobs: "岗位搜索", jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
+      jbSecSponsor: "专门的担保岗位网站", jbSecBoards: "大型招聘网站：用关键词搜担保岗位",
+      jbHunt: "按地区和职位列出担保公司的在招岗位", jbVsj: "英国担保岗位聚合网站", jbBright: "以学生和应届岗位为主，部分岗位注明可担保，需免费注册",
+      jbLinkedin: "已填好关键词 visa sponsorship、地点英国；LinkedIn 上的担保标签由雇主自填", jbIndeed: "已填好关键词 visa sponsorship",
       sortName: "按名称 A–Z", sortTown: "按城市", sortNew: "新增优先",
       export: "导出当前结果 CSV", exportStars: "下载我的收藏", exportStarsN: (n) => `下载我的收藏（${n}）`, feedback: "提建议",
       loading: "正在载入 12 万多家机构的数据…", loadFail: "名单数据没有载入成功，请刷新页面。",
@@ -368,7 +399,10 @@ table.aw a { color: var(--accent); }
       onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
       sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
       newAdded: "New added",
-      extJobsT: "Looking for jobs that say they sponsor", extBright: "(a jobs site, mostly student and graduate roles; some list visa sponsorship; free sign-up)",
+      viewJobs: "Job search", jbTitle: "Job search", jbIntro: "This site lists companies that can sponsor; the sites below list jobs that are open now. Use them together: find a job there, then come back to the register to check the company holds a licence and is A-rated. The employer's own terms decide whether a job is sponsored.",
+      jbSecSponsor: "Sites for sponsored jobs", jbSecBoards: "Big job boards: search for sponsored jobs",
+      jbHunt: "Open jobs at licensed sponsors, by location and role", jbVsj: "A UK aggregator of sponsored jobs", jbBright: "Mostly student and graduate roles; some list visa sponsorship; free sign-up",
+      jbLinkedin: "Pre-filled with \"visa sponsorship\" in the UK; employers set LinkedIn's sponsorship labels themselves", jbIndeed: "Pre-filled with \"visa sponsorship\"",
       filterNote: "Industry tags are guessed from keywords in the company name; names that give no clue go to “Unclassified”. Being on the register means a company can sponsor, not that it is hiring.",
       sortName: "Name A–Z", sortTown: "Town", sortNew: "New first",
       export: "Export results (CSV)", exportStars: "Download my list", exportStarsN: (n) => `Download my list (${n})`, feedback: "Send feedback",
@@ -898,13 +932,16 @@ table.aw a { color: var(--accent); }
 
   // ---------------- views ----------------
   function showView(v, keepHash) {
-    view = v === "awards" ? "awards" : "list";
+    view = v === "awards" || v === "jobs" ? v : "list";
     $("list-view").hidden = view !== "list";
     $("awards-view").hidden = view !== "awards";
+    $("jobs-view").hidden = view !== "jobs";
     $("view-list").setAttribute("aria-selected", view === "list" ? "true" : "false");
     $("view-awards").setAttribute("aria-selected", view === "awards" ? "true" : "false");
+    $("view-jobs").setAttribute("aria-selected", view === "jobs" ? "true" : "false");
     if (view === "awards") trackEv("awards");
-    if (!keepHash) { try { history.replaceState(null, "", view === "awards" ? "#awards" : location.pathname + location.search); } catch (e) {} }
+    if (view === "jobs") trackEv("jobsTab");
+    if (!keepHash) { try { history.replaceState(null, "", view === "list" ? location.pathname + location.search : "#" + view); } catch (e) {} }
     if (view === "awards") renderAwards();
     window.scrollTo(0, 0);
   }
@@ -1038,7 +1075,7 @@ table.aw a { color: var(--accent); }
     const aEl = t0.closest && t0.closest("a");
     if (aEl) {
       if (aEl.classList.contains("li-btn")) trackEv("myLinkedin");
-      else if (aEl.classList.contains("ext-jobs")) trackEv("brightNetwork");
+      else if (aEl.classList.contains("ext-jobs")) trackEv("jobLink", aEl.hostname.replace(/^www\./, ""));
       else if (aEl.href.includes("udm=50")) trackEv("googleAi");
       else if (aEl.href.includes("linkedin.com/jobs")) trackEv("linkedinJobs");
       else if (aEl.closest(".links")) trackEv("companyLink");
@@ -1055,6 +1092,7 @@ table.aw a { color: var(--accent); }
   // ---------------- wire inputs ----------------
   $("view-list").onclick = () => showView("list");
   $("view-awards").onclick = () => showView("awards");
+  $("view-jobs").onclick = () => showView("jobs");
   $("award-more").onclick = () => showView("awards");
   $("aw-q").addEventListener("input", (e) => { awSt.q = e.target.value; awSt.shown = 100; renderAwTable(); });
   $("aw-dim").onchange = (e) => { awSt.dim = e.target.value; awSt.shown = 100; renderAwTable(); };
@@ -1080,7 +1118,7 @@ table.aw a { color: var(--accent); }
   applyLang();
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("only-hire").checked = st.onlyHire; $("sort").value = st.sort;
   initCapabilities();
-  if ((location.hash || "").toLowerCase().split(/[-_,&#]/).includes("awards")) showView("awards", true);
+  { const hp = (location.hash || "").toLowerCase().split(/[-_,&#]/); if (hp.includes("awards")) showView("awards", true); else if (hp.includes("jobs")) showView("jobs", true); }
   fetch("awards.json").then((r) => (r.ok ? r.json() : null)).then((j) => {
     if (j && j.lists && j.orgs && j.dims) {
       AW = j; dimCountCache = null; awRows = null;
