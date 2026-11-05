@@ -1,0 +1,56 @@
+name: Monthly company size update
+
+# Rebuilds docs/sizes.json from the Companies House "Free Company Data Product"
+# (BasicCompanyDataAsOneFile, published in the first days of each month).
+# Size is inferred from the type of the latest accounts filed; see scripts/build_sizes.py.
+on:
+  schedule:
+    - cron: "17 4 8 * *"   # 8th of each month, 04:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: register-update
+  cancel-in-progress: false
+
+jobs:
+  sizes:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Find the latest Companies House snapshot
+        id: find
+        run: |
+          name=$(curl -fsS https://download.companieshouse.gov.uk/en_output.html | grep -o 'BasicCompanyDataAsOneFile-[0-9-]*\.zip' | sort -u | tail -1)
+          test -n "$name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          prev=$(python3 -c "import json;print(json.load(open('docs/sizes.json'))['meta']['source'])" 2>/dev/null || true)
+          if [ "$prev" = "$name" ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; else echo "skip=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Download snapshot (about 500 MB)
+        if: steps.find.outputs.skip == 'false'
+        run: |
+          mkdir -p "$RUNNER_TEMP/ch"
+          curl -fsS --retry 3 -o "$RUNNER_TEMP/ch/${{ steps.find.outputs.name }}" "https://download.companieshouse.gov.uk/${{ steps.find.outputs.name }}"
+
+      - name: Rebuild docs/sizes.json
+        if: steps.find.outputs.skip == 'false'
+        run: python3 -I scripts/build_sizes.py "$RUNNER_TEMP/ch/${{ steps.find.outputs.name }}" docs/data.json docs/sizes.json
+
+      - name: Commit
+        if: steps.find.outputs.skip == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/sizes.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Update company sizes (${{ steps.find.outputs.name }})"
+          git pull --rebase origin main
+          git push origin HEAD:main
