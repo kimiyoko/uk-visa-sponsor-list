@@ -169,6 +169,10 @@ table.aw a { color: var(--accent); }
 .on-reg { color: var(--ok); }
 .off-reg { color: var(--ink-3); }
 .yrs { font-family: var(--f-data); font-size: 11.5px; color: var(--ink-2); }
+.hdr-right { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.li-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--sheet); background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 5px 14px 5px 10px; min-height: 32px; }
+.li-btn:hover { filter: brightness(1.1); }
+.li-btn svg { width: 16px; height: 16px; flex: none; }
 </style>
 <div class="wrap">
   <div class="topbar">
@@ -186,10 +190,13 @@ table.aw a { color: var(--accent); }
       <div class="eyebrow">Register of licensed sponsors · Workers</div>
       <h1 data-i18n="title">英国工签担保雇主名单</h1>
     </div>
+    <div class="hdr-right">
     <div class="meta" id="meta">
       <span><span data-i18n="metaDate">登记表版本</span> <b id="m-date">—</b></span>
       <span><span data-i18n="metaRows">原始行数</span> <b id="m-rows">—</b></span>
       <span><span data-i18n="metaOrgs">机构数</span> <b id="m-orgs">—</b></span>
+    </div>
+    <a class="li-btn" href="https://www.linkedin.com/in/rebecca-wasyliszyn/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><span data-i18n="myLinkedin">我的领英</span></a>
     </div>
   </header>
 
@@ -226,6 +233,7 @@ table.aw a { color: var(--accent); }
       <div class="fgroup">
         <div class="flabel"><span data-i18n="fSize">公司规模</span><button type="button" id="size-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="size-chips"></div>
+        <p class="note" id="size-note"></p>
       </div>
       <div class="fgroup">
         <label class="check"><input type="checkbox" id="only-a" checked> <span data-i18n="onlyA">只看 A 级评级（可正常发 CoS）</span></label>
@@ -256,6 +264,7 @@ table.aw a { color: var(--accent); }
         <p><b data-i18n="lgLinksT">官网 / 招聘页</b><span data-i18n="colon">：</span><span data-i18n="lgLinks1">带</span> <span class="vs ok" data-i18n="verified">已核实</span> <span data-i18n="lgLinks2">的是人工查证过的直达链接；带</span> <span class="vs gg" data-i18n="srcGoogle">Google AI</span> <span data-i18n="lgLinksG">的来自 Google AI 搜索的自动查询，未经人工确认；带</span> <span class="vs ai" data-i18n="aiGuess">AI 推测</span> <span data-i18n="lgLinks3">的是 Claude 凭已有知识给出的，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。</span></p>
         <p><b data-i18n="lgStarsT">收藏与下载</b><span data-i18n="colon">：</span><span data-i18n="lgStars">点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。</span></p>
         <p><b data-i18n="lgGoogleT">谷歌 AI 搜索</b><span data-i18n="colon">：</span><span data-i18n="lgGoogle">在新标签页打开谷歌 AI 模式，自动带上公司名和城市，查官网、招聘页和英国岗位。核对后用「核实 / 填链接」保存。</span></p>
+        <p id="lg-stats" hidden><b data-i18n="lgStatsT">访问统计</b><span data-i18n="colon">：</span><span data-i18n="lgStats">本站用 Umami 统计匿名访问数据（访问量、停留时长、用了哪些功能和搜索词），不用 cookie，不记录姓名、邮箱或 IP。</span></p>
         <p class="source"><span data-i18n="source">数据来源：</span><a href="https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers" target="_blank" rel="noopener noreferrer">GOV.UK · Register of licensed sponsors: workers</a> <span data-i18n="ogl">（Open Government Licence v3.0）</span></p>
       </div>
     </section>
@@ -296,7 +305,7 @@ table.aw a { color: var(--accent); }
   // ---------------- i18n ----------------
   const I18N = {
     zh: {
-      docTitle: "英国工签担保雇主名单", title: "英国工签担保雇主名单",
+      docTitle: "英国工签担保雇主名单", title: "英国工签担保雇主名单", myLinkedin: "我的领英", lgStatsT: "访问统计", lgStats: "本站用 Umami 统计匿名访问数据（访问量、停留时长、用了哪些功能和搜索词），不用 cookie，不记录姓名、邮箱或 IP。",
       metaDate: "登记表版本", metaRows: "原始行数", metaOrgs: "机构数", metaDiff: (a, r) => `（本次新增 ${a}，移除 ${r}）`,
       filtersAria: "筛选", sortAria: "排序",
       fName: "公司名称", fNamePh: "例如 NHS、Software、Deloitte", fPlace: "城市 / 郡", fPlacePh: "例如 Stoke-on-Trent、Manchester",
@@ -336,7 +345,8 @@ table.aw a { color: var(--accent); }
       awColCompany: "公司（榜单上的名称）", awColOn: "担保名单上的机构", awNotFound: "未找到同名机构", awViaTa: "（按商号对应）", awAmb: (n) => `名称较短或是常用词，名单上有 ${n} 家同名机构，不一定是同一家，未自动对应`,
       awShown: (s, n) => `显示 ${s} / ${n} 家`, awMore: (n) => `再显示 ${n} 家`, awOpenInList: "在名单里查看", awUkHq: "英国总部",
       awEmpty: "没有符合条件的公司。", awLoading: "榜单数据载入中…", awBadgeTitle: (lines) => lines.join("\n"),
-      fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中", large: "大" }, sizeTag: (x) => `规模：${x}`,
+      fSize: "公司规模", sizeLabel: "公司规模", sizeUnknown: "未确定", size: { small: "小", medium: "中大型", large: "集团" }, sizeTag: (x) => `规模：${x}`,
+      sizeNote: (d) => `按 Companies House 最近一次申报的账目类型推断（${d} 数据）：小 = 微型 / 小型豁免账目，中大型 = 完整账目，集团 = 集团合并账目。NHS、大学、政府机构等不在 Companies House 登记的没有规模。人工核实的规模优先。`,
       lgLinksT: "官网 / 招聘页", colon: "：", lgLinks1: "带", lgLinks2: "的是人工查证过的直达链接；带", lgLinksG: "的来自 Google AI 搜索的自动查询，未经人工确认；带",
       lgLinks3: "的是 Claude 凭已有知识给出的；带「Claude 搜索」的是 Claude 联网搜索查到的，同样未经人工确认，打开前留意域名；没有标记的是搜索直达，点开即是该公司的搜索结果。",
       lgStarsT: "收藏与下载", lgStars: "点每行右侧的 ☆ 收藏，再点「下载我的收藏」就能导出收藏的公司（含链接）。收藏保存在你当前使用的浏览器里，换手机或清除浏览器数据会丢失，建议定期下载。",
@@ -348,7 +358,7 @@ table.aw a { color: var(--accent); }
       routeShort: { sw: "Skilled Worker", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / 交流 / 国际协议", religion: "宗教工作者", seasonal: "季节工", other: "其他" },
     },
     en: {
-      docTitle: "UK Visa Sponsor Finder", title: "UK Visa Sponsor Finder",
+      docTitle: "UK Visa Sponsor Finder", title: "UK Visa Sponsor Finder", myLinkedin: "My LinkedIn", lgStatsT: "Visit statistics", lgStats: "This site uses Umami for anonymous visit statistics (visits, time on page, features used and search terms). No cookies; no names, email addresses or IP addresses are stored.",
       metaDate: "Register edition", metaRows: "Rows", metaOrgs: "Organisations", metaDiff: (a, r) => ` (+${a} new, −${r} removed)`,
       filtersAria: "Filters", sortAria: "Sort",
       fName: "Company name", fNamePh: "e.g. NHS, Software, Deloitte", fPlace: "Town / county", fPlacePh: "e.g. Stoke-on-Trent, Manchester",
@@ -388,7 +398,8 @@ table.aw a { color: var(--accent); }
       awColCompany: "Company (name on the list)", awColOn: "Register organisation", awNotFound: "No organisation with this name", awViaTa: "(matched by trading name)", awAmb: (n) => `Short or common name: ${n} register organisation${n > 1 ? "s" : ""} share${n > 1 ? "" : "s"} it and may be a different company, so it isn't matched automatically`,
       awShown: (s, n) => `Showing ${s} of ${n}`, awMore: (n) => `Show ${n} more`, awOpenInList: "View in sponsor list", awUkHq: "UK HQ",
       awEmpty: "No companies match.", awLoading: "Loading award lists…", awBadgeTitle: (lines) => lines.join("\n"),
-      fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Medium", large: "Large" }, sizeTag: (x) => `Size: ${x}`,
+      fSize: "Company size", sizeLabel: "Company size", sizeUnknown: "Not set", size: { small: "Small", medium: "Mid / large", large: "Group" }, sizeTag: (x) => `Size: ${x}`,
+      sizeNote: (d) => `Inferred from the type of the latest accounts filed at Companies House (${d} data): Small = micro or small-company exempt accounts, Mid / large = full accounts, Group = group accounts. NHS bodies, universities, public bodies and others not registered at Companies House have no size. Sizes checked by hand take priority.`,
       lgLinksT: "Website / Careers", colon: ": ", lgLinks1: "Links marked", lgLinks2: "were checked by hand and go straight to the page. Links marked", lgLinksG: "come from automatic Google AI searches and haven't been checked by hand. Links marked",
       lgLinks3: "come from Claude's own knowledge; links marked “Claude search” come from Claude's web searches and haven't been checked by hand either. Check the domain before you use them. Unmarked links open a search for that company.",
       lgStarsT: "Save and download", lgStars: "Tap ☆ on a row to save a company, then “Download my list” to get your saved companies with their links as a CSV. Saved companies live in this browser only and are lost if you switch phones or clear browser data, so download them now and then.",
@@ -438,6 +449,10 @@ table.aw a { color: var(--accent); }
   const DIM_KEYS = ["fintech", "ai", "growth", "unicorn", "women", "employer"];
   const SIZES = ["small", "medium", "large"];
   const sizeName = (k) => (I18N[lang].size || I18N.zh.size)[k] || k;
+  let CH = new Map(), chMeta = null;
+  const CHK = { s: "small", m: "medium", l: "large" };
+  // Size: a hand-checked value wins, otherwise the Companies House accounts-type estimate.
+  const sizeOf = (r) => { const L = links.get(keyOf(r)); if (L && SIZES.includes(L.size)) return { size: L.size, basis: L.sizeBasis || "" }; const c = CH.get(keyOf(r)); return c ? { size: CHK[c[0]], basis: "Companies House · " + c[1] + " · " + c[2] } : null; };
   const awardsOf = (r) => AW.orgs[keyOf(r)] || [];
   const awardName = (k) => { const m = AW.lists[k]; return m ? (lang === "en" ? m.en : m.zh) : k; };
   const dimName = (k) => { const m = AW.dims[k]; return m ? (lang === "en" ? m.en : m.zh) : k; };
@@ -455,7 +470,7 @@ table.aw a { color: var(--accent); }
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
         st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.inds || []); st.routes = new Set(f.routes || ["sw"]);
-        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set((f.lists || []).filter((k) => DIM_KEYS.includes(k))); st.sizes = new Set(f.sizes || []);
+        st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set((f.lists || []).filter((k) => DIM_KEYS.includes(k))); st.sizes = new Set((f.sizes || []).filter((k) => SIZES.includes(k)));
       }
     } catch (e) {}
   }
@@ -525,7 +540,9 @@ table.aw a { color: var(--accent); }
     });
     $("award-note").textContent = Object.keys(AW.dims).length ? t("awardNote") : "";
     const zc = $("size-chips"); zc.innerHTML = "";
-    SIZES.forEach((k) => zc.append(chip(sizeName(k), null, st.sizes.has(k), () => toggle(st.sizes, k))));
+    const zn = {}; if (CH.size) for (const r of D.rows) { const z = sizeOf(r); if (z) zn[z.size] = (zn[z.size] || 0) + 1; }
+    SIZES.forEach((k) => zc.append(chip(sizeName(k), CH.size ? zn[k] || 0 : null, st.sizes.has(k), () => toggle(st.sizes, k))));
+    $("size-note").textContent = chMeta ? t("sizeNote", chMeta.snapshot || "") : "";
     const sc = $("since-chips"); sc.innerHTML = "";
     const sinceCount = (d) => (d ? D.rows.reduce((n, r) => n + (ageOf(r) <= (d === 1 ? 1 : d - 1) ? 1 : 0), 0) : null);
     [[0, "sinceAll"], [1, "since1"], [7, "since7"], [30, "since30"]].forEach(([d, key]) => {
@@ -572,7 +589,7 @@ table.aw a { color: var(--accent); }
       if (st.since && !(ageOf(r) <= (st.since === 1 ? 1 : st.since - 1))) continue;
       if (st.onlyStar && !stars.has(keyOf(r))) continue;
       if (st.lists.size && !awardsOf(r).some((e) => AW.lists[e.list] && st.lists.has(AW.lists[e.list].dim))) continue;
-      if (st.sizes.size) { const L = links.get(keyOf(r)); if (!L || !st.sizes.has(L.size)) continue; }
+      if (st.sizes.size) { const z = sizeOf(r); if (!z || !st.sizes.has(z.size)) continue; }
       if (st.onlyLink) { const L = links.get(keyOf(r)); if (!L || !(L.website || L.careers)) continue; }
       if (st.onlyHire) { const L = links.get(keyOf(r)); if (!L || L.hiring !== "yes") continue; }
       out.push(r);
@@ -656,7 +673,7 @@ table.aw a { color: var(--accent); }
     D.industries.forEach(([key], i) => { if (tm & (1 << i)) { const s = document.createElement("span"); s.className = "tag"; s.textContent = indName(key); tags.append(s); } });
     const dm = dimsOf(r);
     DIM_KEYS.forEach((d) => { if (!dm[d]) return; const s = document.createElement("span"); s.className = "tag dim"; s.textContent = dimName(d); s.title = dm[d].map((e) => awardName(e.list) + " · " + yearsText(e.years)).join("\n"); tags.append(s); });
-    if (HL && SIZES.includes(HL.size)) { const s = document.createElement("span"); s.className = "tag size"; s.textContent = t("sizeTag", sizeName(HL.size)); if (HL.sizeBasis) s.title = HL.sizeBasis; tags.append(s); }
+    { const z = sizeOf(r); if (z) { const s = document.createElement("span"); s.className = "tag size"; s.textContent = t("sizeTag", sizeName(z.size)); if (z.basis) s.title = z.basis; tags.append(s); } }
     D.routes.forEach(([key], i) => { if (r[4] & (1 << i)) { const s = document.createElement("span"); s.className = "tag route"; s.textContent = routeShort(key); tags.append(s); } });
     main.append(tags);
 
@@ -800,8 +817,9 @@ table.aw a { color: var(--accent); }
       window.claude.use("user").catch(() => null),
     ]);
     downloads = dlNs; sample = sampleNs;
+    let isOwner = false;
     if (userNs) {
-      try { canVerify = (await userNs.isOwner()) || (await userNs.canEdit()); } catch (e) { canVerify = false; }
+      try { isOwner = await userNs.isOwner(); canVerify = isOwner || (await userNs.canEdit()); } catch (e) { canVerify = false; }
     }
     if (dbNs) {
       db = dbNs;
@@ -846,7 +864,7 @@ table.aw a { color: var(--accent); }
       const ind = D.industries.filter((_, i) => tagsOf(r) & (1 << i)).map(([k]) => indName(k)).join(" / ");
       const rt = D.routes.filter((_, i) => r[4] & (1 << i)).map(([k]) => routeShort(k)).join(" / ");
       const status = L.status === "verified" || L.status === "checked" ? t("verified") : L.status === "google" ? t("srcGoogle") : L.status === "web" ? t("srcWeb") : L.status === "ai" ? t("aiGuess") : "";
-      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", SIZES.includes(L.size) ? sizeName(L.size) : "", awardsOf(r).map((e) => awardName(e.list) + " (" + yearsText(e.years) + ")").join(" / "), L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
+      lines.push([r[0], L.tradingName || "", town(r), county(r), ind, rt, r[5] === "a" ? "A" : r[5] === "b" ? "B" : "Provisional", L.website || "", L.careers || "", status, L.hiring === "yes" ? t("hiringYes") : L.hiring === "no" ? t("hiringNo") : L.hiring === "noinfo" ? t("hiringNoInfo") : "", (sizeOf(r) ? sizeName(sizeOf(r).size) : ""), awardsOf(r).map((e) => awardName(e.list) + " (" + yearsText(e.years) + ")").join(" / "), L.checkedAt || "", stars.has(keyOf(r)) ? t("yes") : ""].map(csvCell).join(","));
     });
     const data = "﻿" + lines.join("\n");
     const filename = `${prefix}-${D.meta.register_date || "export"}.csv`;
@@ -882,6 +900,7 @@ table.aw a { color: var(--accent); }
     $("awards-view").hidden = view !== "awards";
     $("view-list").setAttribute("aria-selected", view === "list" ? "true" : "false");
     $("view-awards").setAttribute("aria-selected", view === "awards" ? "true" : "false");
+    if (view === "awards") trackEv("awards");
     if (!keepHash) { try { history.replaceState(null, "", view === "awards" ? "#awards" : location.pathname + location.search); } catch (e) {} }
     if (view === "awards") renderAwards();
     window.scrollTo(0, 0);
@@ -1005,6 +1024,30 @@ table.aw a { color: var(--accent); }
     if (!more.hidden) { const b = el("button", "btn", t("awMore", Math.min(100, rows.length - awSt.shown))); b.type = "button"; b.onclick = () => { awSt.shown += 100; renderAwTable(); }; more.append(b); }
   }
 
+  // ---------------- anonymous usage events (Umami, GitHub Pages version only) ----------------
+  // The static build adds the Umami script; on claude.ai there is none and these calls do nothing.
+  function trackEv(name, term) {
+    try { if (window.umami && typeof window.umami.track === "function") window.umami.track(name, term ? { term: String(term).trim().slice(0, 40) } : undefined); } catch (e) {}
+  }
+  if (document.querySelector("script[data-website-id]")) $("lg-stats").hidden = false;
+  document.addEventListener("click", (e) => {
+    const t0 = e.target;
+    const aEl = t0.closest && t0.closest("a");
+    if (aEl) {
+      if (aEl.classList.contains("li-btn")) trackEv("myLinkedin");
+      else if (aEl.href.includes("udm=50")) trackEv("googleAi");
+      else if (aEl.href.includes("linkedin.com/jobs")) trackEv("linkedinJobs");
+      else if (aEl.closest(".links")) trackEv("companyLink");
+      return;
+    }
+    if (t0.closest && t0.closest("#filters .chip, #filters input[type=checkbox]")) trackEv("filter");
+    else if (t0.closest && t0.closest(".star")) trackEv("star");
+    else if (t0.closest && t0.closest("#export, #export-stars")) trackEv("export");
+    else if (t0.closest && t0.closest(".lang button")) trackEv("langSwitch");
+  }, true);
+  $("q").addEventListener("change", (e) => { if (e.target.value.trim()) trackEv("search", e.target.value); });
+  $("place").addEventListener("change", (e) => { if (e.target.value.trim()) trackEv("place", e.target.value); });
+
   // ---------------- wire inputs ----------------
   $("view-list").onclick = () => showView("list");
   $("view-awards").onclick = () => showView("awards");
@@ -1040,6 +1083,9 @@ table.aw a { color: var(--accent); }
       if (D) { buildFilters(); results = filter(); render(); }
       if (view === "awards") renderAwards();
     }
+  }).catch(() => {});
+  fetch("sizes.json").then((r) => (r.ok ? r.json() : null)).then((j) => {
+    if (j && j.sizes) { CH = new Map(Object.entries(j.sizes)); chMeta = j.meta || null; if (D) { buildFilters(); results = filter(); render(); } }
   }).catch(() => {});
   fetch("links.json").then((r) => (r.ok ? r.json() : {})).then((j) => {
     staticLinks = new Map(Object.entries(j || {})); mergeLinks(); if (D) { buildFilters(); results = filter(); render(); }
