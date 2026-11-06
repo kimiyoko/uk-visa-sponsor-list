@@ -73,8 +73,19 @@ def sic_industry(code):
     if d == 85: return "edu"
     if d <= 88: return "health"
     if d <= 91: return "media"
+    if d == 93: return "hospitality"                       # sport, fitness, leisure
+    if c4 in ("9602", "9604"): return "retail"              # hairdressing, beauty, wellbeing
     if d == 94 or d == 99: return "public"
     return "other"
+
+# Name rules that win over the SIC code: NHS bodies, universities and government bodies.
+OVERRIDES = [
+    ("health", re.compile(r"\bnhs\b", re.I)),
+    ("edu", re.compile(r"\b(university|universities)\b", re.I)),
+    ("public", re.compile(r"\b(council|government|ministry|department (for|of)|home office|cabinet office|hm revenue|hmrc|police|fire and rescue|parliament|embassy|high commission|consulate|authority|ombudsman)\b", re.I)),
+]
+
+COMPANY = re.compile(r"\b(ltd|limited|plc|llp)\b", re.I)
 
 # Name keywords, tried in this order; the first group that matches wins.
 KEYWORDS = [
@@ -84,7 +95,8 @@ KEYWORDS = [
     ("public", r"\b(council|charity|charities|charitable|foundation|association|society|borough|police|government|department|ministry|embassy|high commission|consulate|federation|union|cic|church|mosque|temple|gurdwara|synagogue|sangat|masjid|masjed|islamic|chapel|cio|diocese|parish|mission|ministries|religious)\b"),
     ("finance", r"\b(accountants?|accounting|accountancy|finance|financial|capital|banks?|banking|investments?|investors?|insurance|insurers?|wealth|tax|taxation|funds?|securities|brokers?|brokerage|payments?|pensions?|mortgages?|audit|auditors?|bookkeeping|equity|asset management|credit|lending|loans?|fintech)\b"),
     ("tech", r"\b(software|tech|techs|technology|technologies|digital|it|ict|data|cyber|cloud|computing|computers?|systems|ai|analytics|infotech|saas|apps?|web|internet|networks?|telecoms?|telecommunications?|electronics|robotics|devops|quantum|semiconductors?)\b"),
-    ("hospitality", r"\b(restaurants?|cafe|café|cafes|takeaway|kitchens?|food|foods|catering|caterers|hotels?|pizza|pizzeria|grill|grills|bar|bars|curry|tandoori|balti|kebab|chippy|fish and chips|fish & chips|bakery|bakers?|chicken|sushi|noodles?|spice|dining|hospitality|inn|pubs?|coffee|bistro|brasserie|diner|cuisine|eatery|burgers?|biryani|masala|chef|deli|patisserie|desserts?|ice cream|lounge|tavern|steakhouse|wok)\b"),
+    ("retail", r"\b(salon|salons|beauty|barbers?|barbershop|hair|hairdress\w*|nails?|aesthetics?|cosmetics?|lashes|brows)\b"),
+    ("hospitality", r"\b(sports? clubs?|football|cricket|rugby|golf|tennis|leisure|fitness|gym|athletic\w*|restaurants?|cafe|café|cafes|takeaway|kitchens?|food|foods|catering|caterers|hotels?|pizza|pizzeria|grill|grills|bar|bars|curry|tandoori|balti|kebab|chippy|fish and chips|fish & chips|bakery|bakers?|chicken|sushi|noodles?|spice|dining|hospitality|inn|pubs?|coffee|bistro|brasserie|diner|cuisine|eatery|burgers?|biryani|masala|chef|deli|patisserie|desserts?|ice cream|lounge|tavern|steakhouse|wok)\b"),
     ("energy", r"\b(energy|power|solar|renewables?|nuclear|oil|gas|utilities|utility|water|waste|recycling|electricity|wind|sustainab\w*|environmental|ev charging)\b"),
     ("mfg", r"\b(engineering|engineers?|manufactur\w*|industries|industrial|automotive|aerospace|motors?|steel|metals?|metalwork|fabrication|fabricators?|plastics?|ceramics?|chemicals?|electrical|electricians?|mechanical|machinery|machines|precision|tools|tooling|components|packaging|printing|engines?|vehicles?|marine|mining|foundry|welding|instruments?|brewery|breweries|distillery|food processing|mills?)\b"),
     ("property", r"\b(construction|constructions|build|builders|building|buildings|property|properties|estates?|developments?|roofing|roofers?|scaffold\w*|plumbing|plumbers?|joinery|joiners?|carpentry|architects?|architecture|architectural|surveyors?|surveying|civil|civils|interiors?|refurbishment|renovations?|homes|housing|lettings|letting agents?|groundworks|bricklaying|plastering|glazing|flooring)\b"),
@@ -103,6 +115,10 @@ def keyword_industry(name):
 
 def industry_of(name, sic):
     """(industry key, basis) where basis is 's' (SIC), 'k' (name keywords) or 'o' (nothing found)."""
+    for k, rx in OVERRIDES:
+        # Government bodies aren't companies; "Embassy Ltd" is usually a restaurant.
+        if rx.search(name) and not (k == "public" and COMPANY.search(name)):
+            return k, "k"
     if sic and sic not in GENERIC_SIC:
         k = sic_industry(sic)
         if k:

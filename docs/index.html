@@ -518,7 +518,7 @@ table.aw a { color: var(--accent); }
     try {
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
-        st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.indv === 2 ? f.inds || [] : []); st.routes = new Set(f.routes || ["sw"]);
+        st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.indv === 2 ? (f.inds || []).filter((i) => i >= 0) : []); st.routes = new Set(f.routes || ["sw"]);
         st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set((f.lists || []).filter((k) => DIM_KEYS.includes(k))); st.sizes = new Set((f.sizes || []).filter((k) => SIZES.includes(k)));
       }
     } catch (e) {}
@@ -554,8 +554,7 @@ table.aw a { color: var(--accent); }
   const tagsOf = (r) => {
     const L = links.get(keyOf(r));
     if (L && L.industry) {
-      if (L.industry === "none") return 0;
-      const want = OLD_IND[L.industry] || L.industry;
+      const want = L.industry === "none" ? "other" : OLD_IND[L.industry] || L.industry;
       const i = D.industries.findIndex(([k]) => k === want);
       if (i >= 0) return 1 << i;
     }
@@ -580,7 +579,6 @@ table.aw a { color: var(--accent); }
     for (const r of D.rows) { const m = tagsOf(r); if (!m) untagged++; else D.industries.forEach(([k], i) => { if (m & (1 << i)) counts[k]++; }); }
     const ic = $("ind-chips"); ic.innerHTML = "";
     D.industries.forEach(([k], i) => ic.append(chip(indName(k), counts[k], st.inds.has(i), () => toggle(st.inds, i))));
-    if (untagged || st.inds.has(-1)) ic.append(chip(t("untagged"), untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
     const ac = $("award-chips"); ac.innerHTML = "";
@@ -793,10 +791,10 @@ table.aw a { color: var(--accent); }
     const s4 = document.createElement("span"); s4.textContent = t("industryLabel");
     const ind = document.createElement("select"); ind.id = "vf-ind-" + k;
     const guessed = D.industries.filter((_, i) => r[3] & (1 << i)).map(([key]) => indName(key)).join(" / ") || t("untagged");
-    [["", t("industryAuto", guessed)], ...D.industries.map(([key]) => [key, indName(key)]), ["none", t("untagged")]].forEach(([v, label]) => {
+    [["", t("industryAuto", guessed)], ...D.industries.map(([key]) => [key, indName(key)])].forEach(([v, label]) => {
       const o = document.createElement("option"); o.value = v; o.textContent = label; ind.append(o);
     });
-    ind.value = L.industry ? OLD_IND[L.industry] || L.industry : "";
+    ind.value = L.industry ? (L.industry === "none" ? "other" : OLD_IND[L.industry] || L.industry) : "";
     w4.append(s4, ind);
     const w5 = document.createElement("label"); w5.className = "vf-field"; w5.htmlFor = "vf-size-" + k;
     const s5 = document.createElement("span"); s5.textContent = t("sizeLabel");
