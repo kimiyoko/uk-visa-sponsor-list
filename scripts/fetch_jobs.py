@@ -87,7 +87,10 @@ def match_company(index, display_name):
     legal = [o for o, ta in hits if not ta]
     pool = legal or [o for o, _ in hits]
     org = dict(pool[0])
-    org["how"] = "exact" if (len(pool) == 1 and not weak(c)) else "ambiguous"
+    # Several register entries with the same name (group companies, subsidiaries) only matter if they differ:
+    # when every one of them is A-rated with a Skilled Worker licence, it is a clear match.
+    all_ok = all(o["skilled_worker"] and o["rating"] == "a" for o in pool)
+    org["how"] = "exact" if not weak(c) and (len(pool) == 1 or all_ok) else "ambiguous"
     if org["how"] == "ambiguous":
         # several register entries share the name: prefer one that can sponsor Skilled Worker at A rating
         best = [o for o in pool if o["skilled_worker"] and o["rating"] == "a"]
