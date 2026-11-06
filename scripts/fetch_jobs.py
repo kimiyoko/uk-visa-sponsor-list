@@ -152,12 +152,17 @@ def main():
 
     index = load_register()
     today = datetime.date.today().isoformat()
-    jobs, calls = {}, 0
+    jobs, calls, stopped = {}, 0, False
     for role in ROLES:
         for phrase in PHRASES:
             page = 1
-            while calls < a.max_calls:
-                d = adzuna_search(app_id, app_key, role, phrase, a.days, page)
+            while calls < a.max_calls and not stopped:
+                try:
+                    d = adzuna_search(app_id, app_key, role, phrase, a.days, page)
+                except Exception as e:  # quota used up (test plan: 25 calls) or Adzuna down: keep what we have
+                    print(f"Adzuna stopped after {calls} calls: {type(e).__name__} {getattr(e, 'code', '')}")
+                    stopped = True
+                    break
                 calls += 1
                 for r in d.get("results", []):
                     jobs.setdefault(str(r["id"]), r)

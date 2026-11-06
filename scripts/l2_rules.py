@@ -7,7 +7,7 @@ judge(job, company) -> {"label": "可担保" | "存疑" | "不行", "soc": ..., 
   job:     {"title", "description", "salary_min", "salary_max", "contract_time", "contract_type"}
   company: register match or None: {"rating": "a"|"b"|"p", "skilled_worker": bool, "how": "exact"|"trading"|"ambiguous"}
 
-Order (stop at the first 不行): company → explicit "no sponsorship" → contractor → part-time → SOC → salary → 3544 deadline → wording.
+Order (stop at the first 不行): company → explicit "no sponsorship" → contractor → part-time → SOC (off-target titles are 不行) → salary → 3544 deadline → wording.
 Thresholds as of 2026-11 (gov.uk Appendix Skilled Occupations); the user does not qualify for new-entrant rates.
 """
 import re, datetime
@@ -90,8 +90,8 @@ def judge(job, company, today=None):
     # 5 SOC
     soc, soc_name, threshold = infer_soc(job.get("title"))
     if not soc:
-        reasons.append("职位名对不上目标 SOC（3544 / 2425 / 2135 / 2424 / 1132）")
-        return out("存疑")
+        reasons.append("不是目标岗位：职位名对不上 3544 / 2425 / 2135 / 2424 / 1132")
+        return out("不行")
     reasons.append(f"推断 SOC {soc}（{soc_name}），薪资门槛 £{threshold:,}")
 
     # 6 salary

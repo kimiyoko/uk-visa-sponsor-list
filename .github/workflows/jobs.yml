@@ -34,4 +34,5 @@ jobs:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
-        run: python3 scripts/fetch_jobs.py --days "${{ github.event.inputs.days || '2' }}" --max-calls "${{ github.event.inputs.max_calls || '30' }}"
+        # Scheduled runs use 8 calls while the Adzuna key is on the 25-call test plan; raise to 30 once it is activated.
+        run: python3 scripts/fetch_jobs.py --days "${{ github.event.inputs.days || '2' }}" --max-calls "${{ github.event.inputs.max_calls || '8' }}"
