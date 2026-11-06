@@ -1,6 +1,6 @@
-# Daily job radar: Adzuna ads that mention visa sponsorship → register match → L2 → private Airtable.
-# 每日岗位雷达：Adzuna 上提到担保的广告 → 对上担保名单 → L2 判断 → 写入私有 Airtable。
-# Secrets (Settings → Secrets and variables → Actions): ADZUNA_APP_ID, ADZUNA_APP_KEY, AIRTABLE_TOKEN.
+# Daily job radar: Adzuna ads that mention visa sponsorship + company career sites (Apify) → register match → L2 → private Airtable.
+# 每日岗位雷达：Adzuna 上提到担保的广告 + 公司招聘官网岗位（Apify）→ 对上担保名单 → L2 判断 → 写入私有 Airtable。
+# Secrets (Settings → Secrets and variables → Actions): ADZUNA_APP_ID, ADZUNA_APP_KEY, APIFY_TOKEN, AIRTABLE_TOKEN.
 # The log only shows counts; job details go to Airtable, never to the log or the repo.
 name: Job radar
 
@@ -10,11 +10,17 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: "Look back this many days / 往回查几天"
+        description: "Adzuna: look back this many days / 往回查几天"
         default: "30"
       max_calls:
-        description: "Max Adzuna calls this run / 本次最多调用几次"
+        description: "Adzuna: max calls this run, 0 = skip / 本次最多调用几次，0 = 不用 Adzuna"
         default: "16"
+      apify_range:
+        description: "Apify: time range 24h / 7d / 6m / 时间范围"
+        default: "7d"
+      apify_limit:
+        description: "Apify: max jobs, billed at about $4 per 1,000, 0 = skip / 最多岗位数（按条收费），0 = 不用 Apify"
+        default: "100"
 
 permissions:
   contents: read
@@ -33,6 +39,13 @@ jobs:
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
-        # Scheduled runs use 8 calls while the Adzuna key is on the 25-call test plan; raise to 30 once it is activated.
-        run: python3 scripts/fetch_jobs.py --days "${{ github.event.inputs.days || '2' }}" --max-calls "${{ github.event.inputs.max_calls || '8' }}"
+        # Scheduled runs: Adzuna 8 calls while the key is on the 25-call test plan (raise to 30 once activated);
+        # Apify last 24 hours, at most 50 jobs (about $0.20 a run, within Apify's free monthly credit).
+        run: >-
+          python3 scripts/fetch_jobs.py
+          --days "${{ github.event.inputs.days || '2' }}"
+          --max-calls "${{ github.event.inputs.max_calls || '8' }}"
+          --apify-range "${{ github.event.inputs.apify_range || '24h' }}"
+          --apify-limit "${{ github.event.inputs.apify_limit || '50' }}"

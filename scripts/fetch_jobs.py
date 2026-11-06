@@ -1,8 +1,9 @@
-"""Daily job radar: Adzuna ads that mention visa sponsorship → sponsor-register match → L2 → private Airtable.
-每日岗位雷达：Adzuna 上提到担保的广告 → 对上担保名单 → L2 判断 → 写入私有 Airtable。
+"""Daily job radar: Adzuna ads that mention visa sponsorship + company career sites (Apify) → sponsor-register match → L2 → private Airtable.
+每日岗位雷达：Adzuna 上提到担保的广告 + 公司招聘官网岗位（Apify）→ 对上担保名单 → L2 判断 → 写入私有 Airtable。
 
-Usage: python3 scripts/fetch_jobs.py [--days 2] [--max-calls 30] [--dry-run]
-Env (GitHub Actions secrets): ADZUNA_APP_ID, ADZUNA_APP_KEY, AIRTABLE_TOKEN (scoped to the 求职追踪 base only).
+Usage: python3 scripts/fetch_jobs.py [--days 2] [--max-calls 30] [--apify-range 24h] [--apify-limit 50] [--dry-run]
+Env (GitHub Actions secrets): ADZUNA_APP_ID, ADZUNA_APP_KEY, APIFY_TOKEN, AIRTABLE_TOKEN (scoped to the 求职追踪 base only).
+Each source runs only if its keys are set. Apify bills per job returned, so --apify-limit caps the cost.
 Without AIRTABLE_TOKEN, or with --dry-run, nothing is written.
 
 The repository is public, so this script only ever prints counts. Job details go to Airtable, never to the log or the repo.
@@ -139,54 +140,102 @@ class Airtable:
         return made
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--days", type=int, default=2)
-    ap.add_argument("--max-calls", type=int, default=30)
-    ap.add_argument("--dry-run", action="store_true")
-    a = ap.parse_args()
-    app_id, app_key, token = os.environ.get("ADZUNA_APP_ID"), os.environ.get("ADZUNA_APP_KEY"), os.environ.get("AIRTABLE_TOKEN")
-    if not (app_id and app_key):
-        sys.exit("ADZUNA_APP_ID / ADZUNA_APP_KEY not set")
-    write = bool(token) and not a.dry_run
+APIFY_ACTOR = "fantastic-jobs~career-site-job-listing-api"  # company career sites across 58 job systems, $4 per 1,000 jobs
+APIFY_TITLES = ROLES + ["insights analyst", "reporting analyst", "fp&a analyst"]
 
-    index = load_register()
-    today = datetime.date.today().isoformat()
-    jobs, calls, stopped = {}, 0, False
+
+def adzuna_jobs(app_id, app_key, days, max_calls):
+    raw, calls, stopped = {}, 0, False
     for role in ROLES:
         for phrase in PHRASES:
             page = 1
-            while calls < a.max_calls and not stopped:
+            while calls < max_calls and not stopped:
                 try:
-                    d = adzuna_search(app_id, app_key, role, phrase, a.days, page)
+                    d = adzuna_search(app_id, app_key, role, phrase, days, page)
                 except Exception as e:  # quota used up (test plan: 25 calls) or Adzuna down: keep what we have
                     print(f"Adzuna stopped after {calls} calls: {type(e).__name__} {getattr(e, 'code', '')}")
                     stopped = True
                     break
                 calls += 1
                 for r in d.get("results", []):
-                    jobs.setdefault(str(r["id"]), r)
+                    raw.setdefault(str(r["id"]), r)
                 if page * 50 >= d.get("count", 0) or page >= 3:
                     break
                 page += 1
                 time.sleep(2.5)  # stay well under 25 calls a minute
             time.sleep(2.5)
+    out = []
+    for jid, r in raw.items():
+        real = r.get("salary_is_predicted") != "1"
+        out.append({"ext": f"adzuna:{jid}", "source": "Adzuna", "company": (r.get("company") or {}).get("display_name"),
+                    "title": r.get("title"), "description": r.get("description"), "url": r.get("redirect_url"),
+                    "location": (r.get("location") or {}).get("display_name"), "contract_time": r.get("contract_time"),
+                    "contract_type": r.get("contract_type"),
+                    "salary_min": r.get("salary_min") if real else None, "salary_max": r.get("salary_max") if real else None})
+    print(f"Adzuna: {calls} calls, {len(out)} ads")
+    return out
 
-    counts = {"ads": len(jobs), "calls": calls, "on_register": 0, "可担保": 0, "存疑": 0, "不行": 0}
+
+def apify_jobs(token, time_range, limit):
+    body = {"titleSearch": APIFY_TITLES, "locationSearch": ["United Kingdom"], "timeRange": time_range, "limit": limit,
+            "descriptionType": "text", "removeAgency": True}
+    url = f"https://api.apify.com/v2/acts/{APIFY_ACTOR}/run-sync-get-dataset-items?timeout=280"
+    try:
+        items = http_json(url, body, "POST", {"Authorization": f"Bearer {token}"})
+    except Exception as e:
+        print(f"Apify failed: {type(e).__name__} {getattr(e, 'code', '')}")
+        return []
+    out = []
+    for r in items if isinstance(items, list) else []:
+        yearly = (r.get("ai_salary_unit_text") or "").upper() == "YEAR" and (r.get("ai_salary_currency") or "GBP") == "GBP"
+        etype = " ".join(r.get("ai_employment_type") or []).upper()
+        locs = r.get("locations_derived") or []
+        out.append({"ext": f"apify:{r.get('id')}", "source": "Apify", "company": r.get("organization"), "title": r.get("title"),
+                    "description": r.get("description_text"), "url": r.get("url"), "location": "; ".join(map(str, locs[:2])) or None,
+                    "contract_time": "part_time" if "PART_TIME" in etype and "FULL_TIME" not in etype else None, "contract_type": None,
+                    "salary_min": r.get("ai_salary_min_value") if yearly else None, "salary_max": r.get("ai_salary_max_value") if yearly else None,
+                    "visa_flag": bool(r.get("ai_visa_sponsorship"))})
+    print(f"Apify: {len(out)} jobs")
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--days", type=int, default=2, help="Adzuna look-back in days")
+    ap.add_argument("--max-calls", type=int, default=30, help="max Adzuna calls")
+    ap.add_argument("--apify-range", default="24h", choices=["1h", "24h", "7d", "6m"])
+    ap.add_argument("--apify-limit", type=int, default=50, help="max Apify jobs (billed per job)")
+    ap.add_argument("--dry-run", action="store_true")
+    a = ap.parse_args()
+    env = os.environ.get
+    token = env("AIRTABLE_TOKEN")
+    write = bool(token) and not a.dry_run
+
+    found = []
+    if env("ADZUNA_APP_ID") and env("ADZUNA_APP_KEY") and a.max_calls > 0:
+        found += adzuna_jobs(env("ADZUNA_APP_ID"), env("ADZUNA_APP_KEY"), a.days, a.max_calls)
+    if env("APIFY_TOKEN") and a.apify_limit > 0:
+        found += apify_jobs(env("APIFY_TOKEN"), a.apify_range, max(10, a.apify_limit))
+    if not found:
+        print("no jobs fetched")
+        return
+
+    index = load_register()
+    today = datetime.date.today().isoformat()
+    counts = {"jobs": len(found), "on_register": 0, "可担保": 0, "存疑": 0, "不行": 0}
     keep = []
-    for jid, r in jobs.items():
-        org = match_company(index, (r.get("company") or {}).get("display_name"))
+    for job in found:
+        org = match_company(index, job["company"])
         if org:
             counts["on_register"] += 1
-        job = {"title": r.get("title"), "description": r.get("description"), "contract_time": r.get("contract_time"),
-               "contract_type": r.get("contract_type"),
-               "salary_min": None if r.get("salary_is_predicted") == "1" else r.get("salary_min"),
-               "salary_max": None if r.get("salary_is_predicted") == "1" else r.get("salary_max")}
         l2 = judge(job, org, today)
+        if job.get("visa_flag") and "写明可担保" not in l2["reasons"]:
+            l2["score_bonus"] += 10
+            l2["reasons"].append("Apify 识别为提到签证担保")
         counts[l2["label"]] += 1
         if l2["label"] != "不行":
-            keep.append((jid, r, org, l2))
-    print("Adzuna:", json.dumps(counts, ensure_ascii=False))
+            keep.append((job, org, l2))
+    print("L2:", json.dumps(counts, ensure_ascii=False))
     if not write:
         print("dry run: nothing written (no AIRTABLE_TOKEN or --dry-run)")
         return
@@ -196,9 +245,9 @@ def main():
     seen = {rec["fields"].get(F["j_ext"]) for rec in at.all(F["jobs"], [F["j_ext"]])}
     comp = {rec["fields"].get(F["c_oid"]): rec["id"] for rec in at.all(F["companies"], [F["c_oid"]])}
     new_comp = {}
-    for jid, r, org, l2 in keep:
+    for job, org, l2 in keep:
         if org and org["oid"] not in comp and org["oid"] not in new_comp:
-            new_comp[org["oid"]] = {F["c_name"]: (r.get("company") or {}).get("display_name") or org["name"], F["c_regname"]: org["name"],
+            new_comp[org["oid"]] = {F["c_name"]: job["company"] or org["name"], F["c_regname"]: org["name"],
                                     F["c_oid"]: org["oid"], F["c_town"]: org["town"], F["c_rating"]: org["rating"].upper() if org["rating"] in "ab" else None,
                                     F["c_tags"]: [DIM_ZH[x] for x in org["dims"] if x in DIM_ZH], F["c_source"]: "招聘网站反查",
                                     F["c_added"]: today, F["c_hiring"]: "有英国岗位", F["c_ch"]: "未查"}
@@ -206,17 +255,17 @@ def main():
         comp[rec["fields"].get(F["c_oid"])] = rec["id"]
 
     rows = []
-    for jid, r, org, l2 in keep:
-        ext = f"adzuna:{jid}"
-        if ext in seen:
+    for job, org, l2 in keep:
+        if job["ext"] in seen:
             continue
-        loc = (r.get("location") or {}).get("display_name")
-        f = {F["j_title"]: r.get("title"), F["j_url"]: r.get("redirect_url"), F["j_source"]: "Adzuna", F["j_found"]: today,
-             F["j_place"]: loc, F["j_text"]: (r.get("description") or "")[:2000], F["j_l2"]: l2["label"],
-             F["j_why"]: "；".join(l2["reasons"]), F["j_how"]: "规则", F["j_score"]: priority(l2, org), F["j_stage"]: "发现", F["j_ext"]: ext}
-        if r.get("salary_is_predicted") != "1":
-            if r.get("salary_min"): f[F["j_smin"]] = round(r["salary_min"])
-            if r.get("salary_max"): f[F["j_smax"]] = round(r["salary_max"])
+        seen.add(job["ext"])
+        f = {F["j_title"]: job["title"], F["j_url"]: job["url"], F["j_source"]: job["source"], F["j_found"]: today,
+             F["j_place"]: job["location"], F["j_text"]: (job["description"] or "")[:2000], F["j_l2"]: l2["label"],
+             F["j_why"]: "；".join(l2["reasons"]), F["j_how"]: "规则", F["j_score"]: priority(l2, org), F["j_stage"]: "发现", F["j_ext"]: job["ext"]}
+        if job.get("salary_min"):
+            f[F["j_smin"]] = round(job["salary_min"])
+        if job.get("salary_max"):
+            f[F["j_smax"]] = round(job["salary_max"])
         if l2["soc"]:
             f[F["j_soc"]] = SOC_CHOICE[l2["soc"]]
         if org and org["oid"] in comp:
