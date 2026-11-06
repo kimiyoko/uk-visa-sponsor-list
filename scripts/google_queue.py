@@ -1,6 +1,6 @@
 """Pick the next organisations to look up with Google AI Mode.
 
-Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry it[,health,...]] [--rating a] [--route sw]
+Usage: python3 -I google_queue.py <data.json> <links_dir_or_json> [--limit 25] [--place manchester] [--industry tech[,health,...]] [--rating a] [--route sw]
 
 <links_dir_or_json> is either a folder of saved database documents (one JSON file per
 document, as ArtifactData's out_dir writes them) or a links.json object. Organisations
@@ -53,7 +53,7 @@ def main():
     ap.add_argument("links")
     ap.add_argument("--limit", type=int, default=25)
     ap.add_argument("--place", default="manchester")
-    ap.add_argument("--industry", default="it")
+    ap.add_argument("--industry", default="tech")
     ap.add_argument("--route", default="", help="visa route key from data.json routes, e.g. sw; empty = any")
     ap.add_argument("--rating", default="", help="a = A-rated only, b = B-rated, p = provisional; empty = any")
     a = ap.parse_args()

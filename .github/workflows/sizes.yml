@@ -42,15 +42,22 @@ jobs:
 
       - name: Rebuild docs/sizes.json
         if: steps.find.outputs.skip == 'false'
-        run: python3 -I scripts/build_sizes.py "$RUNNER_TEMP/ch/${{ steps.find.outputs.name }}" docs/data.json docs/sizes.json
+        run: python3 -I scripts/build_sizes.py "$RUNNER_TEMP/ch/${{ steps.find.outputs.name }}" docs/data.json docs/sizes.json docs/sic.json
+
+      # Industries come from the SIC codes just written to docs/sic.json.
+      - name: Re-tag industries and rebuild the page
+        if: steps.find.outputs.skip == 'false'
+        run: |
+          python3 -I scripts/build_data.py --retag docs/data.json docs/sic.json
+          python3 scripts/make_static.py
 
       - name: Commit
         if: steps.find.outputs.skip == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/sizes.json
+          git add docs/sizes.json docs/sic.json docs/data.json docs/index.html
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
-          git commit -m "Update company sizes (${{ steps.find.outputs.name }})"
+          git commit -m "Update company sizes and industries (${{ steps.find.outputs.name }})"
           git pull --rebase origin main
           git push origin HEAD:main

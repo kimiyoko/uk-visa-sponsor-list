@@ -7,7 +7,9 @@ Size is inferred from the type of the latest accounts filed (Accounts.AccountCat
   large  <- GROUP             (page label: group)
 Everything else (dormant, no accounts yet, subsidiary exemptions...) is left blank.
 
-Usage: python3 -I build_sizes.py <ch.zip> <sponsor data.json> <out sizes.json>
+Usage: python3 -I build_sizes.py <ch.zip> <sponsor data.json> <out sizes.json> [<out sic.json>]
+The optional sic.json maps each matched organisation to its first SIC code; build_data.py
+uses it for the industry groups.
 Prints only a short summary.
 """
 import csv, io, json, os, re, sys, zipfile
@@ -50,6 +52,7 @@ def core(n):
 
 def main():
     ch_zip, data_path, out_path = sys.argv[1:4]
+    sic_path = sys.argv[4] if len(sys.argv) > 4 else None
     m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(ch_zip))
     snapshot = m.group(1) if m else ""
     with open(data_path, encoding="utf-8") as f:
@@ -75,6 +78,7 @@ def main():
             rd = csv.reader(io.TextIOWrapper(raw, encoding="utf-8", errors="replace", newline=""))
             hdr = [h.strip() for h in next(rd)]
             iN, iNo, iT, iS, iA = (hdr.index(k) for k in ("CompanyName", "CompanyNumber", "RegAddress.PostTown", "CompanyStatus", "Accounts.AccountCategory"))
+            iSic = hdr.index("SICCode.SicText_1") if "SICCode.SicText_1" in hdr else None
             for row in rd:
                 if len(row) <= iA:
                     continue
@@ -83,7 +87,8 @@ def main():
                 hit_f, hit_c = n in want_full, c in want_core
                 if not (hit_f or hit_c):
                     continue
-                rec = (row[iNo], row[iA].strip().upper(), row[iT].strip().lower(), row[iS].strip().lower().startswith("active"))
+                sic = row[iSic].strip()[:5] if iSic is not None and iSic < len(row) else ""
+                rec = (row[iNo], row[iA].strip().upper(), row[iT].strip().lower(), row[iS].strip().lower().startswith("active"), sic if sic.isdigit() else "")
                 if hit_f:
                     by_full[n].append(rec)
                 if hit_c:
@@ -96,7 +101,7 @@ def main():
         same_town = [x for x in live if town and x[2] == town]
         return same_town[0] if len(same_town) == 1 else None
 
-    sizes, how = {}, Counter()
+    sizes, sics, how = {}, {}, Counter()
     for key, n, c, town in regs:
         rec = pick(by_full.get(n, []), town)
         via = "exact"
@@ -107,6 +112,8 @@ def main():
             how["unmatched"] += 1
             continue
         cats[rec[1]] += 1
+        if rec[4]:
+            sics[key] = rec[4]
         sz = SIZE.get(rec[1])
         if not sz:
             how["matched_no_size"] += 1
@@ -119,7 +126,13 @@ def main():
             "orgs": len(regs), "sized": len(sizes), "small": counts["s"], "medium": counts["m"], "large": counts["l"]}
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "sizes": sizes}, f, separators=(",", ":"))
-    print(json.dumps({"meta": meta, "how": how, "top_categories": cats.most_common(12)}, indent=1))
+    if sic_path:
+        with open(sic_path, "w", encoding="utf-8") as f:
+            json.dump({"meta": {"source": meta["source"], "snapshot": snapshot, "orgs": len(regs), "with_sic": len(sics)}, "sic": sics}, f, separators=(",", ":"))
+        meta_sic = len(sics)
+    else:
+        meta_sic = None
+    print(json.dumps({"meta": meta, "with_sic": meta_sic, "how": how, "top_categories": cats.most_common(12)}, indent=1))
 
 if __name__ == "__main__":
     main()

@@ -238,7 +238,7 @@ table.aw a { color: var(--accent); }
         <p class="note" id="since-note"></p>
       </div>
       <div class="fgroup">
-        <div class="flabel"><span data-i18n="fInd">行业（名称推断，可多选）</span><button type="button" id="ind-clear" data-i18n="all">全部</button></div>
+        <div class="flabel"><span data-i18n="fInd">行业（可多选）</span><button type="button" id="ind-clear" data-i18n="all">全部</button></div>
         <div class="chips" id="ind-chips"></div>
       </div>
       <div class="fgroup">
@@ -261,7 +261,7 @@ table.aw a { color: var(--accent); }
         <label class="check"><input type="checkbox" id="only-link"> <span data-i18n="onlyLink">只看已有官网链接的</span></label>
         <label class="check"><input type="checkbox" id="only-hire"> <span data-i18n="onlyHire">只看有英国岗位的</span></label>
       </div>
-      <p class="note" data-i18n="filterNote">行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。</p>
+      <p class="note" data-i18n="filterNote">行业按 Companies House 登记的行业代码（SIC）归入 14 类；不在 Companies House 或代码太笼统的，按公司名关键词推断，仍看不出的归入「其他」。在名单上只说明有担保资格，不代表正在招人。</p>
     </aside>
 
     <section style="display:flex;flex-direction:column;gap:12px;min-width:0">
@@ -350,11 +350,11 @@ table.aw a { color: var(--accent); }
       metaDate: "登记表版本", metaRows: "原始行数", metaOrgs: "机构数", metaDiff: (a, r) => `（本次新增 ${a}，移除 ${r}）`,
       filtersAria: "筛选", sortAria: "排序",
       fName: "公司名称", fNamePh: "例如 NHS、Software、Deloitte", fPlace: "城市 / 郡", fPlacePh: "例如 Stoke-on-Trent、Manchester",
-      clear: "清除", all: "全部", fInd: "行业（名称推断，可多选）", fRoute: "签证路线", untagged: "未分类",
+      clear: "清除", all: "全部", fInd: "行业（可多选）", fRoute: "签证路线", untagged: "未分类",
       onlyA: "只看 A 级评级（可正常发 CoS）", onlyStar: "只看我收藏的", onlyLink: "只看已有官网链接的", fSince: "加入名单时间", sinceAll: "不限", since1: "24 小时内", since7: "7 日内", since30: "30 日内",
       sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
       newAdded: "今日新增",
-      filterNote: "行业标签按公司名关键词推断，名字看不出行业的归入「未分类」。在名单上只说明有担保资格，不代表正在招人。",
+      filterNote: "行业按 Companies House 登记的行业代码（SIC）归入 14 类；不在 Companies House 或代码太笼统的，按公司名关键词推断，仍看不出的归入「其他」。在名单上只说明有担保资格，不代表正在招人。",
       viewJobs: "岗位搜索", jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
       jbSecSponsor: "专门的担保岗位网站", jbSecBoards: "大型招聘网站：用关键词搜担保岗位",
       jbHunt: "按地区和职位列出担保公司的在招岗位", jbVsj: "英国担保岗位聚合网站", jbBright: "以学生和应届岗位为主，部分岗位注明可担保，需免费注册",
@@ -398,7 +398,7 @@ table.aw a { color: var(--accent); }
       lgAiT: "AI 查网址", lgAi: "让 Claude 凭已有知识推测官网和招聘页（不联网，小公司常查不到）。会用到你自己的 Claude 用量。查不到时用「谷歌 AI 搜索」，它会联网查。",
       lgGoogleT: "谷歌 AI 搜索", lgGoogle: "在新标签页打开谷歌 AI 模式，自动带上公司名和城市，查官网、招聘页和英国岗位。核对后用「核实 / 填链接」保存。",
       source: "数据来源：", ogl: "（Open Government Licence v3.0）",
-      ind: { health: "医疗护理", it: "IT / 软件 / 数据", edu: "教育培训", food: "餐饮酒店", retail: "零售批发", construction: "建筑地产", eng: "工程制造", finance: "金融会计", legal: "法律", consult: "咨询 / 商业服务", recruit: "招聘 / 人力外包", logistics: "物流运输", science: "科研 / 制药 / 生物", creative: "创意 / 媒体 / 体育", public: "公共部门 / 慈善", beauty: "美容美发", facility: "清洁 / 安保 / 物业维护", agri: "农业 / 食品加工" },
+      ind: { health: "医疗健康", retail: "零售与电商", tech: "科技与软件", hospitality: "酒店餐饮", prof: "专业服务", property: "地产与建筑", mfg: "制造与工业", finance: "金融服务", transport: "交通出行与物流", media: "媒体、营销与创意", edu: "教育", public: "公共部门与非营利", energy: "能源、公用事业与可持续", other: "其他" },
       route: { sw: "Skilled Worker（技术工签，含医护签）", gbm: "Global Business Mobility（跨国调派等）", scale: "Scale-up（高成长企业）", creative: "Creative / Sportsperson（文艺体育）", temp: "Charity / 交流 / 国际协议（临时）", religion: "宗教工作者", seasonal: "季节工", other: "其他" },
       routeShort: { sw: "Skilled Worker", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / 交流 / 国际协议", religion: "宗教工作者", seasonal: "季节工", other: "其他" },
     },
@@ -407,7 +407,7 @@ table.aw a { color: var(--accent); }
       metaDate: "Register edition", metaRows: "Rows", metaOrgs: "Organisations", metaDiff: (a, r) => ` (+${a} new, −${r} removed)`,
       filtersAria: "Filters", sortAria: "Sort",
       fName: "Company name", fNamePh: "e.g. NHS, Software, Deloitte", fPlace: "Town / county", fPlacePh: "e.g. Stoke-on-Trent, Manchester",
-      clear: "Clear", all: "All", fInd: "Industry (guessed from name, multi-select)", fRoute: "Visa route", untagged: "Unclassified",
+      clear: "Clear", all: "All", fInd: "Industry (multi-select)", fRoute: "Visa route", untagged: "Unclassified",
       onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
       sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
       newAdded: "New added",
@@ -415,7 +415,7 @@ table.aw a { color: var(--accent); }
       jbSecSponsor: "Sites for sponsored jobs", jbSecBoards: "Big job boards: search for sponsored jobs",
       jbHunt: "Open jobs at licensed sponsors, by location and role", jbVsj: "A UK aggregator of sponsored jobs", jbBright: "Mostly student and graduate roles; some list visa sponsorship; free sign-up",
       jbLinkedin: "Pre-filled with \"visa sponsorship\" in the UK; employers set LinkedIn's sponsorship labels themselves", jbIndeed: "Pre-filled with \"visa sponsorship\"",
-      filterNote: "Industry tags are guessed from keywords in the company name; names that give no clue go to “Unclassified”. Being on the register means a company can sponsor, not that it is hiring.",
+      filterNote: "Industries come from the SIC code each company registered at Companies House, grouped into 14. Organisations not at Companies House, or with only a generic code, are classified from keywords in their name; anything left goes to “Other”. Being on the register means a company can sponsor, not that it is hiring.",
       sortName: "Name A–Z", sortTown: "Town", sortNew: "New first",
       export: "Export results (CSV)", exportStars: "Download my list", exportStarsN: (n) => `Download my list (${n})`, feedback: "Send feedback",
       loading: "Loading 120,000+ organisations…", loadFail: "The list didn't load. Please refresh the page.",
@@ -455,7 +455,7 @@ table.aw a { color: var(--accent); }
       lgAiT: "Find with AI", lgAi: "Asks Claude for the website and careers page from its own knowledge (no web access, so small companies often come back empty). This uses your own Claude allowance. If it finds nothing, use Google AI search, which searches the web.",
       lgGoogleT: "Google AI search", lgGoogle: "Opens Google AI Mode in a new tab with the company name and town filled in, to find the website, careers page and UK openings. Check the result, then save it with “Verify / add links”.",
       source: "Source: ", ogl: " (Open Government Licence v3.0)",
-      ind: { health: "Health & care", it: "IT / Software / Data", edu: "Education & training", food: "Food & hospitality", retail: "Retail & wholesale", construction: "Construction & property", eng: "Engineering & manufacturing", finance: "Finance & accounting", legal: "Legal", consult: "Consulting & business services", recruit: "Recruitment & staffing", logistics: "Logistics & transport", science: "Science / Pharma / Biotech", creative: "Creative / Media / Sport", public: "Public sector & charity", beauty: "Beauty & hair", facility: "Cleaning / Security / Facilities", agri: "Farming & food processing" },
+      ind: { health: "Healthcare", retail: "Retail & E-commerce", tech: "Technology & Software", hospitality: "Hospitality & Food Service", prof: "Professional Services", property: "Property & Construction", mfg: "Manufacturing & Industrial", finance: "Financial Services", transport: "Travel, Transport & Mobility", media: "Media, Marketing & Creative", edu: "Education", public: "Public Sector & Non-Profit", energy: "Energy, Utilities & Sustainability", other: "Other" },
       route: { sw: "Skilled Worker (incl. Health and Care)", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / Exchange / International Agreement", religion: "Religious workers", seasonal: "Seasonal Worker", other: "Other" },
       routeShort: { sw: "Skilled Worker", gbm: "Global Business Mobility", scale: "Scale-up", creative: "Creative / Sportsperson", temp: "Charity / Exchange / Intl Agreement", religion: "Religious workers", seasonal: "Seasonal Worker", other: "Other" },
     },
@@ -518,7 +518,7 @@ table.aw a { color: var(--accent); }
     try {
       const f = JSON.parse(localStorage.getItem("sponsor-filters") || "null");
       if (f) {
-        st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.inds || []); st.routes = new Set(f.routes || ["sw"]);
+        st.q = f.q || ""; st.place = f.place || ""; st.inds = new Set(f.indv === 2 ? f.inds || [] : []); st.routes = new Set(f.routes || ["sw"]);
         st.onlyA = f.onlyA !== false; st.sort = f.sort || "name"; st.since = [0, 1, 7, 30].includes(f.since) ? f.since : 0; st.onlyHire = !!f.onlyHire; st.lists = new Set((f.lists || []).filter((k) => DIM_KEYS.includes(k))); st.sizes = new Set((f.sizes || []).filter((k) => SIZES.includes(k)));
       }
     } catch (e) {}
@@ -526,7 +526,7 @@ table.aw a { color: var(--accent); }
   function starCount() { const b = $("export-stars"); if (b) b.textContent = stars.size ? t("exportStarsN", stars.size) : t("exportStars"); }
   function saveLocal() {
     try { localStorage.setItem("sponsor-stars", JSON.stringify([...stars])); } catch (e) {}
-    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort, since: st.since, onlyHire: st.onlyHire, lists: [...st.lists], sizes: [...st.sizes] })); } catch (e) {}
+    try { localStorage.setItem("sponsor-filters", JSON.stringify({ q: st.q, place: st.place, indv: 2, inds: [...st.inds], routes: [...st.routes], onlyA: st.onlyA, sort: st.sort, since: st.since, onlyHire: st.onlyHire, lists: [...st.lists], sizes: [...st.sizes] })); } catch (e) {}
   }
 
   // stable id per organisation (name + town)
@@ -548,12 +548,15 @@ table.aw a { color: var(--accent); }
   const ageOf = (r) => (r[7] > 0 ? todayN - r[7] : Infinity);
   const isNewAdded = (r) => ageOf(r) <= 1;
   const sortName = (r) => { if (r._s === undefined) r._s = r[0].replace(/^[^A-Za-z0-9]+/, "").toLowerCase() || r[0].toLowerCase(); return r._s; };
-  // Industry tags as a bit mask; a manual choice saved while verifying replaces the guessed tags.
+  // Industry as a bit mask; a manual choice saved while verifying replaces the automatic one.
+  // Choices saved before the 14-group change (Nov 2026) use the old keys; map them across.
+  const OLD_IND = { it: "tech", food: "hospitality", construction: "property", eng: "mfg", legal: "prof", consult: "prof", recruit: "prof", logistics: "transport", science: "health", creative: "media", beauty: "other", facility: "prof", agri: "other" };
   const tagsOf = (r) => {
     const L = links.get(keyOf(r));
     if (L && L.industry) {
       if (L.industry === "none") return 0;
-      const i = D.industries.findIndex(([k]) => k === L.industry);
+      const want = OLD_IND[L.industry] || L.industry;
+      const i = D.industries.findIndex(([k]) => k === want);
       if (i >= 0) return 1 << i;
     }
     return r[3];
@@ -577,7 +580,7 @@ table.aw a { color: var(--accent); }
     for (const r of D.rows) { const m = tagsOf(r); if (!m) untagged++; else D.industries.forEach(([k], i) => { if (m & (1 << i)) counts[k]++; }); }
     const ic = $("ind-chips"); ic.innerHTML = "";
     D.industries.forEach(([k], i) => ic.append(chip(indName(k), counts[k], st.inds.has(i), () => toggle(st.inds, i))));
-    ic.append(chip(t("untagged"), untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
+    if (untagged || st.inds.has(-1)) ic.append(chip(t("untagged"), untagged, st.inds.has(-1), () => toggle(st.inds, -1)));
     const rc = $("route-chips"); rc.innerHTML = "";
     D.routes.forEach(([k]) => rc.append(chip(routeName(k), null, st.routes.has(k), () => toggle(st.routes, k))));
     const ac = $("award-chips"); ac.innerHTML = "";
@@ -793,7 +796,7 @@ table.aw a { color: var(--accent); }
     [["", t("industryAuto", guessed)], ...D.industries.map(([key]) => [key, indName(key)]), ["none", t("untagged")]].forEach(([v, label]) => {
       const o = document.createElement("option"); o.value = v; o.textContent = label; ind.append(o);
     });
-    ind.value = L.industry || "";
+    ind.value = L.industry ? OLD_IND[L.industry] || L.industry : "";
     w4.append(s4, ind);
     const w5 = document.createElement("label"); w5.className = "vf-field"; w5.htmlFor = "vf-size-" + k;
     const s5 = document.createElement("span"); s5.textContent = t("sizeLabel");

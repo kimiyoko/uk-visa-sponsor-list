@@ -64,8 +64,10 @@ def main():
         if prev_path.exists():
             prev_copy.write_bytes(prev_path.read_bytes())
         cmd = [sys.executable, "-I", str(ROOT / "scripts" / "build_data.py"), str(csv_path), str(out_dir)]
-        if prev_copy.exists():
-            cmd.append(str(prev_copy))
+        cmd.append(str(prev_copy) if prev_copy.exists() else "")
+        sic_path = ROOT / "docs" / "sic.json"
+        if sic_path.exists():
+            cmd.append(str(sic_path))
         subprocess.run(cmd, check=True)
 
         data = json.loads((out_dir / "data.json").read_text(encoding="utf-8"))
