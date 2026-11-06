@@ -76,26 +76,72 @@ def load_register():
             c = core(nm)
             if c and all(o["oid"] != oid for o, _ in index.get(c, [])):
                 index.setdefault(c, []).append((org, i > 0))
+    by_first = {}
+    for k in index:
+        by_first.setdefault(k.split()[0], []).append(k)
+    index["__by_first__"] = by_first
     return index
+
+
+# Fallbacks when the exact name doesn't match (register names often carry a suffix: "Barclays Bank PLC", "ASOS.com").
+# Prefix matching only accepts extra words from this list, so "Meta" never matches "Meta Data Systems".
+SAFE_SUFFIX = set("""bank banking com co uk plc ltd limited llp services service management technology technologies information
+digital retail stores central execution branch ab national association holdings group international europe financial finance
+personal resources operations payments securities""".split())
+# Words the ad itself may add to a brand: "Lloyds Banking Group" -> "lloyds". Not "com": Checkout.com is not "Checkout".
+TRIM = {"banking", "bank", "group", "holdings", "uk", "plc"}
+# Brand → registered name, each checked against the register (2026-11-06).
+# Checked first, so they also override a same-named but different register entry ("Wise" vs "WISE").
+ALIASES = {"pwc": "pricewaterhousecoopers", "ey": "ernst and young", "sainsbury s": "j sainsbury", "sainsburys": "j sainsbury",
+           "meta": "facebook", "meta platforms": "facebook", "hastings direct": "hastings insurance", "deliveroo": "roofoods",
+           "admiral": "eui", "admiral group": "eui", "wise": "wise payments", "tesco bank": "tesco personal finance",
+           "j p morgan": "jpmorgan chase bank national association", "jp morgan": "jpmorgan chase bank national association"}
+
+
+def _pick(c, hits, how):
+    legal = [o for o, ta in hits if not ta]
+    pool = legal or [o for o, _ in hits]
+    org = dict(pool[0])
+    # Several register entries (group companies, subsidiaries) only matter if they differ:
+    # when every one of them is A-rated with a Skilled Worker licence, it is a clear match.
+    all_ok = all(o["skilled_worker"] and o["rating"] == "a" for o in pool)
+    clear = (len(pool) == 1 or all_ok) and (how != "exact" or not weak(c))
+    org["how"] = "exact" if clear else "ambiguous"
+    org["via"] = how
+    if org["how"] == "ambiguous":
+        best = [o for o in pool if o["skilled_worker"] and o["rating"] == "a"]
+        if best:
+            org.update(best[0])
+    return org
 
 
 def match_company(index, display_name):
     c = core(display_name or "")
-    hits = index.get(c, [])
-    if not hits:
+    if not c:
         return None
-    legal = [o for o, ta in hits if not ta]
-    pool = legal or [o for o, _ in hits]
-    org = dict(pool[0])
-    # Several register entries with the same name (group companies, subsidiaries) only matter if they differ:
-    # when every one of them is A-rated with a Skilled Worker licence, it is a clear match.
-    all_ok = all(o["skilled_worker"] and o["rating"] == "a" for o in pool)
-    org["how"] = "exact" if not weak(c) and (len(pool) == 1 or all_ok) else "ambiguous"
-    if org["how"] == "ambiguous":
-        # several register entries share the name: prefer one that can sponsor Skilled Worker at A rating
-        best = [o for o in pool if o["skilled_worker"] and o["rating"] == "a"]
-        if best:
-            org.update(best[0])
+    if c in ALIASES and index.get(ALIASES[c]):
+        return _pick(c, index[ALIASES[c]], "alias")
+    if index.get(c):
+        return _pick(c, index[c], "exact")
+    # strip trailing generic words the ad may add ("Lloyds Banking Group" -> "lloyds")
+    toks = c.split()
+    while len(toks) > 1 and toks[-1] in TRIM:
+        toks.pop()
+    base = " ".join(toks)
+    if len(base) < 3:
+        return None
+    if base != c and index.get(base):
+        return _pick(base, index[base], "prefix")
+    cands = sorted(k for k in index.get("__by_first__", {}).get(toks[0], [])
+                   if k.startswith(base + " ") and all(t in SAFE_SUFFIX for t in k[len(base) + 1:].split()))
+    if not cands:
+        return None
+    cands.sort(key=len)
+    org = _pick(base, [h for h in index[cands[0]]], "prefix")
+    if len(cands) > 1:  # e.g. "Barclays" -> Barclays Bank / Barclays Execution Services: fine if every one can sponsor
+        orgs = [o for k in cands for o, _ in index[k]]
+        if not all(o["skilled_worker"] and o["rating"] == "a" for o in orgs):
+            org["how"] = "ambiguous"
     return org
 
 
@@ -131,6 +177,11 @@ class Airtable:
             offset = d.get("offset")
             if not offset:
                 return out
+            time.sleep(0.25)
+
+    def update(self, table, records):
+        for i in range(0, len(records), 10):
+            http_json(f"{self.base}/{table}", {"records": records[i:i + 10], "typecast": True}, "PATCH", self.h)
             time.sleep(0.25)
 
     def create(self, table, records):
@@ -232,6 +283,8 @@ def main():
         if org:
             counts["on_register"] += 1
         l2 = judge(job, org, today)
+        if org and org.get("via") in ("prefix", "alias"):
+            l2["reasons"].insert(0, f"按名称对应到担保名单上的「{org['name']}」，投之前核对一下")
         if job.get("visa_flag") and "写明可担保" not in l2["reasons"]:
             l2["score_bonus"] += 10
             l2["reasons"].append("Apify 识别为提到签证担保")
@@ -246,16 +299,26 @@ def main():
     at = Airtable(token)
     F = AIRTABLE
     seen = {rec["fields"].get(F["j_ext"]) for rec in at.all(F["jobs"], [F["j_ext"]])}
-    comp = {rec["fields"].get(F["c_oid"]): rec["id"] for rec in at.all(F["companies"], [F["c_oid"]])}
-    new_comp = {}
+    crecs = at.all(F["companies"], [F["c_oid"], F["c_name"]])
+    comp = {rec["fields"].get(F["c_oid"]): rec["id"] for rec in crecs if rec["fields"].get(F["c_oid"])}
+    # rows added by hand or by another import without a register ID: link to them by name instead of adding a duplicate
+    by_name = {core(rec["fields"].get(F["c_name"]) or ""): rec["id"] for rec in crecs if not rec["fields"].get(F["c_oid"])}
+    new_comp, fill = {}, []
     for job, org, l2 in keep:
         if org and org["oid"] not in comp and org["oid"] not in new_comp:
+            rid = by_name.get(core(job["company"] or "")) or by_name.get(core(org["name"]))
+            if rid:
+                comp[org["oid"]] = rid
+                fill.append({"id": rid, "fields": {F["c_oid"]: org["oid"], F["c_regname"]: org["name"], F["c_town"]: org["town"]}})
+                continue
             new_comp[org["oid"]] = {F["c_name"]: job["company"] or org["name"], F["c_regname"]: org["name"],
                                     F["c_oid"]: org["oid"], F["c_town"]: org["town"], F["c_rating"]: org["rating"].upper() if org["rating"] in "ab" else None,
                                     F["c_tags"]: [DIM_ZH[x] for x in org["dims"] if x in DIM_ZH], F["c_source"]: "招聘网站反查",
                                     F["c_added"]: today, F["c_hiring"]: "有英国岗位", F["c_ch"]: "未查"}
     for rec in at.create(F["companies"], [{k: v for k, v in f.items() if v not in (None, [])} for f in new_comp.values()]):
         comp[rec["fields"].get(F["c_oid"])] = rec["id"]
+
+    at.update(F["companies"], fill)
 
     rows = []
     for job, org, l2 in keep:
@@ -275,7 +338,7 @@ def main():
             f[F["j_company"]] = [comp[org["oid"]]]
         rows.append({k: v for k, v in f.items() if v not in (None, "")})
     at.create(F["jobs"], rows)
-    print(f"Airtable: {len(new_comp)} new companies, {len(rows)} new jobs")
+    print(f"Airtable: {len(new_comp)} new companies, {len(fill)} existing companies given a register ID, {len(rows)} new jobs")
 
 
 if __name__ == "__main__":
