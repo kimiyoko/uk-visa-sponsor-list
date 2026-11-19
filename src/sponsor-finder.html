@@ -1007,7 +1007,7 @@ table.aw a { color: var(--accent); }
         if (e.place) c.append(el("div", "ev-row", "📍 " + L(e, "place")));
         c.append(el("div", "ev-row", "💷 " + (L(e, "fee") || "—") + (e.deadline ? " · ⏰ " + L(e, "deadline") : "")));
         const a = el("a", "ev-link", t("evOpen")); a.href = e.link; a.target = "_blank"; a.rel = "noopener noreferrer";
-        a.addEventListener("click", () => trackEv("eventOpen"));
+        a.addEventListener("click", () => trackEv("eventOpen", e.name_en || e.name));
         c.append(a); grid.append(c);
       });
       sec.append(grid); box.append(sec);
