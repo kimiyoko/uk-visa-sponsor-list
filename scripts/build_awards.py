@@ -14,6 +14,8 @@ Companies are matched to the register by name only, so the result is a lead, not
     A legal-name match wins; a trading name is used only when no legal name matches, exactly one
     organisation trades under it (many "t/a Specsavers" franchisees are not Specsavers itself)
     and it isn't a short or ordinary word;
+  - hand-checked aliases (data/awards/aliases.txt) cover companies registered under a longer legal
+    name, such as "Monzo" → "Monzo Bank Ltd" or "Stripe" → "Stripe Payments UK Ltd";
   - one name, one answer: if a name is matched on any list, the same name on every other list
     is matched to the same organisation (so a company never appears twice, matched and unmatched).
 Runs in the daily update (.github/workflows/update.yml) after the register is refreshed.
@@ -300,6 +302,31 @@ def main():
             if hits and (not weak(c) or (cfg["scope"] == "uk" and len(hits) == 1)):
                 confirmed[c] = hits
 
+    # pass 2: hand-checked aliases (data/awards/aliases.txt) for names registered under a longer legal name
+    by_name = {}
+    for c_hits in index.values():
+        for h in c_hits:
+            if not h[3]:
+                by_name.setdefault(h[1].strip().lower(), []).append(h)
+    n_alias, alias_missing = 0, []
+    for line in open(os.path.join(SRC, "aliases.txt"), encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#") or "|" not in line:
+            continue
+        lst, regs = line.split("|", 1)
+        c = core(lst)
+        if not c:
+            continue  # a hand-checked alias wins over the name rule (e.g. "Wise" is Wise Payments, not "WISE" in High Wycombe)
+        hits = []
+        for rn in regs.split(";"):
+            found = by_name.get(rn.strip().lower(), [])
+            if not found:
+                alias_missing.append(rn.strip())
+            hits += [h for h in found if all(h[0] != x[0] for x in hits)]
+        if hits:
+            confirmed[c] = hits
+            n_alias += 1
+
     lists, orgs, entries = {}, {}, {}
     via_trading = 0
     for key, cfg in LISTS.items():
@@ -327,6 +354,7 @@ def main():
         lists[key].update(years=ys, count=len(rows), matched=matched)
         print(f"{key:22s} {len(rows):5d} companies  {matched:4d} matched  years {ys}")
     print(f"register trading / former names indexed: {n_trading}; list matches made through a trading name: {via_trading}")
+    print(f"names matched through aliases.txt: {n_alias}" + (f"; register names not found (left out): {alias_missing}" if alias_missing else ""))
 
     out = {"version": 2, "generated": datetime.date.today().isoformat(), "dims": DIMS, "lists": lists,
            "missing": MISSING, "orgs": orgs, "entries": entries}
