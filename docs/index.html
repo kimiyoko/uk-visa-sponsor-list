@@ -192,6 +192,22 @@ table.aw a { color: var(--accent); }
 .li-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--sheet); background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 5px 14px 5px 10px; min-height: 32px; }
 .li-btn:hover { filter: brightness(1.1); }
 .li-btn svg { width: 16px; height: 16px; flex: none; }
+.ev-meta { font-size: 13px; color: var(--ink-2); }
+.ev-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 16px 0 8px; }
+.ev-filters select { font: inherit; padding: 6px 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--sheet); color: var(--ink); }
+.ev-region { margin-top: 20px; }
+.ev-region h3 { font-family: var(--f-display); font-size: 17px; margin: 0 0 10px; }
+.ev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.ev-card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.ev-card.rec { border-color: var(--accent); }
+.ev-when { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ev-name { font-weight: 700; font-size: 15px; line-height: 1.35; }
+.ev-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.ev-tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.ev-tag.w { background: var(--stamp-soft); color: var(--stamp); }
+.ev-row { font-size: 13px; color: var(--ink-2); }
+.ev-card a.ev-link { margin-top: 4px; font-weight: 600; color: var(--accent); align-self: flex-start; }
+.ev-empty { color: var(--ink-2); padding: 12px 0; }
 </style>
 <div class="wrap">
   <div class="topbar">
@@ -199,6 +215,7 @@ table.aw a { color: var(--accent); }
       <button type="button" role="tab" id="view-list" aria-selected="true" aria-controls="list-view" data-i18n="viewList">担保名单</button>
       <button type="button" role="tab" id="view-awards" aria-selected="false" aria-controls="awards-view" data-i18n="viewAwards">榜单参考清单</button>
       <button type="button" role="tab" id="view-jobs" aria-selected="false" aria-controls="jobs-view" data-i18n="viewJobs">岗位搜索</button>
+      <button type="button" role="tab" id="view-events" aria-selected="false" aria-controls="events-view" data-i18n="viewEvents">行业活动</button>
     </div>
     <div class="lang" role="group" aria-label="Language / 语言">
       <button type="button" id="lang-zh" lang="zh-CN" aria-pressed="true">中文</button>
@@ -297,7 +314,6 @@ table.aw a { color: var(--accent); }
       <p data-i18n="awIntro2">榜单上的公司按名称和担保名单对应（去掉 Ltd、UK、Group 等后缀后名称相同才算）。担保名单上的商号（T/A、trading as 后面的名字）也参与对应：比如「BrightGen Limited, T/A Credera」能对上榜单上的 Credera；法定名称优先，多家机构用同一个商号（比如各地 Specsavers 加盟店）时不对应。同一个名称在一份榜单上对上了，在其他榜单上也算同一家。全球榜单上的公司在英国通常以子公司登记，名称不同就对不上；很短的通用名（比如 Unit、Merge）容易撞名，只在英国本地榜单、且名单上只有一家同名公司时才对应。每天更新担保名单时会重新对应一次。所以这里是线索，投之前仍要核实。</p>
     </div>
     <div class="dimcards" id="aw-cards"></div>
-    <div id="aw-dims" style="display:flex;flex-direction:column;gap:16px"></div>
     <div class="dimsec">
       <h3 data-i18n="awCompanies">榜单公司一览</h3>
       <div class="aw-tools">
@@ -309,6 +325,7 @@ table.aw a { color: var(--accent); }
       <div class="tablewrap"><table class="aw" id="aw-table"></table></div>
       <div class="more" id="aw-more" hidden></div>
     </div>
+    <div id="aw-dims" style="display:flex;flex-direction:column;gap:16px"></div>
   </section>
   <section id="jobs-view" role="tabpanel" aria-labelledby="view-jobs" hidden>
     <div class="aw-intro">
@@ -330,6 +347,23 @@ table.aw a { color: var(--accent); }
         <li><a class="ext-jobs" href="https://uk.indeed.com/jobs?q=%22visa+sponsorship%22" target="_blank" rel="noopener noreferrer">Indeed UK</a><span class="jl-desc" data-i18n="jbIndeed">已填好关键词</span></li>
       </ul>
     </div>
+  </section>
+  <section id="events-view" role="tabpanel" aria-labelledby="view-events" hidden>
+    <div class="aw-intro">
+      <h2 data-i18n="evTitle">行业活动</h2>
+      <p data-i18n="evIntro">英国各城市 Consulting、Finance、Fintech、Marketing、Data 方向的行业活动和 networking 机会，按区域整理，不定期更新。报名前请以活动官方页面为准。</p>
+      <p class="ev-meta"><span data-i18n="evPeriod">本期时间范围</span> <b id="ev-period">—</b> · <span data-i18n="evUpdated">更新于</span> <b id="ev-updated">—</b> · <span id="ev-count"></span></p>
+    </div>
+    <div class="ev-filters">
+      <label class="flabel" for="ev-region" data-i18n="evRegion">区域</label>
+      <select id="ev-region"></select>
+      <label class="flabel" for="ev-track" data-i18n="evTrack">赛道</label>
+      <select id="ev-track"></select>
+      <label class="check"><input type="checkbox" id="ev-free"> <span data-i18n="evOnlyFree">只看免费</span></label>
+      <label class="check"><input type="checkbox" id="ev-rec"> <span data-i18n="evOnlyRec">只看本期推荐</span></label>
+    </div>
+    <p class="note" data-i18n="evLegend">⭐ 本期推荐 · 「女性主题」以女性为主题、人人可报名 · 🚺 仅限女性（或女性及非二元）报名</p>
+    <div id="ev-list"><div class="loading"><span data-i18n="loading">正在载入…</span></div></div>
   </section>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -355,7 +389,7 @@ table.aw a { color: var(--accent); }
       sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
       newAdded: "今日新增",
       filterNote: "行业按 Companies House 登记的行业代码（SIC）归入 14 类；不在 Companies House 或代码太笼统的，按公司名关键词推断，仍看不出的归入「其他」。在名单上只说明有担保资格，不代表正在招人。",
-      viewJobs: "岗位搜索", jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
+      viewJobs: "岗位搜索", viewEvents: "行业活动", evTitle: "行业活动", evIntro: "英国各城市 Consulting、Finance、Fintech、Marketing、Data 方向的行业活动和 networking 机会，按区域整理，不定期更新。报名前请以活动官方页面为准。", evPeriod: "本期时间范围", evUpdated: "更新于", evRegion: "区域", evTrack: "赛道", evOnlyFree: "只看免费", evOnlyRec: "只看本期推荐", evLegend: "⭐ 本期推荐 · 「女性主题」以女性为主题、人人可报名 · 🚺 仅限女性（或女性及非二元）报名", evAll: "全部", evNone: "暂无符合条件的活动。", evWomenTheme: "女性主题", evWomenOnly: "仅限女性", evOpen: "报名 / 详情 →", evCount: (n) => `共 ${n} 场`, jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
       jbSecSponsor: "专门的担保岗位网站", jbSecBoards: "大型招聘网站：用关键词搜担保岗位",
       jbHunt: "按地区和职位列出担保公司的在招岗位", jbVsj: "英国担保岗位聚合网站", jbBright: "以学生和应届岗位为主，部分岗位注明可担保，需免费注册",
       jbLinkedin: "已填好关键词 visa sponsorship、地点英国；LinkedIn 上的担保标签由雇主自填", jbIndeed: "已填好关键词 visa sponsorship",
@@ -411,7 +445,7 @@ table.aw a { color: var(--accent); }
       onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
       sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
       newAdded: "New added",
-      viewJobs: "Job search", jbTitle: "Job search", jbIntro: "This site lists companies that can sponsor; the sites below list jobs that are open now. Use them together: find a job there, then come back to the register to check the company holds a licence and is A-rated. The employer's own terms decide whether a job is sponsored.",
+      viewJobs: "Job search", viewEvents: "Events", evTitle: "Industry events", evIntro: "Industry events and networking across UK cities for consulting, finance, fintech, marketing and data, grouped by region and updated from time to time. Check the organiser\u2019s page before you register.", evPeriod: "Period", evUpdated: "Updated", evRegion: "Region", evTrack: "Track", evOnlyFree: "Free only", evOnlyRec: "Picks only", evLegend: "⭐ This issue\u2019s picks · Women-themed: open to all · 🚺 Women (or women and non-binary) only", evAll: "All", evNone: "No events match.", evWomenTheme: "Women-themed", evWomenOnly: "Women only", evOpen: "Register / details →", evCount: (n) => `${n} events`, jbTitle: "Job search", jbIntro: "This site lists companies that can sponsor; the sites below list jobs that are open now. Use them together: find a job there, then come back to the register to check the company holds a licence and is A-rated. The employer's own terms decide whether a job is sponsored.",
       jbSecSponsor: "Sites for sponsored jobs", jbSecBoards: "Big job boards: search for sponsored jobs",
       jbHunt: "Open jobs at licensed sponsors, by location and role", jbVsj: "A UK aggregator of sponsored jobs", jbBright: "Mostly student and graduate roles; some list visa sponsorship; free sign-up",
       jbLinkedin: "Pre-filled with \"visa sponsorship\" in the UK; employers set LinkedIn's sponsorship labels themselves", jbIndeed: "Pre-filled with \"visa sponsorship\"",
@@ -478,6 +512,7 @@ table.aw a { color: var(--accent); }
     document.title = t("docTitle");
     document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+    if (typeof EV !== "undefined" && EV) { evSt.track = ""; buildEvFilters(); renderEvents(); }
     $("filters").setAttribute("aria-label", t("filtersAria"));
     $("sort").setAttribute("aria-label", t("sortAria"));
     $("lang-zh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");
@@ -943,19 +978,78 @@ table.aw a { color: var(--accent); }
   }
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
+  // ---------------- events ----------------
+  let EV = null, evLoading = false;
+  const evSt = { region: "", track: "", free: false, rec: false };
+  const L = (e, k) => (lang === "en" && e[k + "_en"] != null ? e[k + "_en"] : e[k]);
+  function loadEvents() {
+    if (EV) { renderEvents(); return; }
+    if (evLoading) return; evLoading = true;
+    fetch("events.json", { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).then((j) => { EV = j || { regions: [] }; buildEvFilters(); renderEvents(); })
+      .catch(() => { EV = { regions: [] }; renderEvents(); });
+  }
+  function evTracks() { const s = new Set(); (EV.regions || []).forEach((g) => g.events.forEach((e) => (L(e, "tracks") || []).forEach((x) => s.add(x)))); return [...s]; }
+  function buildEvFilters() {
+    const r = $("ev-region"), k = $("ev-track"); r.innerHTML = ""; k.innerHTML = "";
+    const o = (v, txt) => { const x = document.createElement("option"); x.value = v; x.textContent = txt; return x; };
+    r.append(o("", t("evAll"))); (EV.regions || []).forEach((g) => r.append(o(g.name, g.name)));
+    k.append(o("", t("evAll"))); evTracks().forEach((x) => k.append(o(x, x)));
+    r.value = evSt.region; k.value = evSt.track;
+  }
+  function renderEvents() {
+    if (!EV) return;
+    $("ev-period").textContent = L(EV, "period") || "—"; $("ev-updated").textContent = EV.updated || "—";
+    const box = $("ev-list"); box.innerHTML = ""; let n = 0;
+    (EV.regions || []).forEach((g) => {
+      if (evSt.region && g.name !== evSt.region) return;
+      const evs = g.events.filter((e) => (!evSt.track || (L(e, "tracks") || []).includes(evSt.track)) && (!evSt.free || e.free) && (!evSt.rec || e.rec));
+      if (!evs.length && evSt.region !== g.name) return;
+      const sec = el("div", "ev-region"); sec.append(el("h3", null, g.name));
+      if (!evs.length) { sec.append(el("p", "ev-empty", t("evNone"))); box.append(sec); return; }
+      const grid = el("div", "ev-grid");
+      evs.forEach((e) => {
+        n++;
+        const c = el("article", "ev-card" + (e.rec ? " rec" : ""));
+        c.append(el("div", "ev-when", (e.rec ? "⭐ " : "") + e.city + " · " + L(e, "when")));
+        c.append(el("div", "ev-name", (e.women === "only" ? "🚺 " : "") + L(e, "name")));
+        const tags = el("div", "ev-tags");
+        (L(e, "tracks") || []).forEach((x) => tags.append(el("span", "ev-tag", x)));
+        if (e.type) tags.append(el("span", "ev-tag", L(e, "type")));
+        if (e.women === "theme") tags.append(el("span", "ev-tag w", t("evWomenTheme")));
+        if (e.women === "only") tags.append(el("span", "ev-tag w", t("evWomenOnly")));
+        c.append(tags);
+        if (e.place) c.append(el("div", "ev-row", "📍 " + L(e, "place")));
+        c.append(el("div", "ev-row", "💷 " + (L(e, "fee") || "—") + (e.deadline ? " · ⏰ " + L(e, "deadline") : "")));
+        const a = el("a", "ev-link", t("evOpen")); a.href = e.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.addEventListener("click", () => trackEv("eventOpen"));
+        c.append(a); grid.append(c);
+      });
+      sec.append(grid); box.append(sec);
+    });
+    $("ev-count").textContent = t("evCount", n);
+    if (!n && !box.children.length) box.append(el("p", "ev-empty", t("evNone")));
+  }
+  $("ev-region").onchange = (e) => { evSt.region = e.target.value; renderEvents(); };
+  $("ev-track").onchange = (e) => { evSt.track = e.target.value; renderEvents(); };
+  $("ev-free").onchange = (e) => { evSt.free = e.target.checked; renderEvents(); };
+  $("ev-rec").onchange = (e) => { evSt.rec = e.target.checked; renderEvents(); };
+
   // ---------------- views ----------------
   function showView(v, keepHash) {
-    view = v === "awards" || v === "jobs" ? v : "list";
+    view = v === "awards" || v === "jobs" || v === "events" ? v : "list";
     $("list-view").hidden = view !== "list";
     $("awards-view").hidden = view !== "awards";
     $("jobs-view").hidden = view !== "jobs";
+    $("events-view").hidden = view !== "events";
     $("view-list").setAttribute("aria-selected", view === "list" ? "true" : "false");
     $("view-awards").setAttribute("aria-selected", view === "awards" ? "true" : "false");
     $("view-jobs").setAttribute("aria-selected", view === "jobs" ? "true" : "false");
+    $("view-events").setAttribute("aria-selected", view === "events" ? "true" : "false");
     if (view === "awards") trackEv("awards");
     if (view === "jobs") trackEv("jobsTab");
     if (!keepHash) { try { history.replaceState(null, "", view === "list" ? location.pathname + location.search : "#" + view); } catch (e) {} }
     if (view === "awards") renderAwards();
+    if (view === "events") { trackEv("eventsTab"); loadEvents(); }
     window.scrollTo(0, 0);
   }
   function filterByDim(d) {
@@ -1009,27 +1103,16 @@ table.aw a { color: var(--accent); }
       const h = el("h3", null, lang === "en" ? m.en : m.zh); sec.append(h);
       sec.append(el("p", "desc", lang === "en" ? m.desc_en : m.desc_zh));
       const wrap = el("div", "tablewrap"); const tb = el("table", "aw");
-      const hr = el("tr"); ["awColList", "awColPub", "awColYears", "awColCount", "awColMatched", "awColNote", "awColSrc"].forEach((k) => hr.append(el("th", null, t(k))));
+      const hr = el("tr"); ["awColList", "awColPub", "awColYears", "awColCount", "awColMatched", "awColSrc"].forEach((k) => hr.append(el("th", null, t(k))));
       const thead = el("thead"); thead.append(hr); tb.append(thead);
       const tbody = el("tbody");
       Object.entries(AW.lists).filter(([, x]) => x.dim === d).forEach(([, x]) => {
         const tr = el("tr");
         const name = el("td"); name.append(el("b", null, lang === "en" ? x.en : x.zh)); name.append(el("div", "yrs", (lang === "en" ? "" : x.en + " · ") + (x.scope === "uk" ? t("awScopeUk") : t("awScopeGlobal")))); tr.append(name);
-        tr.append(el("td", null, x.publisher));
+        tr.append(el("td", null, lang === "en" ? x.publisher.replace(/\s*[（(][^）)]*[\u3000-\u9fff][^）)]*[）)]/g, "") : x.publisher));
         tr.append(el("td", "num", yearsText(x.years)));
         tr.append(el("td", "num", nf.format(x.count)));
         tr.append(el("td", "num", nf.format(x.matched)));
-        tr.append(el("td", null, lang === "en" ? x.coverage_en : x.coverage_zh));
-        const src = el("td"); src.append(a(x.url, t("awSourceLink") + " ↗")); tr.append(src);
-        tbody.append(tr);
-      });
-      (AW.missing || []).filter((x) => x.dim === d).forEach((x) => {
-        const tr = el("tr", "missing");
-        const name = el("td"); name.append(el("b", null, lang === "en" ? x.en : x.zh)); tr.append(name);
-        tr.append(el("td", null, x.publisher));
-        tr.append(el("td", null, t("awMissing")));
-        tr.append(el("td", "num", "—")); tr.append(el("td", "num", "—"));
-        tr.append(el("td", null, lang === "en" ? x.reason_en : x.reason_zh));
         const src = el("td"); src.append(a(x.url, t("awSourceLink") + " ↗")); tr.append(src);
         tbody.append(tr);
       });
@@ -1106,6 +1189,7 @@ table.aw a { color: var(--accent); }
   $("view-list").onclick = () => showView("list");
   $("view-awards").onclick = () => showView("awards");
   $("view-jobs").onclick = () => showView("jobs");
+  $("view-events").onclick = () => showView("events");
   $("award-more").onclick = () => showView("awards");
   $("aw-q").addEventListener("input", (e) => { awSt.q = e.target.value; awSt.shown = 100; renderAwTable(); });
   $("aw-dim").onchange = (e) => { awSt.dim = e.target.value; awSt.shown = 100; renderAwTable(); };
@@ -1131,7 +1215,7 @@ table.aw a { color: var(--accent); }
   applyLang();
   $("q").value = st.q; $("place").value = st.place; $("only-a").checked = st.onlyA; $("only-hire").checked = st.onlyHire; $("sort").value = st.sort;
   initCapabilities();
-  { const hp = (location.hash || "").toLowerCase().split(/[-_,&#]/); if (hp.includes("awards")) showView("awards", true); else if (hp.includes("jobs")) showView("jobs", true); }
+  { const hp = (location.hash || "").toLowerCase().split(/[-_,&#]/); if (hp.includes("awards")) showView("awards", true); else if (hp.includes("jobs")) showView("jobs", true); else if (hp.includes("events")) showView("events", true); }
   fetch("awards.json").then((r) => (r.ok ? r.json() : null)).then((j) => {
     if (j && j.lists && j.orgs && j.dims) {
       AW = j; dimCountCache = null; awRows = null;

@@ -1,0 +1,810 @@
+{
+ "period": "11/19–12/17",
+ "updated": "2026-11-19",
+ "regions": [
+  {
+   "name": "London Area",
+   "events": [
+    {
+     "city": "London",
+     "when": "11/24 周二（11/23 有 Networking Blitz）",
+     "name": "Finance Magnates Summit London",
+     "tracks": [
+      "Fintech",
+      "Sell-side"
+     ],
+     "type": "Conference",
+     "place": "Old Billingsgate",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.fintechweekly.com/fintech-conferences/finance-magnates-london-summit-2026",
+     "when_en": "Tue 24 Nov (Networking Blitz on Mon 23 Nov)",
+     "fee_en": "Paid",
+     "place_en": "Old Billingsgate",
+     "type_en": "Conference",
+     "tracks_en": [
+      "Fintech",
+      "Sell-side"
+     ],
+     "name_en": "Finance Magnates Summit London"
+    },
+    {
+     "city": "London",
+     "when": "11/25 周三 18:00–20:00",
+     "name": "Data & AI London Meetup #18",
+     "tracks": [
+      "Data"
+     ],
+     "type": "Meetup",
+     "place": "100 Liverpool St, EC2M 2AT",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": true,
+     "link": "https://www.planomato.com/en/london/p/data-and-ai-london-meetup-18",
+     "when_en": "Wed 25 Nov, 18:00–20:00",
+     "fee_en": "Free",
+     "place_en": "100 Liverpool St, EC2M 2AT",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Data"
+     ],
+     "name_en": "Data & AI London Meetup #18"
+    },
+    {
+     "city": "London",
+     "when": "11/26 周四 8:00–10:00",
+     "name": "London FinTechs Network \"Tech Toast\" 早餐会",
+     "tracks": [
+      "Fintech"
+     ],
+     "type": "Networking",
+     "place": "Bonds Mayfair, W1S 1AR",
+     "fee": "见 Eventbrite",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/1992353362540",
+     "when_en": "Thu 26 Nov, 8:00–10:00",
+     "fee_en": "See Eventbrite",
+     "place_en": "Bonds Mayfair, W1S 1AR",
+     "type_en": "Networking",
+     "tracks_en": [
+      "Fintech"
+     ],
+     "name_en": "London FinTechs Network \"Tech Toast\" Breakfast"
+    },
+    {
+     "city": "London",
+     "when": "11/26 周四 19:00",
+     "name": "Friendly Data Meetup · Fireside: AI with Prod Data",
+     "tracks": [
+      "Data"
+     ],
+     "type": "Meetup",
+     "place": "Quantspark, 230 Blackfriars Rd",
+     "fee": "未标明",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://luma.com/7kqyiejv",
+     "when_en": "Thu 26 Nov, 19:00",
+     "fee_en": "Not stated",
+     "place_en": "Quantspark, 230 Blackfriars Rd",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Data"
+     ],
+     "name_en": "Friendly Data Meetup · Fireside: AI with Prod Data"
+    },
+    {
+     "city": "London",
+     "when": "12/1 周二 18:30–21:30",
+     "name": "Agentic AI, FinTech & Digital Innovation",
+     "tracks": [
+      "Fintech",
+      "Data"
+     ],
+     "type": "Networking",
+     "place": "Sycamore Covent Garden",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/agentic-ai-fintech-digital-innovation-tickets-2003873894762",
+     "when_en": "Tue 1 Dec, 18:30–21:30",
+     "fee_en": "Paid",
+     "place_en": "Sycamore Covent Garden",
+     "type_en": "Networking",
+     "tracks_en": [
+      "Fintech",
+      "Data"
+     ],
+     "name_en": "Agentic AI, FinTech & Digital Innovation"
+    },
+    {
+     "city": "London",
+     "when": "12/1–12/2 周二–周三",
+     "name": "FinTech Connect 2026",
+     "tracks": [
+      "Fintech",
+      "Banking"
+     ],
+     "type": "Conference / Expo",
+     "place": "ExCeL London",
+     "fee": "见官网注册页",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.excel.london/whats-on/fintech-connect",
+     "when_en": "Tue 1 Dec – Wed 2 Dec",
+     "fee_en": "See official registration page",
+     "place_en": "ExCeL London",
+     "type_en": "Conference / Expo",
+     "tracks_en": [
+      "Fintech",
+      "Banking"
+     ],
+     "name_en": "FinTech Connect 2026"
+    },
+    {
+     "city": "London",
+     "when": "12/4 周五 10:00–12:00",
+     "name": "Marketer to Marketing Engineer: Build Your First AI Marketing Agent",
+     "tracks": [
+      "Marketing"
+     ],
+     "type": "Workshop（The Marketing Society 合办）",
+     "place": "Into-it office",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/marketer-to-marketing-engineer-build-your-first-ai-marketing-agent-tickets-2003466244469",
+     "when_en": "Fri 4 Dec, 10:00–12:00",
+     "fee_en": "Paid",
+     "place_en": "Into-it office",
+     "type_en": "Workshop (with The Marketing Society)",
+     "tracks_en": [
+      "Marketing"
+     ],
+     "name_en": "Marketer to Marketing Engineer: Build Your First AI Marketing Agent"
+    },
+    {
+     "city": "London",
+     "when": "12/11 周五 18:00–20:00",
+     "name": "Women in Finance & FinTech Speed Networking",
+     "tracks": [
+      "Finance",
+      "Fintech"
+     ],
+     "type": "Speed Networking",
+     "place": "Hampton by Hilton London Waterloo",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": "theme",
+     "rec": true,
+     "link": "https://www.eventbrite.co.uk/e/women-in-finance-fintech-speed-networking-london-tickets-2000151945311",
+     "when_en": "Fri 11 Dec, 18:00–20:00",
+     "fee_en": "Paid",
+     "place_en": "Hampton by Hilton London Waterloo",
+     "type_en": "Speed Networking",
+     "tracks_en": [
+      "Finance",
+      "Fintech"
+     ],
+     "name_en": "Women in Finance & FinTech Speed Networking"
+    }
+   ]
+  },
+  {
+   "name": "North West",
+   "events": [
+    {
+     "city": "Manchester",
+     "when": "11/24 周二 18:00–20:00",
+     "name": "Women in AI by Fuzzy Labs · Meetup #1",
+     "tracks": [
+      "Data",
+      "AI"
+     ],
+     "type": "Meetup",
+     "place": "GM Digital Security Hub (DiSH), 47 Lloyd St",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/women-in-ai-by-fuzzy-labs-meetup-1-24th-november-tickets-2002914198284",
+     "when_en": "Tue 24 Nov, 18:00–20:00",
+     "fee_en": "Free",
+     "place_en": "GM Digital Security Hub (DiSH), 47 Lloyd St",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Data",
+      "AI"
+     ],
+     "name_en": "Women in AI by Fuzzy Labs · Meetup #1"
+    },
+    {
+     "city": "Manchester",
+     "when": "11/25 周三 13:00–16:30",
+     "name": "Data4All 2026 Conference",
+     "tracks": [
+      "Data"
+     ],
+     "type": "Conference（含校友分享、学生展示）",
+     "place": "Samuel Alexander Building, University of Manchester",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/data4all-2026-part-2-conference-tickets-2004886960870",
+     "when_en": "Wed 25 Nov, 13:00–16:30",
+     "fee_en": "Free",
+     "place_en": "Samuel Alexander Building, University of Manchester",
+     "type_en": "Conference (alumni talks, student showcase)",
+     "tracks_en": [
+      "Data"
+     ],
+     "name_en": "Data4All 2026 Conference"
+    },
+    {
+     "city": "Manchester",
+     "when": "11/25 周三 18:00–20:00",
+     "name": "ProductTank Manchester — November",
+     "tracks": [
+      "Tech",
+      "Product"
+     ],
+     "type": "Meetup",
+     "place": "Accenture, No.2 Circle Square",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.meetup.com/producttank-manchester/events/316782977/",
+     "when_en": "Wed 25 Nov, 18:00–20:00",
+     "fee_en": "Free",
+     "place_en": "Accenture, No.2 Circle Square",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Tech",
+      "Product"
+     ],
+     "name_en": "ProductTank Manchester — November"
+    },
+    {
+     "city": "Manchester",
+     "when": "11/26 周四 8:00–17:00（晚间 social 17:15–20:15）",
+     "name": "FinTech North: Manchester Conference 2026",
+     "tracks": [
+      "Fintech",
+      "Finance"
+     ],
+     "type": "Conference",
+     "place": "Whitworth Hall, Oxford Rd",
+     "fee": "见报名页",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": true,
+     "link": "https://www.eventbrite.co.uk/e/fintech-north-manchester-2026-tickets-1993137484871",
+     "when_en": "Thu 26 Nov, 8:00–17:00 (evening social 17:15–20:15)",
+     "fee_en": "See registration page",
+     "place_en": "Whitworth Hall, Oxford Rd",
+     "type_en": "Conference",
+     "tracks_en": [
+      "Fintech",
+      "Finance"
+     ],
+     "name_en": "FinTech North: Manchester Conference 2026"
+    },
+    {
+     "city": "Manchester",
+     "when": "11/26 周四 17:30–20:30",
+     "name": "Empower Together · Festive Get Together",
+     "tracks": [
+      "Tech"
+     ],
+     "type": "Networking",
+     "place": "Kraken Technologies",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://www.meetup.com/women-in-technology-north/events/316867192/",
+     "when_en": "Thu 26 Nov, 17:30–20:30",
+     "fee_en": "Free",
+     "place_en": "Kraken Technologies",
+     "type_en": "Networking",
+     "tracks_en": [
+      "Tech"
+     ],
+     "name_en": "Empower Together · Festive Get Together"
+    },
+    {
+     "city": "Manchester",
+     "when": "11/26 周四 18:00–20:00",
+     "name": "TechRise #5: Finding Your Feet in a Changing Tech Industry",
+     "tracks": [
+      "Tech",
+      "职业发展"
+     ],
+     "type": "Meetup",
+     "place": "Forward Role",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.meetup.com/tech-rise-mcr/events/317180496/",
+     "when_en": "Thu 26 Nov, 18:00–20:00",
+     "fee_en": "Free",
+     "place_en": "Forward Role",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Tech",
+      "Careers"
+     ],
+     "name_en": "TechRise #5: Finding Your Feet in a Changing Tech Industry"
+    },
+    {
+     "city": "Manchester",
+     "when": "12/1 周二 10:00–14:00",
+     "name": "marketingSHOWCASE Manchester",
+     "tracks": [
+      "Marketing"
+     ],
+     "type": "Showcase",
+     "place": "Old Trafford",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": true,
+     "link": "https://www.eventbrite.co.uk/e/marketingshowcase-manchester-tickets-1977504253455",
+     "when_en": "Tue 1 Dec, 10:00–14:00",
+     "fee_en": "Free",
+     "place_en": "Old Trafford",
+     "type_en": "Showcase",
+     "tracks_en": [
+      "Marketing"
+     ],
+     "name_en": "marketingSHOWCASE Manchester"
+    },
+    {
+     "city": "Manchester",
+     "when": "12/2 周三 17:45–20:30",
+     "name": "Manchester AI: What Exactly Is an Agent?",
+     "tracks": [
+      "Data",
+      "AI"
+     ],
+     "type": "Meetup（需实名报名）",
+     "place": "Accenture, Circle Square",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.meetup.com/manchester-ai/events/317380024/",
+     "when_en": "Wed 2 Dec, 17:45–20:30",
+     "fee_en": "Free",
+     "place_en": "Accenture, Circle Square",
+     "type_en": "Meetup (full name needed to register)",
+     "tracks_en": [
+      "Data",
+      "AI"
+     ],
+     "name_en": "Manchester AI: What Exactly Is an Agent?"
+    },
+    {
+     "city": "Manchester",
+     "when": "12/10 周四（预计，待官方发布）",
+     "name": "HER+Data MCR 月度聚会",
+     "tracks": [
+      "Data"
+     ],
+     "type": "Meetup",
+     "place": "待公布",
+     "fee": "待公布",
+     "free": false,
+     "deadline": null,
+     "women": "only",
+     "rec": false,
+     "link": "https://www.meetup.com/herplusdatamcr",
+     "when_en": "Thu 10 Dec (expected, date TBC)",
+     "fee_en": "TBC",
+     "place_en": "TBC",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Data"
+     ],
+     "name_en": "HER+Data MCR monthly meetup"
+    }
+   ]
+  },
+  {
+   "name": "Yorkshire & North East",
+   "events": [
+    {
+     "city": "York",
+     "when": "11/24 周二（时间见报名页）",
+     "name": "From Trading to AI: A Panel on the Future of Business & Consulting",
+     "tracks": [
+      "Consulting"
+     ],
+     "type": "Panel（180 Degrees Consulting York 主办）",
+     "place": "Berrick Saul Building, University of York",
+     "fee": "见报名页",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": true,
+     "link": "https://www.eventbrite.co.uk/e/from-trading-to-ai-a-panel-on-the-future-of-business-consulting-tickets-2004646923913",
+     "when_en": "Tue 24 Nov (time on registration page)",
+     "fee_en": "See registration page",
+     "place_en": "Berrick Saul Building, University of York",
+     "type_en": "Panel (hosted by 180 Degrees Consulting York)",
+     "tracks_en": [
+      "Consulting"
+     ],
+     "name_en": "From Trading to AI: A Panel on the Future of Business & Consulting"
+    },
+    {
+     "city": "Leeds",
+     "when": "12/1 周二 18:00–20:00",
+     "name": "The Marketing Meetup IRL: Leeds",
+     "tracks": [
+      "Marketing"
+     ],
+     "type": "Meetup",
+     "place": "Genio",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/the-marketing-meetup-irl-leeds-tickets-2004023357810",
+     "when_en": "Tue 1 Dec, 18:00–20:00",
+     "fee_en": "Paid",
+     "place_en": "Genio",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Marketing"
+     ],
+     "name_en": "The Marketing Meetup IRL: Leeds"
+    },
+    {
+     "city": "Leeds",
+     "when": "12/2 周三 17:30–20:30",
+     "name": "HerFinance Circle: The FD of Tomorrow",
+     "tracks": [
+      "Finance"
+     ],
+     "type": "Panel + Networking（面向从业者）",
+     "place": "Banyan Bar & Kitchen",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/herfinance-circle-the-fd-of-tomorrow-leading-finance-in-a-changing-world-tickets-2003960609127",
+     "when_en": "Wed 2 Dec, 17:30–20:30",
+     "fee_en": "Paid",
+     "place_en": "Banyan Bar & Kitchen",
+     "type_en": "Panel + Networking (for professionals)",
+     "tracks_en": [
+      "Finance"
+     ],
+     "name_en": "HerFinance Circle: The FD of Tomorrow"
+    }
+   ]
+  },
+  {
+   "name": "Midlands",
+   "events": [
+    {
+     "city": "Birmingham",
+     "when": "12/8 周二 19:00–22:00",
+     "name": "Birmingham Tech Network · Evening Drinks",
+     "tracks": [
+      "Tech"
+     ],
+     "type": "Networking",
+     "place": "Slug & Lettuce Birmingham",
+     "fee": "收费",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/birmingham-tech-network-btn-evening-drinks-meet-new-people-in-tech-tickets-1992126708612",
+     "when_en": "Tue 8 Dec, 19:00–22:00",
+     "fee_en": "Paid",
+     "place_en": "Slug & Lettuce Birmingham",
+     "type_en": "Networking",
+     "tracks_en": [
+      "Tech"
+     ],
+     "name_en": "Birmingham Tech Network · Evening Drinks"
+    }
+   ]
+  },
+  {
+   "name": "Scotland",
+   "events": [
+    {
+     "city": "Edinburgh",
+     "when": "11/24 周二 17:30",
+     "name": "Tech Meetup Edinburgh — November",
+     "tracks": [
+      "Data",
+      "Tech"
+     ],
+     "type": "Meetup",
+     "place": "报名后公布",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://luma.com/8usniofw",
+     "when_en": "Tue 24 Nov, 17:30",
+     "fee_en": "Free",
+     "place_en": "Shared after registration",
+     "type_en": "Meetup",
+     "tracks_en": [
+      "Data",
+      "Tech"
+     ],
+     "name_en": "Tech Meetup Edinburgh — November"
+    },
+    {
+     "city": "Edinburgh",
+     "when": "11/25 周三 8:30–10:30",
+     "name": "Can You Trust AI With the Numbers? Finance Leaders' Breakfast",
+     "tracks": [
+      "Finance",
+      "Fintech"
+     ],
+     "type": "Panel（面向从业者）",
+     "place": "RBS Edinburgh",
+     "fee": "未标明",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.fintechscotland.com/events/",
+     "when_en": "Wed 25 Nov, 8:30–10:30",
+     "fee_en": "Not stated",
+     "place_en": "RBS Edinburgh",
+     "type_en": "Panel (for professionals)",
+     "tracks_en": [
+      "Finance",
+      "Fintech"
+     ],
+     "name_en": "Can You Trust AI With the Numbers? Finance Leaders' Breakfast"
+    },
+    {
+     "city": "Edinburgh",
+     "when": "11/26 周四 9:00–10:30",
+     "name": "Edinburgh Professionals Quarterly Networking",
+     "tracks": [
+      "通用"
+     ],
+     "type": "Networking",
+     "place": "CodeBase Edinburgh",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/edinburgh-professionals-quarterly-networking-thursday-26th-november-tickets-1991565411758",
+     "when_en": "Thu 26 Nov, 9:00–10:30",
+     "fee_en": "Free",
+     "place_en": "CodeBase Edinburgh",
+     "type_en": "Networking",
+     "tracks_en": [
+      "General"
+     ],
+     "name_en": "Edinburgh Professionals Quarterly Networking"
+    },
+    {
+     "city": "Edinburgh",
+     "when": "12/10 周四 18:00–20:30",
+     "name": "Who Builds the Future? Women, AI, and Digital Justice",
+     "tracks": [
+      "Data",
+      "AI"
+     ],
+     "type": "放映 + 讨论",
+     "place": "CodeBase Edinburgh",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/who-builds-the-future-women-ai-and-digital-justice-tickets-2001056106682",
+     "when_en": "Thu 10 Dec, 18:00–20:30",
+     "fee_en": "Free",
+     "place_en": "CodeBase Edinburgh",
+     "type_en": "Screening + discussion",
+     "tracks_en": [
+      "Data",
+      "AI"
+     ],
+     "name_en": "Who Builds the Future? Women, AI, and Digital Justice"
+    }
+   ]
+  },
+  {
+   "name": "South West & Wales",
+   "events": [
+    {
+     "city": "Bristol",
+     "when": "11/24 周二 16:30–21:30",
+     "name": "AI: Reshaping Our World and the Future of Finance（AICPA & CIMA）",
+     "tracks": [
+      "Finance"
+     ],
+     "type": "Conference",
+     "place": "Aerospace Bristol, Patchway",
+     "fee": "见 Eventbrite",
+     "free": false,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/ai-reshaping-our-world-and-the-future-of-finance-tickets-1991452841056",
+     "when_en": "Tue 24 Nov, 16:30–21:30",
+     "fee_en": "See Eventbrite",
+     "place_en": "Aerospace Bristol, Patchway",
+     "type_en": "Conference",
+     "tracks_en": [
+      "Finance"
+     ],
+     "name_en": "AI: Reshaping Our World and the Future of Finance (AICPA & CIMA)"
+    },
+    {
+     "city": "Bristol",
+     "when": "11/25 周三（时间见报名页）",
+     "name": "She Scales x WIBF: Cheers to 2027",
+     "tracks": [
+      "Finance"
+     ],
+     "type": "Networking",
+     "place": "Bristol BS2 0PT",
+     "fee": "见报名页",
+     "free": false,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/she-scales-x-wibf-cheers-to-2027-tickets-2003908534370",
+     "when_en": "Wed 25 Nov (time on registration page)",
+     "fee_en": "See registration page",
+     "place_en": "Bristol BS2 0PT",
+     "type_en": "Networking",
+     "tracks_en": [
+      "Finance"
+     ],
+     "name_en": "She Scales x WIBF: Cheers to 2027"
+    },
+    {
+     "city": "Cardiff",
+     "when": "12/1 周二 9:30–12:30",
+     "name": "Marketing Cymru #2",
+     "tracks": [
+      "Marketing"
+     ],
+     "type": "Conference",
+     "place": "Wales Millennium Centre",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.eventbrite.co.uk/e/marketing-cymru-2-celebrating-marketing-business-in-wales-tickets-2004586176215",
+     "when_en": "Tue 1 Dec, 9:30–12:30",
+     "fee_en": "Free",
+     "place_en": "Wales Millennium Centre",
+     "type_en": "Conference",
+     "tracks_en": [
+      "Marketing"
+     ],
+     "name_en": "Marketing Cymru #2"
+    }
+   ]
+  },
+  {
+   "name": "Online",
+   "events": [
+    {
+     "city": "Online",
+     "when": "11/24 周二 14:00–15:00",
+     "name": "Introduction to R Shiny（免费 workshop）",
+     "tracks": [
+      "Data"
+     ],
+     "type": "Workshop",
+     "place": "线上",
+     "fee": "免费",
+     "free": true,
+     "deadline": null,
+     "women": null,
+     "rec": false,
+     "link": "https://www.meetup.com/manchester-data-intelligence-network/events/317048566/",
+     "when_en": "Tue 24 Nov, 14:00–15:00",
+     "fee_en": "Free",
+     "place_en": "Online",
+     "type_en": "Workshop",
+     "tracks_en": [
+      "Data"
+     ],
+     "name_en": "Introduction to R Shiny (free workshop)"
+    },
+    {
+     "city": "Online",
+     "when": "11/26 周四 9:30–10:30",
+     "name": "ICAEW Women in Finance insight group",
+     "tracks": [
+      "Finance"
+     ],
+     "type": "Webinar",
+     "place": "线上",
+     "fee": "免费（主要面向 ICAEW 会员）",
+     "free": true,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://events.icaew.com/pd/32304",
+     "when_en": "Thu 26 Nov, 9:30–10:30",
+     "fee_en": "Free (mainly for ICAEW members)",
+     "place_en": "Online",
+     "type_en": "Webinar",
+     "tracks_en": [
+      "Finance"
+     ],
+     "name_en": "ICAEW Women in Finance insight group"
+    },
+    {
+     "city": "Online",
+     "when": "12/9 周三 16:00",
+     "name": "Career planning for 2027: Mapping your next moves",
+     "tracks": [
+      "职业发展"
+     ],
+     "type": "Webinar（SheCanCode）",
+     "place": "线上",
+     "fee": "未标明",
+     "free": false,
+     "deadline": null,
+     "women": "theme",
+     "rec": false,
+     "link": "https://community.shecancode.io/networks/events/190935",
+     "when_en": "Wed 9 Dec, 16:00",
+     "fee_en": "Not stated",
+     "place_en": "Online",
+     "type_en": "Webinar (SheCanCode)",
+     "tracks_en": [
+      "Careers"
+     ],
+     "name_en": "Career planning for 2027: Mapping your next moves"
+    }
+   ]
+  }
+ ],
+ "period_en": "19 Nov – 17 Dec"
+}
