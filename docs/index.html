@@ -319,7 +319,7 @@ table.aw a { color: var(--accent); }
       <div class="aw-tools">
         <input type="search" id="aw-q" data-i18n-ph="awSearchPh" placeholder="搜索公司名" autocomplete="off">
         <select id="aw-dim" aria-label="维度"></select>
-        <label class="check"><input type="checkbox" id="aw-only"> <span data-i18n="awOnlyReg">只看在担保名单上的</span></label>
+        <label class="check"><input type="checkbox" id="aw-only" checked> <span data-i18n="awOnlyReg">只看在担保名单上的</span></label>
         <span class="note" id="aw-count"></span>
       </div>
       <div class="tablewrap"><table class="aw" id="aw-table"></table></div>
@@ -1061,7 +1061,7 @@ table.aw a { color: var(--accent); }
     showView("list"); buildFilters(); refresh();
   }
 
-  const awSt = { q: "", dim: "", only: false, shown: 100 };
+  const awSt = { q: "", dim: "", only: true, shown: 100 };
   let awRows = null;
   const awNorm = (s) => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ").replace(/\(.*?\)/g, " ").replace(/[^a-z0-9]+/g, " ")
     .replace(/\b(limited|ltd|plc|llp|inc|corp|corporation|group|holdings?|uk|international|the)\b/g, " ").replace(/\s+/g, " ").trim();
