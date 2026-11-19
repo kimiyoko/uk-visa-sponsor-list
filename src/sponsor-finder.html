@@ -1116,19 +1116,16 @@ table.aw a { color: var(--accent); }
     const q = awSt.q.trim().toLowerCase();
     const rows = awRows.filter((g) => (!q || g.search.includes(q)) && (!awSt.only || g.m) && (!awSt.dim || g.lists.some((e) => AW.lists[e.list] && AW.lists[e.list].dim === awSt.dim)));
     const tb = $("aw-table"); tb.innerHTML = "";
-    const hr = el("tr"); ["awColCompany", "awColList", "awColOn"].forEach((k) => hr.append(el("th", null, t(k))));
+    const hr = el("tr"); ["awColCompany", "awColOn"].forEach((k) => hr.append(el("th", null, t(k))));
     const thead = el("thead"); thead.append(hr); tb.append(thead);
     const tbody = el("tbody");
-    if (!rows.length) { const tr = el("tr"); const td = el("td", "note", t("awEmpty")); td.colSpan = 3; tr.append(td); tbody.append(tr); }
+    if (!rows.length) { const tr = el("tr"); const td = el("td", "note", t("awEmpty")); td.colSpan = 2; tr.append(td); tbody.append(tr); }
     rows.slice(0, awSt.shown).forEach((g) => {
       const tr = el("tr");
       const c = el("td"); c.append(el("b", null, g.names[0]));
       if (g.names.length > 1) c.append(el("div", "yrs", g.names.slice(1).join(" / ")));
       if (g.uk) c.append(el("div", "yrs", t("awUkHq")));
       tr.append(c);
-      const l = el("td");
-      g.lists.forEach((e) => { const m = AW.lists[e.list]; if (!m) return; const line = el("div"); line.append(dimName(m.dim) + " · " + (lang === "en" ? m.en : m.zh) + " "); line.append(el("span", "yrs", yearsText(e.years))); l.append(line); });
-      tr.append(l);
       const on = el("td");
       if (g.m) {
         g.m.forEach(([, nm, tw, ta]) => {
