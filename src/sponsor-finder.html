@@ -350,7 +350,7 @@ table.aw a { color: var(--accent); }
       <label class="check"><input type="checkbox" id="ev-free"> <span data-i18n="evOnlyFree">只看免费</span></label>
       <label class="check"><input type="checkbox" id="ev-rec"> <span data-i18n="evOnlyRec">只看本期推荐</span></label>
     </div>
-    <p class="note" data-i18n="evLegend">⭐ 本期推荐 · 「女性主题」以女性为主题、人人可报名 · 🚺 仅限女性（或女性及非二元）报名</p>
+    <p class="note" data-i18n="evLegend">⭐ 本期推荐</p>
     <div id="ev-list"><div class="loading"><span data-i18n="loading">正在载入…</span></div></div>
   </section>
 </div>
@@ -377,7 +377,7 @@ table.aw a { color: var(--accent); }
       sinceNote: (d) => `从 ${d} 起记录每家公司加入名单的日期，此前已在名单上的公司不计入这几个时间段。`,
       newAdded: "今日新增",
       filterNote: "行业按 Companies House 登记的行业代码（SIC）归入 14 类；不在 Companies House 或代码太笼统的，按公司名关键词推断，仍看不出的归入「其他」。在名单上只说明有担保资格，不代表正在招人。",
-      viewJobs: "岗位搜索", viewEvents: "行业活动", evTitle: "行业活动", evIntro: "英国各城市 Consulting、Finance、Fintech、Marketing、Data 方向的行业活动和 networking 机会，按区域整理，不定期更新。报名前请以活动官方页面为准。", evPeriod: "本期时间范围", evUpdated: "更新于", evRegion: "区域", evTrack: "赛道", evOnlyFree: "只看免费", evOnlyRec: "只看本期推荐", evLegend: "⭐ 本期推荐 · 「女性主题」以女性为主题、人人可报名 · 🚺 仅限女性（或女性及非二元）报名", evAll: "全部", evNone: "暂无符合条件的活动。", evWomenTheme: "女性主题", evWomenOnly: "仅限女性", evOpen: "报名 / 详情 →", evCount: (n) => `共 ${n} 场`, jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
+      viewJobs: "岗位搜索", viewEvents: "行业活动", evTitle: "行业活动", evIntro: "英国各城市 Consulting、Finance、Fintech、Marketing、Data 方向的行业活动和 networking 机会，按区域整理，不定期更新。报名前请以活动官方页面为准。", evPeriod: "本期时间范围", evUpdated: "更新于", evRegion: "区域", evTrack: "赛道", evOnlyFree: "只看免费", evOnlyRec: "只看本期推荐", evLegend: "⭐ 本期推荐", evAll: "全部", evNone: "暂无符合条件的活动。", evWomenTheme: "女性主题", evWomenOnly: "仅限女性", evOpen: "报名 / 详情 →", evCount: (n) => `共 ${n} 场`, jbTitle: "岗位搜索", jbIntro: "这个网站列的是「能担保的公司」，下面这些外部网站列的是「正在招的岗位」。两边对照着用：在这里找到岗位，再回到担保名单核对公司有没有担保资格、是不是 A 级。岗位上写的担保条件以雇主为准。",
       jbSecSponsor: "专门的担保岗位网站", jbSecBoards: "大型招聘网站：用关键词搜担保岗位",
       jbHunt: "按地区和职位列出担保公司的在招岗位", jbVsj: "英国担保岗位聚合网站", jbBright: "以学生和应届岗位为主，部分岗位注明可担保，需免费注册",
       jbLinkedin: "已填好关键词 visa sponsorship、地点英国；LinkedIn 上的担保标签由雇主自填", jbIndeed: "已填好关键词 visa sponsorship",
@@ -433,7 +433,7 @@ table.aw a { color: var(--accent); }
       onlyA: "A-rated only (can issue CoS normally)", onlyStar: "My saved companies only", onlyLink: "Only with a website link", fSince: "Added to register", sinceAll: "Any time", since1: "Last 24 hours", since7: "Last 7 days", since30: "Last 30 days",
       sinceNote: (d) => `Join dates are recorded from ${d}. Companies already on the register before then don't appear in these time ranges.`,
       newAdded: "New added",
-      viewJobs: "Job search", viewEvents: "Events", evTitle: "Industry events", evIntro: "Industry events and networking across UK cities for consulting, finance, fintech, marketing and data, grouped by region and updated from time to time. Check the organiser\u2019s page before you register.", evPeriod: "Period", evUpdated: "Updated", evRegion: "Region", evTrack: "Track", evOnlyFree: "Free only", evOnlyRec: "Picks only", evLegend: "⭐ This issue\u2019s picks · Women-themed: open to all · 🚺 Women (or women and non-binary) only", evAll: "All", evNone: "No events match.", evWomenTheme: "Women-themed", evWomenOnly: "Women only", evOpen: "Register / details →", evCount: (n) => `${n} events`, jbTitle: "Job search", jbIntro: "This site lists companies that can sponsor; the sites below list jobs that are open now. Use them together: find a job there, then come back to the register to check the company holds a licence and is A-rated. The employer's own terms decide whether a job is sponsored.",
+      viewJobs: "Job search", viewEvents: "Events", evTitle: "Industry events", evIntro: "Industry events and networking across UK cities for consulting, finance, fintech, marketing and data, grouped by region and updated from time to time. Check the organiser\u2019s page before you register.", evPeriod: "Period", evUpdated: "Updated", evRegion: "Region", evTrack: "Track", evOnlyFree: "Free only", evOnlyRec: "Picks only", evLegend: "⭐ This issue\u2019s picks", evAll: "All", evNone: "No events match.", evWomenTheme: "Women-themed", evWomenOnly: "Women only", evOpen: "Register / details →", evCount: (n) => `${n} events`, jbTitle: "Job search", jbIntro: "This site lists companies that can sponsor; the sites below list jobs that are open now. Use them together: find a job there, then come back to the register to check the company holds a licence and is A-rated. The employer's own terms decide whether a job is sponsored.",
       jbSecSponsor: "Sites for sponsored jobs", jbSecBoards: "Big job boards: search for sponsored jobs",
       jbHunt: "Open jobs at licensed sponsors, by location and role", jbVsj: "A UK aggregator of sponsored jobs", jbBright: "Mostly student and graduate roles; some list visa sponsorship; free sign-up",
       jbLinkedin: "Pre-filled with \"visa sponsorship\" in the UK; employers set LinkedIn's sponsorship labels themselves", jbIndeed: "Pre-filled with \"visa sponsorship\"",
@@ -999,12 +999,10 @@ table.aw a { color: var(--accent); }
         n++;
         const c = el("article", "ev-card" + (e.rec ? " rec" : ""));
         c.append(el("div", "ev-when", (e.rec ? "⭐ " : "") + e.city + " · " + L(e, "when")));
-        c.append(el("div", "ev-name", (e.women === "only" ? "🚺 " : "") + L(e, "name")));
+        c.append(el("div", "ev-name", L(e, "name")));
         const tags = el("div", "ev-tags");
         (L(e, "tracks") || []).forEach((x) => tags.append(el("span", "ev-tag", x)));
         if (e.type) tags.append(el("span", "ev-tag", L(e, "type")));
-        if (e.women === "theme") tags.append(el("span", "ev-tag w", t("evWomenTheme")));
-        if (e.women === "only") tags.append(el("span", "ev-tag w", t("evWomenOnly")));
         c.append(tags);
         if (e.place) c.append(el("div", "ev-row", "📍 " + L(e, "place")));
         c.append(el("div", "ev-row", "💷 " + (L(e, "fee") || "—") + (e.deadline ? " · ⏰ " + L(e, "deadline") : "")));
