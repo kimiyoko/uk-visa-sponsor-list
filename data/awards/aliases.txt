@@ -2,6 +2,7 @@
 # under a longer legal name (brand + "Bank", "Payments", "Technologies"...), so the name rule can't match it.
 # Format: name on the list | exact register name ; another exact register name
 # A line here also overrides a wrong automatic match (e.g. "Wise" → the London fintech, not "WISE" in High Wycombe).
+# Lines marked (checked) in the 2026-11 review were confirmed on Companies House (officers / persons with significant control).
 # Only add a line after checking it is the same company (many short brands clash: Alloy Therapeutics is not Alloy, Bolt Trading is not Bolt).
 Absa | Absa Securities United Kingdom Limited
 Ageas | Ageas Insurance Limited
@@ -31,18 +32,14 @@ Clermont Hotel | Clermont Hotel Management Limited
 ConsenSys | ConsenSys Systems UK Limited
 Copper | Copper Technologies (UK) Limited
 Covea | Covea Insurance Services Limited
-Creation | Creation Financial Services Limited
 Dayshape | Dayshape Software Ltd
 Decagon | Decagon AI UK Ltd
 Deriv | Deriv Technologies Limited
-Distinctly | Distinctly Digital Limited
 Duck Creek | Duck Creek Technologies Limited
 EDF | EDF Energy Ltd
 Eightfold | Eightfold AI UK Ltd
-Elcom | Elcom Systems Ltd
 Enfusion | Enfusion Systems UK Ltd
 Epicor | Epicor Software (UK) Limited
-ERI | ERI BANKING SOFTWARE LIMITED
 Fibrus | Fibrus Networks Ltd.
 Finbourne | Finbourne Technology Limited
 First Central | First Central Insurance Management Ltd
@@ -54,7 +51,7 @@ Glyphic | Glyphic AI Limited
 Goodfire | Goodfire AI UK Limited
 Harvey | Harvey AI UK Ltd
 Hastings | Hastings Insurance Services Limited
-Hitachi | Hitachi Capital (UK) PLC ; Hitachi Digital Services UK Limited ; HITACHI ENERGY UK LIMITED
+Hitachi | Hitachi Digital Services UK Limited ; HITACHI ENERGY UK LIMITED
 Holland & Barrett | Holland & Barrett Retail Limited
 Huma | HUMA THERAPEUTICS LIMITED
 Index | Index Exchange Limited
@@ -72,9 +69,7 @@ Manulife | Manulife Investment Management (Europe) Ltd
 Marshmallow | Marshmallow Technology Ltd
 Maybank | Maybank Securities (London) Limited
 Mercedes-Benz | Mercedes-Benz Financial Services UK Ltd
-Merge | Merge Money Ltd
 Mews | Mews Systems Limited
-Miro | Miro Technologies Limited
 Modulr | Modulr Finance ; Modulr Technology Ltd
 Moneyhub | Moneyhub Financial Technology Ltd
 Monzo | Monzo Bank Ltd
@@ -119,14 +114,13 @@ SBS | SBS Financial Software UK Ltd
 Scale | Scale AI Limited
 Seismic | Seismic Software UK Limited
 Shift | Shift Technology UK Limited
-Siemens | Siemens Energy Limited ; Siemens Mobility Limited
+Siemens | Siemens Mobility Limited
 Simprints | Simprints Technology Ltd.
 Soldo | Soldo Software Ltd
 StackOne | StackOne Technologies Ltd
 Standard Chartered | Standard Chartered Bank
 Starburst | Starburst Data UK Limited
 Stash | STASH FINANCIAL UK LIMITED
-StoreLab | STORELAB AI LTD
 Stripe | Stripe Payments UK Ltd
 Sumo | Sumo Digital Limited
 SumUp | SumUp Payments Limited
@@ -135,7 +129,6 @@ Telefonica | Telefonica Digital Limited ; Telefonica Tech UK Limited
 Telent | Telent Technology Services Limited
 TELUS | TELUS HEALTH (UK) LTD
 Tide | Tide Platform Ltd
-TLC Care | TLC Care Management Limited
 Tokio Marine Kiln | Tokio Marine Kiln Insurance Services Ltd
 Toyota | Toyota Financial Services (UK) PLC
 Tradeshift | Tradeshift Network Limited
