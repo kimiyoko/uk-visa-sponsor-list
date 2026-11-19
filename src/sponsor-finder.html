@@ -303,9 +303,10 @@ table.aw a { color: var(--accent); }
     </div>
     <div class="dimcards" id="aw-cards"></div>
     <div class="dimsec">
-      <h3 data-i18n="awCompanies">榜单公司一览</h3>
+      <h3 data-i18n="awCompanies">查一家公司</h3>
+      <p class="desc" data-i18n="awCompaniesDesc">想知道某家公司有没有上榜、为什么在担保名单里筛不出来，可以在这里搜索。每家公司会显示对上了担保名单上的哪家机构；没对上的会说明原因：担保名单上没有这个名称（全球公司在英国常用子公司名称登记，可以去担保名单页换个名字再搜），或者名称太短太常见，没有自动对应。要按榜单下载公司清单，请在担保名单页按「榜单」筛选后导出 CSV。</p>
       <div class="aw-tools">
-        <input type="search" id="aw-q" data-i18n-ph="awSearchPh" placeholder="搜索公司名" autocomplete="off">
+        <input type="search" id="aw-q" data-i18n-ph="awSearchPh" placeholder="输入公司名，比如 Revolut" autocomplete="off">
         <select id="aw-dim" aria-label="维度"></select>
         <label class="check"><input type="checkbox" id="aw-only" checked> <span data-i18n="awOnlyReg">只看在担保名单上的</span></label>
         <span class="note" id="aw-count"></span>
@@ -408,7 +409,7 @@ table.aw a { color: var(--accent); }
       awCardOrgs: "家担保名单上的机构", awCardLists: (n, c) => `${n} 份榜单 · 收录 ${c} 家公司`, awFilterBtn: "在名单里筛选",
       awColList: "榜单", awColPub: "发布方", awColYears: "年份", awColCount: "收录公司", awColMatched: "对上担保名单", awColNote: "收录情况", awColSrc: "来源",
       awMissing: "未收录", awScopeUk: "英国榜单", awScopeGlobal: "全球榜单", awSourceLink: "查看",
-      awCompanies: "榜单公司一览", awSearchPh: "搜索公司名", awAllDims: "全部维度", awOnlyReg: "只看在担保名单上的",
+      awCompanies: "查一家公司", awCompaniesDesc: "想知道某家公司有没有上榜、为什么在担保名单里筛不出来，可以在这里搜索。每家公司会显示对上了担保名单上的哪家机构；没对上的会说明原因：担保名单上没有这个名称（全球公司在英国常用子公司名称登记，可以去担保名单页换个名字再搜），或者名称太短太常见，没有自动对应。要按榜单下载公司清单，请在担保名单页按「榜单」筛选后导出 CSV。", awSearchPh: "输入公司名，比如 Revolut", awAllDims: "全部维度", awOnlyReg: "只看在担保名单上的",
       awColCompany: "公司（榜单上的名称）", awColOn: "担保名单上的机构", awNotFound: "未找到同名机构", awViaTa: "（按商号对应）", awAmb: (n) => `名称较短或是常用词，名单上有 ${n} 家同名机构，不一定是同一家，未自动对应`,
       awShown: (s, n) => `显示 ${s} / ${n} 家`, awMore: (n) => `再显示 ${n} 家`, awOpenInList: "在名单里查看", awUkHq: "英国总部",
       awEmpty: "没有符合条件的公司。", awLoading: "榜单数据载入中…", awBadgeTitle: (lines) => lines.join("\n"),
@@ -465,7 +466,7 @@ table.aw a { color: var(--accent); }
       awCardOrgs: "organisations on the register", awCardLists: (n, c) => `${n} lists · ${c} companies`, awFilterBtn: "Filter the sponsor list",
       awColList: "List", awColPub: "Publisher", awColYears: "Years", awColCount: "Companies", awColMatched: "On the register", awColNote: "Coverage", awColSrc: "Source",
       awMissing: "Not included", awScopeUk: "UK list", awScopeGlobal: "Global list", awSourceLink: "Open",
-      awCompanies: "All listed companies", awSearchPh: "Search companies", awAllDims: "All themes", awOnlyReg: "Only those on the register",
+      awCompanies: "Look up a company", awCompaniesDesc: "Search here to see whether a company is on any list and why it may not show up in the sponsor list. Each company shows the register organisation it matched. If it didn't match, you'll see why: no organisation on the register has that name (global companies often register in the UK under a subsidiary name, so try another name on the sponsor list), or the name is too short or common to match automatically. To download companies by list, filter by award list on the sponsor list and export the CSV.", awSearchPh: "Company name, e.g. Revolut", awAllDims: "All themes", awOnlyReg: "Only those on the register",
       awColCompany: "Company (name on the list)", awColOn: "Register organisation", awNotFound: "No organisation with this name", awViaTa: "(matched by trading name)", awAmb: (n) => `Short or common name: ${n} register organisation${n > 1 ? "s" : ""} share${n > 1 ? "" : "s"} it and may be a different company, so it isn't matched automatically`,
       awShown: (s, n) => `Showing ${s} of ${n}`, awMore: (n) => `Show ${n} more`, awOpenInList: "View in sponsor list", awUkHq: "UK HQ",
       awEmpty: "No companies match.", awLoading: "Loading award lists…", awBadgeTitle: (lines) => lines.join("\n"),
@@ -1114,7 +1115,7 @@ table.aw a { color: var(--accent); }
   function renderAwTable() {
     if (!awRows) buildAwRows();
     const q = awSt.q.trim().toLowerCase();
-    const rows = awRows.filter((g) => (!q || g.search.includes(q)) && (!awSt.only || g.m) && (!awSt.dim || g.lists.some((e) => AW.lists[e.list] && AW.lists[e.list].dim === awSt.dim)));
+    const rows = awRows.filter((g) => (!q || g.search.includes(q)) && (!awSt.only || q || g.m) && (!awSt.dim || g.lists.some((e) => AW.lists[e.list] && AW.lists[e.list].dim === awSt.dim)));
     const tb = $("aw-table"); tb.innerHTML = "";
     const hr = el("tr"); ["awColCompany", "awColOn"].forEach((k) => hr.append(el("th", null, t(k))));
     const thead = el("thead"); thead.append(hr); tb.append(thead);
